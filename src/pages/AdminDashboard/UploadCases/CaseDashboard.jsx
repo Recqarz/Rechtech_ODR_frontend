@@ -118,7 +118,7 @@ const CaseDashboard = () => {
 
   const allcaseData = () => {
     axios
-      .get(`http://localhost:3000/uploadcasedata`)
+      .get(`http://localhost:3000/cases/all-cases`)
       .then((res) => {
         setCaseData(res.data.cases);
       })
