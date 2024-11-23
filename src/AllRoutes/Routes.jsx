@@ -14,6 +14,7 @@ import ArbitratorCases from "@/pages/arbitratorMainPage/ArbitratorCases";
 import ClientCases from "@/pages/clinetMainPage/ClientCases";
 import ClientMain from "@/pages/clinetMainPage/ClientMain";
 import AllArbitrator from "@/pages/clinetMainPage/AllArbitrator";
+import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
 
 const Allroutes = () => {
   return (
@@ -35,6 +36,7 @@ const Allroutes = () => {
           <Route path="/arbitrator/addarbitrator" element={<AddArbitrator />} />
           <Route path="/client/addclient" element={<AddClient />} />
           <Route path="/admin/cases" element={<Uploadcase />} />
+          <Route path="/admin/cases/add" element={<AddCaseViaForm/>} />
           <Route path="/defaulter/:caseid" element={<DefaulterPage />} />
         </Routes>
       </div>
