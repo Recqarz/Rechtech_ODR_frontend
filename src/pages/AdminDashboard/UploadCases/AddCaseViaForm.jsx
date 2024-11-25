@@ -29,12 +29,17 @@ const AddCaseViaForm = () => {
     axios
       .get("http://localhost:3000/client/all")
       .then((res) => {
-        let resndata = res.data.user.map((el) => {
-          let oneData = el;
-          oneData.value = el;
-          oneData.label = el.name;
-          return oneData;
-        });
+        console.log("stat", res.data.user);
+        let resndata = res.data.user
+          .filter((el) => {
+            return el.status == true;
+          })
+          .map((el) => {
+            let oneData = el;
+            oneData.value = el;
+            oneData.label = el.name;
+            return oneData;
+          });
         setOptions(resndata);
         setOptions2(resndata);
         console.log("data", resndata);
@@ -62,7 +67,7 @@ const AddCaseViaForm = () => {
         clientName: selectedOption.name,
         clientMobile: selectedOption.contactNo,
         clientEmail: selectedOption.emailId,
-        // clientAddress: selectedOption.clientAddress
+        clientAddress: selectedOption.address,
       }));
     }
     if (selectedOption2) {
@@ -71,7 +76,7 @@ const AddCaseViaForm = () => {
         respondentName: selectedOption2.name,
         respondentMobile: selectedOption2.contactNo,
         respondentEmail: selectedOption2.emailId,
-        // respondentAddress: selectedOption2.respondentAddress
+        respondentAddress: selectedOption2.address,
       }));
     }
   }, [selectedOption, selectedOption2]);
@@ -244,6 +249,7 @@ const AddCaseViaForm = () => {
                 value={selectedOption}
                 onChange={handleSelectChange}
                 options={options}
+                placeholder="Select Claiment Name"
                 noOptionsMessage={({ inputValue }) => (
                   <div>No clients found</div>
                 )}
@@ -300,22 +306,12 @@ const AddCaseViaForm = () => {
             </div>
 
             <div className="relative group">
-              {/* <input
-                type="text"
-                name="respondentName"
-                value={formData.respondentName}
-                onChange={handleChange}
-                className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
-                placeholder="Respondent Name"
-              />
-              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
-                Respondent Name
-              </label> */}
               <CreatableSelect
                 className="z-20 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
                 value={selectedOption2}
                 onChange={handleSelectChange2}
                 options={options2}
+                placeholder="Select Respondent Name"
                 noOptionsMessage={({ inputValue }) => (
                   <div>No clients found</div>
                 )}
@@ -412,12 +408,12 @@ const AddCaseViaForm = () => {
           ))}
 
           <div className="flex items-center justify-end mt-4">
-            <div className="w-[12%] text-center">
+            <div className="w-[5%] text-center">
               <input
                 type="button"
-                value="Add More File"
+                value="+"
                 onClick={handleAddFileInput}
-                className="p-1 block w-full text-white bg-red-700 rounded-md text-sm cursor-pointer"
+                className="text-xl p-1 font-bold block w-full text-white bg-red-500 rounded-md text-sm cursor-pointer"
               />
             </div>
           </div>
