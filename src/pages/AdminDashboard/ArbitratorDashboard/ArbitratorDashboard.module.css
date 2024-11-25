@@ -6,7 +6,7 @@ th {
 
 table {
   border-collapse: separate;
-  border-spacing: 0 20px;
+  border-spacing: 0 10px;
   /* max-width: 1152px; */
   width: 98%;
   /* margin: auto; */
@@ -20,7 +20,11 @@ td {
 
 tr > th {
   color: black;
-  font-size: 16px;
+  font-size: 13px;
+}
+tr > td {
+  color: black;
+  font-size: 12px;
 }
 
 .trbody {
