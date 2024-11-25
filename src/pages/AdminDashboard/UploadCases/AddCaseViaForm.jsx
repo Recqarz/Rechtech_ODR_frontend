@@ -93,8 +93,11 @@ const AddCaseViaForm = () => {
 
   const handleAddNewCaseData = async (e) => {
     e.preventDefault();
-    let obj = {
+
+    // Create the case data object
+    const caseData = {
       caseId: formData.caseId,
+      clientId: selectedOption._id,
       clientName: formData.clientName,
       clientEmail: formData.clientEmail,
       clientMobile: formData.clientMobile,
@@ -106,46 +109,29 @@ const AddCaseViaForm = () => {
       disputeType: formData.disputeType,
     };
 
-    if (
-      !obj.clientName ||
-      !obj.clientEmail ||
-      !obj.clientMobile ||
-      !obj.clientAddress ||
-      !obj.respondentName ||
-      !obj.respondentEmail ||
-      !obj.respondentMobile ||
-      !obj.respondentAddress ||
-      !obj.disputeType
-    ) {
+    // Validation checks
+    if (Object.values(caseData).some((value) => !value)) {
       toast.error("All fields are required");
       return;
     }
-    if (obj.clientMobile.length !== 10) {
-      toast.error("Invalid contact number");
-      return;
-    }
-    if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-        obj.clientEmail || obj.respondentEmail
-      )
-    ) {
-      toast.error("Invalid email address");
-      return;
-    }
 
+    // Create FormData object
     const formDataToSend = new FormData();
-    formDataToSend.append("caseData", JSON.stringify(obj));
 
+    // Append the case data as a JSON string
+    formDataToSend.append("caseData", JSON.stringify(caseData));
+
+    // Append files and their names
     fileInputs.forEach((input, index) => {
-      if (input.file) {
-        formDataToSend.append(`file${index + 1}`, input.file);
-        formDataToSend.append(`fileName${index + 1}`, input.fileName);
+      if (input.file && input.fileName) {
+        formDataToSend.append(`files`, input.file);
+        formDataToSend.append(`fileNames`, input.fileName);
       }
     });
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/cases/add-case",
+      const response = await axios.post(
+        "http://localhost:3000/cases/addcase",
         formDataToSend,
         {
           headers: {
@@ -153,23 +139,28 @@ const AddCaseViaForm = () => {
           },
         }
       );
-      console.log("newCasesAdded", res);
-      setFileInputs([{ id: 1, fileName: "", file: null }]);
-      setFormData({
-        caseId: "",
-        clientName: "",
-        clientAddress: "",
-        clientMobile: "",
-        clientEmail: "",
-        respondentName: "",
-        respondentAddress: "",
-        respondentMobile: "",
-        respondentEmail: "",
-        disputeType: "",
-      });
-    } catch (err) {
-      toast.error("Something went wrong");
-      console.log("err", err);
+
+      if (response.data) {
+        toast.success("Case added successfully");
+        // Reset form
+        setFileInputs([{ id: 1, fileName: "", file: null }]);
+        setFormData({
+          caseId: "",
+          clientName: "",
+          clientAddress: "",
+          clientMobile: "",
+          clientEmail: "",
+          respondentName: "",
+          respondentAddress: "",
+          respondentMobile: "",
+          respondentEmail: "",
+          disputeType: "",
+        });
+        setSelectedOption(null);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+      console.error("Error adding case:", error);
     }
   };
 
