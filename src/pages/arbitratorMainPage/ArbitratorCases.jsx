@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { cn } from "@/lib/utils";
+import NoDataFound from "@/components/NoDataFound";
 
 const ArbitratorCases = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const ArbitratorCases = () => {
 
   const getArbitratorCaseData = () => {
     axios
-      .get("http://localhost:3000/uploadcasedata/arbitratorcases", {
+      .get("http://localhost:3000/case/arbitratorcases", {
         headers: {
           token: token,
         },
@@ -124,67 +125,68 @@ const ArbitratorCases = () => {
   //   />
   // )
 
-
-
-
   return (
     <div>
       <div className="w-[100%] mx-auto mt-2 px-2">
-        <table cellSpacing="0">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email ID</th>
-              <th>File Name</th>
-              <th>Uploaded Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          {arbitratorCaseData.map((clientcase) => (
-            <tbody key={clientcase._id}>
-              <tr className={styles.trbody}>
-                <td data-label="Name">{clientcase.clientName}</td>
-                <td data-label="Email ID">{clientcase.clientEmail}</td>
-                <td
-                  data-label="File Nmae"
-                  className={styles.number}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/defaulter/${clientcase._id}`)}
-                >
-                  {clientcase.fileName}
-                </td>
-
-                <td data-label="No. of assign Case">
-                  {clientcase.uploadDate
-                    .split("T")[0]
-                    .split("-")
-                    .reverse()
-                    .join("-")}
-                </td>
-
-                <td
-                  data-label="Meeting Schedule"
-                  style={{
-                    color: "blue",
-                    fontSize: "24px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {/* {clientcase?.meetLinks.length>0? "Start meeting" : "Schedule meeting"} */}
-                  {!clientcase.meetLinks.length > 0 ? (
-                    <FcVideoCall
-                      onClick={() => handleMeetingModal(clientcase._id)}
-                    />
-                  ):(
-                    <FcStart
-                      onClick={() => handleMeeting(clientcase.meetLinks)}
-                    />
-                  )}
-                </td>
+        {arbitratorCaseData.length > 0 ? (
+          <table cellSpacing="0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email ID</th>
+                <th>File Name</th>
+                <th>Uploaded Date</th>
+                <th>Action</th>
               </tr>
-            </tbody>
-          ))}
-        </table>
+            </thead>
+            {arbitratorCaseData.map((clientcase) => (
+              <tbody key={clientcase._id}>
+                <tr className={styles.trbody}>
+                  <td data-label="Name">{clientcase.clientName}</td>
+                  <td data-label="Email ID">{clientcase.clientEmail}</td>
+                  <td
+                    data-label="File Nmae"
+                    className={styles.number}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/defaulter/${clientcase._id}`)}
+                  >
+                    {clientcase.fileName}
+                  </td>
+
+                  <td data-label="No. of assign Case">
+                    {clientcase.uploadDate
+                      .split("T")[0]
+                      .split("-")
+                      .reverse()
+                      .join("-")}
+                  </td>
+
+                  <td
+                    data-label="Meeting Schedule"
+                    style={{
+                      color: "blue",
+                      fontSize: "24px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {/* {clientcase?.meetLinks.length>0? "Start meeting" : "Schedule meeting"} */}
+                    {!clientcase.meetLinks.length > 0 ? (
+                      <FcVideoCall
+                        onClick={() => handleMeetingModal(clientcase._id)}
+                      />
+                    ) : (
+                      <FcStart
+                        onClick={() => handleMeeting(clientcase.meetLinks)}
+                      />
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            ))}
+          </table>
+        ) : (
+          <NoDataFound />
+        )}
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

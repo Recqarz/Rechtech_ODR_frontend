@@ -261,11 +261,13 @@ if(loading){
         <table cellSpacing="0">
           <thead>
             <tr>
-              <th>Bank Name</th>
-              <th>File Name</th>
-              <th>Case Count</th>
-              <th>Uploaded Date</th>
-              <th>Arbitrator</th>
+              <th>Client Name</th>
+              <th>Client Email</th>
+              <th>Client Number</th>
+              <th>Respondent Name</th>
+              <th>Respondent Email</th>
+              <th>Respondent Number</th>
+              <th>Dispute Type</th>
             </tr>
           </thead>
           {caseData

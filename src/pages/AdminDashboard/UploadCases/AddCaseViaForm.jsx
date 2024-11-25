@@ -1,11 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
+import { useNavigate } from "react-router-dom";
 
 const AddCaseViaForm = () => {
+  const navigate = useNavigate();
   const [options, setOptions] = useState([]);
+  const [options2, setOptions2] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption2, setSelectedOption2] = useState(null);
   const [formData, setFormData] = useState({
     caseId: "",
     clientName: "",
@@ -32,6 +36,7 @@ const AddCaseViaForm = () => {
           return oneData;
         });
         setOptions(resndata);
+        setOptions2(resndata);
         console.log("data", resndata);
       })
       .catch((err) => {
@@ -57,9 +62,19 @@ const AddCaseViaForm = () => {
         clientName: selectedOption.name,
         clientMobile: selectedOption.contactNo,
         clientEmail: selectedOption.emailId,
+        // clientAddress: selectedOption.clientAddress
       }));
     }
-  }, [selectedOption]);
+    if (selectedOption2) {
+      setFormData((prevState) => ({
+        ...prevState,
+        respondentName: selectedOption2.name,
+        respondentMobile: selectedOption2.contactNo,
+        respondentEmail: selectedOption2.emailId,
+        // respondentAddress: selectedOption2.respondentAddress
+      }));
+    }
+  }, [selectedOption, selectedOption2]);
   // console.log("selectedOption", selectedOption);
 
   const handleAddFileInput = () => {
@@ -173,6 +188,30 @@ const AddCaseViaForm = () => {
     }
   };
 
+  const createOption = {
+    value: "create-new",
+    label: "+ Create New Client",
+    __isNew__: true,
+  };
+
+  const handleSelectChange = (newValue) => {
+    if (newValue && newValue.__isNew__) {
+      // Redirect to add client page
+      navigate("/client/addclient");
+      return;
+    }
+    setSelectedOption(newValue);
+  };
+
+  const handleSelectChange2 = (newValue) => {
+    if (newValue && newValue.__isNew__) {
+      // Redirect to add client page
+      navigate("/client/addclient");
+      return;
+    }
+    setSelectedOption2(newValue);
+  };
+
   return (
     <div>
       {/* Add Case Via Form */}
@@ -200,11 +239,21 @@ const AddCaseViaForm = () => {
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative group">
-              <Select
-                className="z-50 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
-                defaultValue={selectedOption}
-                onChange={setSelectedOption}
+              <CreatableSelect
+                className="z-40 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
+                value={selectedOption}
+                onChange={handleSelectChange}
                 options={options}
+                noOptionsMessage={({ inputValue }) => (
+                  <div>No clients found</div>
+                )}
+                formatCreateLabel={() => "Create New One"}
+                isValidNewOption={(inputValue, selectValue, selectOptions) => {
+                  return !selectOptions.some(
+                    (option) =>
+                      option.label.toLowerCase() === inputValue.toLowerCase()
+                  );
+                }}
               />
             </div>
 
@@ -231,7 +280,7 @@ const AddCaseViaForm = () => {
                 className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
                 placeholder="Claimant Mobile"
               />
-              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-1 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                 Claimant Mobile
               </label>
             </div>
@@ -251,7 +300,7 @@ const AddCaseViaForm = () => {
             </div>
 
             <div className="relative group">
-              <input
+              {/* <input
                 type="text"
                 name="respondentName"
                 value={formData.respondentName}
@@ -261,7 +310,23 @@ const AddCaseViaForm = () => {
               />
               <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                 Respondent Name
-              </label>
+              </label> */}
+              <CreatableSelect
+                className="z-20 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
+                value={selectedOption2}
+                onChange={handleSelectChange2}
+                options={options2}
+                noOptionsMessage={({ inputValue }) => (
+                  <div>No clients found</div>
+                )}
+                formatCreateLabel={() => "Create New Client"}
+                isValidNewOption={(inputValue, selectValue, selectOptions) => {
+                  return !selectOptions.some(
+                    (option) =>
+                      option.label.toLowerCase() === inputValue.toLowerCase()
+                  );
+                }}
+              />
             </div>
 
             <div className="relative group">
