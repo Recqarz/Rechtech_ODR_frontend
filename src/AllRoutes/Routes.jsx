@@ -27,7 +27,6 @@ const Allroutes = () => {
           <Route path="/client" element={<ClientMain />} />
           <Route path="/client/cases" element={<ClientCases />} />
           <Route path="/client/allarbitrator" element={<AllArbitrator />} />
-
           <Route path="/arbitrator" element={<ArbitratorMain />} />
           <Route path="/arbitrator/cases" element={<ArbitratorCases />} />
           <Route path="/admin" element={<AdminDashboard />} />
@@ -36,7 +35,7 @@ const Allroutes = () => {
           <Route path="/arbitrator/addarbitrator" element={<AddArbitrator />} />
           <Route path="/client/addclient" element={<AddClient />} />
           <Route path="/admin/cases" element={<Uploadcase />} />
-          <Route path="/admin/cases/add" element={<AddCaseViaForm/>} />
+          <Route path="/admin/cases/add" element={<AddCaseViaForm />} />
           <Route path="/defaulter/:caseid" element={<DefaulterPage />} />
         </Routes>
       </div>
