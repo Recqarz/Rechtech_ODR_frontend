@@ -14,6 +14,7 @@ const AddClient = () => {
     expertise: "NA",
     experience: "1",
     about: "",
+    address:""
   });
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const AddClient = () => {
       about: formData.about,
       role: "client",
       uid: formData.uid,
+      address:formData.address
     };
     console.log(obj);
     if (
@@ -50,7 +52,8 @@ const AddClient = () => {
       !obj.contactNo ||
       !obj.areaOfExpertise ||
       !obj.experienceInYears ||
-      !obj.about
+      !obj.about || 
+      !obj.address
     ) {
       toast.error("All fields are required");
       return;
@@ -76,6 +79,7 @@ const AddClient = () => {
           expertise: "",
           experience: "",
           about: "",
+          address:""
         });
       })
       .catch((err) => {
@@ -172,6 +176,24 @@ const AddClient = () => {
                   Email Address
                 </label>
               </div>
+
+
+
+              <div className="relative group">
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                  placeholder="Address"
+                />
+                <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                   Address
+                </label>
+              </div>
+
+
             </div>
 
             <div className="relative group mt-6">
