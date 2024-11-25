@@ -11,6 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { Label } from "@/components/ui/label";
 import { useEffect, useMemo, useState } from "react";
 import NoDataFound from "@/components/NoDataFound";
@@ -22,11 +32,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshers } from "@/global/action";
 import { useNavigate } from "react-router-dom";
 import Loading from "@/components/Loading";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup } from "@radix-ui/react-radio-group";
+import { RadioGroupItem } from "@/components/ui/radio-group";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -47,21 +60,29 @@ const CaseDashboard = () => {
     arbitratorId: "",
     arbitratorEmail: "",
   });
+  // console.log(selectedOption)
 
   const getData = () => {
     axios
       .get("http://localhost:3000/arbitrator/all")
       .then((res) => {
-        const formattedOptions = res.data.user.filter((user)=>user.status==true).map((user) => ({
-          value: user.name,
-          label: `${user.contactNo} / ${user.name}`,
-          arbitratorId: user.uid,
-          arbitratorEmail: user.emailId,
-          arbitrtoriid: user._id,
-          arbitratorName: user.name,
-        }));
+        console.log("arb", res.data.user);
+        const formattedOptions = res.data.user
+          .filter((user) => user.status == true)
+          .map((user) => ({
+            value: user.name,
+            label: `${user.contactNo} / ${user.name}`,
+            arbitratorId: user.uid,
+            arbitratorEmail: user.emailId,
+            arbitrtorid: user._id,
+            arbitratorName: user.name,
+            arbitratorContactNo: user.contactNo,
+            arbitratorExperience: user.experienceInYears,
+            arbitratorExperties: user.areaOfExperties,
+          }));
         setData(formattedOptions);
         setOptions(formattedOptions);
+        console.log("dfd", formattedOptions);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -72,38 +93,38 @@ const CaseDashboard = () => {
     getData();
   }, []);
 
-  const filterOptions = (inputValue) => {
-    return data.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-  };
+  // const filterOptions = (inputValue) => {
+  //   return data.filter((option) =>
+  //     option.label.toLowerCase().includes(inputValue.toLowerCase())
+  //   );
+  // };
 
-  const handleInputChange = (inputValue) => {
-    const filteredOptions = filterOptions(inputValue);
-    setOptions(filteredOptions);
-  };
+  // const handleInputChange = (inputValue) => {
+  //   const filteredOptions = filterOptions(inputValue);
+  //   setOptions(filteredOptions);
+  // };
 
-  const handleChange = (newValue) => {
-    setSelectedOption(newValue);
-    setFormData((prev) => ({
-      ...prev,
-      arbitrator: newValue.value,
-      arbitratorId: newValue.arbitrtoriid,
-      arbitratorEmail: newValue.arbitratorEmail,
-    }));
-    console.log("formdata", formData);
-  };
+  // const handleChange = (newValue) => {
+  //   setSelectedOption(newValue);
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     arbitrator: newValue.value,
+  //     arbitratorId: newValue.arbitrtoriid,
+  //     arbitratorEmail: newValue.arbitratorEmail,
+  //   }));
+  //   console.log("formdata", formData);
+  // };
 
   const handleSelectArbitrator = () => {
     let obj = {
-      caseId: appointdata,
-      arbitrator: formData.arbitrator,
-      arbitratorId: formData.arbitratorId,
-      arbitratorEmail: formData.arbitratorEmail,
+      id: appointdata,
+      arbitratorName: selectedOption.arbitratorName,
+      arbitratorId: selectedOption.arbitratorId,
+      arbitratorEmail: selectedOption.arbitratorEmail,
     };
     setLoading(true);
     axios
-      .post("http://localhost:3000/arbitratorappointnotifyall", obj)
+      .post("http://localhost:3000/arbitratorappointandnotifyall", obj)
       .then((res) => {
         toast.success("Arbitrator appointed");
         setLoading(false);
@@ -121,6 +142,7 @@ const CaseDashboard = () => {
       .get(`http://localhost:3000/cases/all-cases`)
       .then((res) => {
         setCaseData(res.data.cases);
+        console.log("data", res.data.cases);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -145,12 +167,9 @@ const CaseDashboard = () => {
     }
   });
 
-
-
-if(loading){
-  return <Loading/>
-}
-
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -194,8 +213,8 @@ if(loading){
               <SelectContent>
                 <SelectGroup>
                   <SelectItem key="filter" value="filter">
-                      filter
-                    </SelectItem>
+                    filter
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -263,55 +282,58 @@ if(loading){
             <tr>
               <th>Client Name</th>
               <th>Client Email</th>
-              <th>Client Number</th>
-              <th>Respondent Name</th>
-              <th>Respondent Email</th>
-              <th>Respondent Number</th>
-              <th>Dispute Type</th>
+              <th>Client No.</th>
+              <th>Res. Name</th>
+              <th>Res. Email</th>
+              <th>Res. No.</th>
+              <th>Type</th>
+              <th>File</th>
+              <th>Attachment</th>
+              <th>Arbitrator</th>
             </tr>
           </thead>
           {caseData
             .filter((name) => {
               if (!filterByBankName) return true;
-              if(filterByBankName=="all"){
-                return name
-              }
-              else{
+              if (filterByBankName == "all") {
+                return name;
+              } else {
                 return name.clientName
-                .toLowerCase()
-                .includes(filterByBankName.toLowerCase());
+                  .toLowerCase()
+                  .includes(filterByBankName.toLowerCase());
               }
             })
             .filter((file) => {
-              if (!searchByFileName) return true; 
+              if (!searchByFileName) return true;
               return file.fileName.toLowerCase().includes(searchByFileName);
             })
             .filter((count) => {
-              if (!searchByCaseCount) return true; 
+              if (!searchByCaseCount) return true;
               return count.caseCount.toString().includes(searchByCaseCount);
             })
             .map((cases) => (
               <tbody key={cases._id}>
                 <tr className={styles.trbody}>
-                  <td data-label="Bankname">{cases.clientName}</td>
+                  <td data-label="client name">{cases.clientName}</td>
                   <td
-                    data-label="File_name"
-                    className={styles.number}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => navigate(`/defaulter/${cases._id}`)}
+                    data-label="client email"
+                    className={styles.clientEmail}
+                    // style={{ cursor: 'pointer' }}
+                    // onClick={() => navigate(`/defaulter/${cases._id}`)}
                   >
-                    {cases.fileName}
+                    {cases.clientEmail}
                   </td>
-                  <td data-label="Case_count">{cases.caseCount}</td>
-                  <td data-label="Date">
-                    {cases?.uploadDate
+                  <td data-label="client number">{cases.clientMobile}</td>
+                  <td data-label="respondant name">
+                    {/* {cases?.uploadDate
                       ?.split("T")[0]
                       .split("-")
                       .reverse()
-                      .join("-")}
+                      .join("-")} */}
+                    {cases.respondentName}
                   </td>
-                  <td data-label="Action">
-                    {cases.arbitrator == "" ? (
+                  <td data-label="respondant email">
+                    {/* {cases.arbitrator == "" ? (
                       <FcBusinessman
                         style={{
                           color: "blue",
@@ -322,6 +344,35 @@ if(loading){
                       />
                     ) : (
                       cases.arbitrator?.split(" ")[0]
+                    )} */}
+                    {cases.respondentEmail}
+                  </td>
+                  <td data-label="respondence number">
+                    {cases.respondentMobile}
+                  </td>
+                  <td data-label="dispute type">{cases.disputeType}</td>
+                  <td data-label="case type">
+                    {cases.isFileUpload ? cases.fileName : "Single Case"}
+                  </td>
+                  <td data-label="attachment">
+                    {cases.attachments.length > 0
+                      ? cases.attachments.map((ele) => {
+                          return "vv";
+                        })
+                      : "No attach"}
+                  </td>
+                  <td data-label="arbitrator">
+                    {cases.isArbitratorAssigned ? (
+                      cases.arbitratorName.split(" ")[0]
+                    ) : (
+                      <FcBusinessman
+                        style={{
+                          color: "blue",
+                          fontSize: "24px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleUploadFunction(cases._id)}
+                      />
                     )}
                   </td>
                 </tr>
@@ -333,7 +384,7 @@ if(loading){
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
+        <DialogContent className="w-full p-3 rounded-lg shadow-lg">
           <DialogHeader className="mb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
               Arbitrator Details
@@ -343,7 +394,45 @@ if(loading){
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-6">
+          <Table>
+            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+            <TableHeader>
+              <TableRow>
+                <TableHead>Select</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="p-[0px]">Contact No.</TableHead>
+                <TableHead className="text-right">Experties</TableHead>
+                <TableHead className="text-right">Experience</TableHead>
+              </TableRow>
+            </TableHeader>
+            {options.map((el) => (
+              <TableBody key={el.arbitrtorid} className="p-[5px]">
+                <TableRow>
+
+                  <RadioGroup>
+                    <div className="space-x-2 my-5 mx-4">
+                      <RadioGroupItem onClick={()=>setSelectedOption(el)} value="option-one" id="option-one" />
+                    </div>
+                  </RadioGroup>
+
+                  <TableCell>
+                    {el.arbitratorName}
+                  </TableCell>
+                  <TableCell>{el.arbitratorEmail}</TableCell>
+                  <TableCell>{el.arbitratorContactNo}</TableCell>
+                  <TableCell className="text-right">
+                    {el.arbitratorExperties}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {el.arbitratorExperience}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            ))}
+          </Table>
+
+          {/* <div className="grid gap-6">
             <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label
                 htmlFor="status"
@@ -370,9 +459,10 @@ if(loading){
                     {selectedOption.value}
                   </p>
                 )}
+                
               </div>
             </div>
-          </div>
+          </div> */}
 
           <DialogFooter className="mt-6 flex justify-end">
             <Button

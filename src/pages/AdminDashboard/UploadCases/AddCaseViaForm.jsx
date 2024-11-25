@@ -29,7 +29,6 @@ const AddCaseViaForm = () => {
     axios
       .get("http://localhost:3000/client/all")
       .then((res) => {
-        console.log("stat", res.data.user);
         let resndata = res.data.user
           .filter((el) => {
             return el.status == true;
@@ -42,10 +41,9 @@ const AddCaseViaForm = () => {
           });
         setOptions(resndata);
         setOptions2(resndata);
-        console.log("data", resndata);
       })
       .catch((err) => {
-        console.log(err.meassage);
+        toast.error("Something went wrong!");
       });
   };
   const fetchCaseId = () => {
@@ -69,6 +67,10 @@ const AddCaseViaForm = () => {
         clientEmail: selectedOption.emailId,
         clientAddress: selectedOption.address,
       }));
+      const ndata = options2.filter((ele)=>{
+        return ele.value._id !== selectedOption.value._id
+      })
+      setOptions2(ndata)
     }
     if (selectedOption2) {
       setFormData((prevState) => ({
@@ -78,9 +80,12 @@ const AddCaseViaForm = () => {
         respondentEmail: selectedOption2.emailId,
         respondentAddress: selectedOption2.address,
       }));
+      const ndata = options.filter((ele)=>{
+        return ele.value._id !== selectedOption2.value._id
+      })
+      setOptions(ndata)
     }
   }, [selectedOption, selectedOption2]);
-  // console.log("selectedOption", selectedOption);
 
   const handleAddFileInput = () => {
     const newId = fileInputs.length + 1;
@@ -177,18 +182,18 @@ const AddCaseViaForm = () => {
           disputeType: "",
         });
         setSelectedOption(null);
+        navigate("/admin/cases");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
-      console.error("Error adding case:", error);
     }
   };
 
-  const createOption = {
-    value: "create-new",
-    label: "+ Create New Client",
-    __isNew__: true,
-  };
+  // const createOption = {
+  //   value: "create-new",
+  //   label: "+ Create New Client",
+  //   __isNew__: true,
+  // };
 
   const handleSelectChange = (newValue) => {
     if (newValue && newValue.__isNew__) {
