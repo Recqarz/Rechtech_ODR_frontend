@@ -7,15 +7,13 @@ th {
 table {
   border-collapse: separate;
   border-spacing: 0 10px;
-  /* max-width: 1152px; */
   width: 98%;
-  /* margin: auto; */
   margin-left: 8px;
 }
 
 th,
 td {
-  padding: 8px;
+  padding: 6px;
 }
 
 tr > th {

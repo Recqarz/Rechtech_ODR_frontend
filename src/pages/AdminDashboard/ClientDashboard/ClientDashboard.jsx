@@ -187,6 +187,7 @@ const ClientDashboard = () => {
                 <th>Contact No.</th>
                 <th>Email ID</th>
                 <th>Cases Added</th>
+                <th>Address</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -225,6 +226,9 @@ const ClientDashboard = () => {
                     <td data-label="Email ID">{arbitratior.emailId}</td>
                     <td data-label="No. of assign Case">
                       {arbitratior.caseAdded}
+                    </td>
+                    <td data-label="Address">
+                      {arbitratior.address.slice(0, 10)}
                     </td>
                     <td data-label="Status" className={arbitratior.status == true ? styles.status : styles.status2}>
                       {arbitratior.status == false ? "InActive" : "Active"}

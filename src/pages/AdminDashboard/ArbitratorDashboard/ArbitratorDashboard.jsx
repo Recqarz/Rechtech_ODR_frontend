@@ -190,6 +190,7 @@ const ArbitratorDashboard = () => {
                 <th>Contact No.</th>
                 <th>Email ID</th>
                 <th>No Of Assign Case</th>
+                <th>Address</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -228,6 +229,9 @@ const ArbitratorDashboard = () => {
                     <td data-label="Email ID">{arbitratior.emailId}</td>
                     <td data-label="No. of assign Case">
                       {arbitratior.noOfAssignCase}
+                    </td>
+                    <td data-label="address">
+                      {arbitratior.address.slice(0,10)}
                     </td>
                     <td data-label="Status" className={arbitratior.status == true ? styles.status : styles.status2}>
                       {arbitratior.status == false ? "InActive" : "Active"}

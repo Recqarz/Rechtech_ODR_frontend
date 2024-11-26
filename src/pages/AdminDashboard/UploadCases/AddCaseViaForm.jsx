@@ -67,10 +67,10 @@ const AddCaseViaForm = () => {
         clientEmail: selectedOption.emailId,
         clientAddress: selectedOption.address,
       }));
-      const ndata = options2.filter((ele)=>{
-        return ele.value._id !== selectedOption.value._id
-      })
-      setOptions2(ndata)
+      const ndata = options2.filter((ele) => {
+        return ele.value._id !== selectedOption.value._id;
+      });
+      setOptions2(ndata);
     }
     if (selectedOption2) {
       setFormData((prevState) => ({
@@ -80,16 +80,22 @@ const AddCaseViaForm = () => {
         respondentEmail: selectedOption2.emailId,
         respondentAddress: selectedOption2.address,
       }));
-      const ndata = options.filter((ele)=>{
-        return ele.value._id !== selectedOption2.value._id
-      })
-      setOptions(ndata)
+      const ndata = options.filter((ele) => {
+        return ele.value._id !== selectedOption2.value._id;
+      });
+      setOptions(ndata);
     }
   }, [selectedOption, selectedOption2]);
 
   const handleAddFileInput = () => {
     const newId = fileInputs.length + 1;
     setFileInputs([...fileInputs, { id: newId, fileName: "", file: null }]);
+  };
+  const handleSubstractFileInput = () => {
+    if (fileInputs.length > 1) {
+      const updatedFileInputs = fileInputs.slice(0, -1);
+      setFileInputs(updatedFileInputs);
+    }
   };
 
   const handleChange = (e) => {
@@ -145,7 +151,6 @@ const AddCaseViaForm = () => {
 
     // Append the case data as a JSON string
     formDataToSend.append("caseData", JSON.stringify(caseData));
-
     // Append files and their names
     fileInputs.forEach((input, index) => {
       if (input.file && input.fileName) {
@@ -189,15 +194,8 @@ const AddCaseViaForm = () => {
     }
   };
 
-  // const createOption = {
-  //   value: "create-new",
-  //   label: "+ Create New Client",
-  //   __isNew__: true,
-  // };
-
   const handleSelectChange = (newValue) => {
     if (newValue && newValue.__isNew__) {
-      // Redirect to add client page
       navigate("/client/addclient");
       return;
     }
@@ -206,7 +204,6 @@ const AddCaseViaForm = () => {
 
   const handleSelectChange2 = (newValue) => {
     if (newValue && newValue.__isNew__) {
-      // Redirect to add client page
       navigate("/client/addclient");
       return;
     }
@@ -403,7 +400,15 @@ const AddCaseViaForm = () => {
             </div>
           ))}
 
-          <div className="flex items-center justify-end mt-4">
+          <div className="flex items-center justify-end gap-4 mt-4">
+            <div className="w-[5%] text-center">
+              <input
+                type="button"
+                value="-"
+                onClick={handleSubstractFileInput}
+                className="text-xl p-1 font-bold block w-full text-white bg-green-500 rounded-md text-sm cursor-pointer"
+              />
+            </div>
             <div className="w-[5%] text-center">
               <input
                 type="button"
