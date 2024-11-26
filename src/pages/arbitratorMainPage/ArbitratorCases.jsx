@@ -3,7 +3,7 @@ import styles from "../AdminDashboard/ArbitratorDashboard/ArbitratorDashboard.mo
 import toast from "react-hot-toast";
 import axios from "axios";
 import { FcStart, FcVideoCall } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CgRecord } from "react-icons/cg";
 import {
   Dialog,
@@ -13,6 +13,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -22,15 +29,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { cn } from "@/lib/utils";
 import NoDataFound from "@/components/NoDataFound";
+import { IoMdDownload } from "react-icons/io";
 
 const ArbitratorCases = () => {
+  const [searchByData, setSearchByData]=useState("");
   const navigate = useNavigate();
   const [arbitratorCaseData, setArbitratorCaseData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectStartDate, setSelectStartDate] = useState(new Date());
   const [selectEndDate, setSelectEndDate] = useState(new Date());
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  // const [description, setDescription] = useState("");
   // const [meetingStatus, setMeetingStatus] = useState(false);
   const [caseId, setCaseId] = useState("");
 
@@ -38,13 +47,14 @@ const ArbitratorCases = () => {
 
   const getArbitratorCaseData = () => {
     axios
-      .get("http://localhost:3000/case/arbitratorcases", {
+      .get("http://localhost:3000/cases/arbitratorcases", {
         headers: {
           token: token,
         },
       })
       .then((res) => {
         setArbitratorCaseData(res.data.caseData);
+        console.log("all", res.data.caseData);
       })
       .catch((err) => {
         toast.error("Something went wrong!");
@@ -55,15 +65,20 @@ const ArbitratorCases = () => {
     getArbitratorCaseData();
   }, []);
 
+  function convertToDateNow(isoTimestamp) {
+    const date = new Date(isoTimestamp);
+    return date.getTime();
+  }
+
   useEffect(() => {
     if (!isOpen) {
       setCaseId("");
       setTitle("");
-      setDescription("");
+      // setDescription("");
     }
     if (isOpen) {
       setSelectStartDate(new Date());
-      setSelectEndDate(new Date());
+      // setSelectEndDate(new Date());
     }
   }, [isOpen]);
 
@@ -90,18 +105,19 @@ const ArbitratorCases = () => {
     let obj = {
       caseId: caseId,
       title: title,
-      description: description,
+      // description: description,
       startTime: startdate,
       endTime: enddate,
     };
+    // return console.log("obj", obj)
     axios
-      .post("http://localhost:3000/meeting", obj)
+      .post("http://localhost:3000/webex/create-meeting", obj)
       .then((res) => {
         toast.success("Meeting Scheduled successfully");
+        console.log("dklfj", res);
         setTitle("");
-        setDescription("");
+        // setDescription("");
         setSelectStartDate(new Date());
-        setSelectEndDate(new Date());
         setIsOpen(false);
         setCaseId("");
         setTimeout(() => {
@@ -115,52 +131,111 @@ const ArbitratorCases = () => {
   };
 
   function handleMeeting(meet) {
-    // console.log(meet)
-    // console.log(link)
-    window.open(meet[meet.length - 1], "_blank");
+    window.open(meet.webLink, "_blank");
   }
 
-  // :clientcase.meetLinks.length > 0 && selectEndDate < new Date()? (
-  //   <CgRecord
-  //   />
-  // )
+  const handleDurationChange = (value) => {  
+    const minutes = parseInt(value,10);  
+    console.log("minutes:", minutes);  
+    console.log("start:", selectStartDate);  
+    const endDate = new Date(selectStartDate.getTime());  
+    endDate.setMinutes(endDate.getMinutes() + minutes);   
+    setSelectEndDate(endDate);  
+  };  
+  useEffect(() => {
+    console.log("End Date updated:", selectEndDate);
+  }, [selectEndDate]);
 
   return (
     <div>
       <div className="w-[100%] mx-auto mt-2 px-2">
+
+
+      <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
+            <input
+              type="text"
+              placeholder="Search"
+              className="flex-grow outline-none bg-transparent text-sm"
+              onChange={(e) => setSearchByData(e.target.value)}
+            />
+            <button className="text-gray-500 hover:text-gray-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
+
+
         {arbitratorCaseData.length > 0 ? (
           <table cellSpacing="0">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email ID</th>
-                <th>File Name</th>
-                <th>Uploaded Date</th>
+                <th>Client Name</th>
+                <th>Client Email</th>
+                <th>Client No.</th>
+                <th>Res. Name</th>
+                <th>Res. Email</th>
+                <th>Res. No.</th>
+                <th>Type</th>
+                <th>File</th>
+                <th>Attachment</th>
                 <th>Action</th>
               </tr>
             </thead>
-            {arbitratorCaseData.map((clientcase) => (
-              <tbody key={clientcase._id}>
+            {arbitratorCaseData
+              .filter((el) => {
+              if (!searchByData) return true;
+              return (
+                el.clientName.toLowerCase().includes(searchByData) ||
+                el.clientEmail.toLowerCase().includes(searchByData) ||
+                el.clientMobile.toLowerCase().includes(searchByData) ||
+                el.respondentName.toLowerCase().includes(searchByData) ||
+                el.respondentEmail.toLowerCase().includes(searchByData) ||
+                el.respondentMobile.toLowerCase().includes(searchByData) ||
+                el.disputeType.toLowerCase().includes(searchByData)
+              );
+            })
+            .map((cases) => (
+              <tbody key={cases._id}>
                 <tr className={styles.trbody}>
-                  <td data-label="Name">{clientcase.clientName}</td>
-                  <td data-label="Email ID">{clientcase.clientEmail}</td>
-                  <td
-                    data-label="File Nmae"
-                    className={styles.number}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/defaulter/${clientcase._id}`)}
-                  >
-                    {clientcase.fileName}
+                  <td data-label="client name">{cases.clientName}</td>
+                  <td data-label="client email" className={styles.clientEmail}>
+                    {cases.clientEmail}
                   </td>
-
-                  <td data-label="No. of assign Case">
-                    {clientcase.uploadDate
-                      .split("T")[0]
-                      .split("-")
-                      .reverse()
-                      .join("-")}
+                  <td data-label="client number">{cases.clientMobile}</td>
+                  <td data-label="respondant name">{cases.respondentName}</td>
+                  <td data-label="respondant email">{cases.respondentEmail}</td>
+                  <td data-label="respondence number">
+                    {cases.respondentMobile}
                   </td>
-
+                  <td data-label="dispute type">{cases.disputeType}</td>
+                  <td data-label="case type">
+                    {cases.isFileUpload ? cases.fileName : "Single Case"}
+                  </td>
+                  <td data-label="attachment">
+                    <div className="flex gap-1">
+                      {cases.attachments.length > 0
+                        ? cases.attachments.map((ele, ind) => {
+                            return (
+                              <Link key={ind} to={ele.url} target="_blank">
+                                <IoMdDownload className="cursor-pointer text-sm" />
+                              </Link>
+                            );
+                          })
+                        : "No attach"}
+                    </div>
+                  </td>
                   <td
                     data-label="Meeting Schedule"
                     style={{
@@ -169,16 +244,22 @@ const ArbitratorCases = () => {
                       cursor: "pointer",
                     }}
                   >
-                    {/* {clientcase?.meetLinks.length>0? "Start meeting" : "Schedule meeting"} */}
-                    {!clientcase.meetLinks.length > 0 ? (
-                      <FcVideoCall
-                        onClick={() => handleMeetingModal(clientcase._id)}
-                      />
-                    ) : (
-                      <FcStart
-                        onClick={() => handleMeeting(clientcase.meetLinks)}
-                      />
-                    )}
+                    {!cases.isMeetCompleted ? (
+                      cases.meetings.length < 1 ? (
+                        <FcVideoCall
+                          onClick={() => handleMeetingModal(cases._id)}
+                        />
+                      ) : convertToDateNow(cases.meetings[cases?.meetings.length - 1].end) >
+                         Date.now() ? (
+                        <FcStart
+                          onClick={() => handleMeeting(cases.meetings[cases?.meetings.length - 1])}
+                        />
+                      ) : (
+                        <FcVideoCall
+                          onClick={() => handleMeetingModal(cases._id)}
+                        />
+                      )
+                    ) : null}
                   </td>
                 </tr>
               </tbody>
@@ -207,7 +288,7 @@ const ArbitratorCases = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </DialogDescription>
-              <DialogDescription className="text-sm text-gray-600">
+              {/* <DialogDescription className="text-sm text-gray-600">
                 <Label className="block text-sm font-medium text-gray-700">
                   Description:
                 </Label>
@@ -217,7 +298,7 @@ const ArbitratorCases = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-              </DialogDescription>
+              </DialogDescription> */}
             </div>
           </DialogHeader>
 
@@ -236,24 +317,32 @@ const ArbitratorCases = () => {
                 showTimeSelect
                 dateFormat="Pp"
                 minDate={new Date()}
-                minTime={new Date().setHours()}
+                minTime={
+                  selectStartDate &&
+                  selectStartDate.toDateString() === new Date().toDateString()
+                    ? new Date()
+                    : new Date().setHours(0, 0)
+                }
+                maxTime={new Date().setHours(23, 59)}
                 customInput={<Input type="datetime" />}
               />
             </div>
 
             {/* End Date Picker */}
-            <div className="flex gap-11 items-center">
+            <div className="flex gap-20 items-center">
               <Label className="text-sm font-medium text-gray-700 my-2">
-                End Date and Time
+                Time Duration
               </Label>
-              <DatePicker
-                selected={selectEndDate}
-                onChange={(date) => setSelectEndDate(date)}
-                showTimeSelect
-                dateFormat="Pp"
-                minDate={selectStartDate || new Date()}
-                customInput={<Input type="datetime" />}
-              />
+              <Select onValueChange={handleDurationChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Duration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="30">30 minutes</SelectItem>
+                  <SelectItem value="45">45 minutes</SelectItem>
+                  <SelectItem value="60">60 minutes</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </DialogHeader>
 

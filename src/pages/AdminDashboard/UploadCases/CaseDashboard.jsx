@@ -2,7 +2,7 @@ import axios from "axios";
 import { FcBusinessman } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import styles from "../ArbitratorDashboard/ArbitratorDashboard.module.css";
-import CreatableSelect from "react-select/creatable";
+import { IoMdDownload } from "react-icons/io";
 import {
   Select,
   SelectContent,
@@ -14,15 +14,12 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { Label } from "@/components/ui/label";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import NoDataFound from "@/components/NoDataFound";
 import {
   Dialog,
@@ -35,19 +32,18 @@ import {
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshers } from "@/global/action";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "@/components/Loading";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup } from "@radix-ui/react-radio-group";
-import { RadioGroupItem } from "@/components/ui/radio-group";
+// import { RadioGroup } from "@radix-ui/react-radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
   const [data, setData] = useState([]);
   const [caseData, setCaseData] = useState([]);
-  const [searchByFileName, setSearchByFileName] = useState("");
-  const [searchByCaseCount, setSearchByCaseCount] = useState("");
   const [filterByBankName, setFilterByBankName] = useState("");
+  // const [searchByFileName, setSearchByFileName] = useState("");
+  const [searchByData, setSearchByData] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -60,13 +56,11 @@ const CaseDashboard = () => {
     arbitratorId: "",
     arbitratorEmail: "",
   });
-  // console.log(selectedOption)
 
   const getData = () => {
     axios
       .get("http://localhost:3000/arbitrator/all")
       .then((res) => {
-        console.log("arb", res.data.user);
         const formattedOptions = res.data.user
           .filter((user) => user.status == true)
           .map((user) => ({
@@ -82,7 +76,6 @@ const CaseDashboard = () => {
           }));
         setData(formattedOptions);
         setOptions(formattedOptions);
-        console.log("dfd", formattedOptions);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -119,7 +112,7 @@ const CaseDashboard = () => {
     let obj = {
       id: appointdata,
       arbitratorName: selectedOption.arbitratorName,
-      arbitratorId: selectedOption.arbitratorId,
+      arbitratorId: selectedOption.arbitrtorid,
       arbitratorEmail: selectedOption.arbitratorEmail,
     };
     setLoading(true);
@@ -142,7 +135,6 @@ const CaseDashboard = () => {
       .get(`http://localhost:3000/cases/all-cases`)
       .then((res) => {
         setCaseData(res.data.cases);
-        console.log("data", res.data.cases);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -167,16 +159,16 @@ const CaseDashboard = () => {
     }
   });
 
-  if (loading) {
-    return <Loading />;
-  }
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="max-w-5xl mx-auto">
       {data.length == 0 ? (
         ""
       ) : (
-        <div className="flex flex-wrap gap-4 justify-between mt-5 mx-5">
+        <div className="flex flex-wrap gap-5 mt-5 mx-5">
           {/* filter by Bank Name */}
           <div className="flex-shrink-0 w-full sm:w-[20%]">
             <Select
@@ -204,55 +196,13 @@ const CaseDashboard = () => {
             </Select>
           </div>
 
-          {/* filter for Date */}
-          <div className="border-0 flex-shrink-0 w-full sm:w-[20%]">
-            <Select id="status" className="w-full">
-              <SelectTrigger className="w-full bg-blue-50">
-                <SelectValue placeholder="Filter By Date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem key="filter" value="filter">
-                    filter
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Search by file name */}
+          {/* Search by  name, email, number of client and respondent*/}
           <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
             <input
               type="text"
-              placeholder="Search Filename"
+              placeholder="Search"
               className="flex-grow outline-none bg-transparent text-sm"
-              onChange={(e) => setSearchByFileName(e.target.value)}
-            />
-            <button className="text-gray-500 hover:text-gray-700">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Search by case count */}
-          <div className="flex flex-shrink-0 items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
-            <input
-              type="text"
-              placeholder="Search Case Count"
-              className="flex-grow outline-none bg-transparent text-sm"
-              onChange={(e) => setSearchByCaseCount(e.target.value)}
+              onChange={(e) => setSearchByData(e.target.value)}
             />
             <button className="text-gray-500 hover:text-gray-700">
               <svg
@@ -275,7 +225,6 @@ const CaseDashboard = () => {
       )}
 
       {/* table data */}
-
       {caseData.length > 0 ? (
         <table cellSpacing="0">
           <thead>
@@ -303,14 +252,19 @@ const CaseDashboard = () => {
                   .includes(filterByBankName.toLowerCase());
               }
             })
-            .filter((file) => {
-              if (!searchByFileName) return true;
-              return file.fileName.toLowerCase().includes(searchByFileName);
+            .filter((el) => {
+              if (!searchByData) return true;
+              return (
+                el.clientName.toLowerCase().includes(searchByData) ||
+                el.clientEmail.toLowerCase().includes(searchByData) ||
+                el.clientMobile.toLowerCase().includes(searchByData) ||
+                el.respondentName.toLowerCase().includes(searchByData) ||
+                el.respondentEmail.toLowerCase().includes(searchByData) ||
+                el.respondentMobile.toLowerCase().includes(searchByData) ||
+                el.disputeType.toLowerCase().includes(searchByData)
+              );
             })
-            .filter((count) => {
-              if (!searchByCaseCount) return true;
-              return count.caseCount.toString().includes(searchByCaseCount);
-            })
+
             .map((cases) => (
               <tbody key={cases._id}>
                 <tr className={styles.trbody}>
@@ -318,35 +272,12 @@ const CaseDashboard = () => {
                   <td
                     data-label="client email"
                     className={styles.clientEmail}
-                    // style={{ cursor: 'pointer' }}
-                    // onClick={() => navigate(`/defaulter/${cases._id}`)}
                   >
                     {cases.clientEmail}
                   </td>
                   <td data-label="client number">{cases.clientMobile}</td>
-                  <td data-label="respondant name">
-                    {/* {cases?.uploadDate
-                      ?.split("T")[0]
-                      .split("-")
-                      .reverse()
-                      .join("-")} */}
-                    {cases.respondentName}
-                  </td>
-                  <td data-label="respondant email">
-                    {/* {cases.arbitrator == "" ? (
-                      <FcBusinessman
-                        style={{
-                          color: "blue",
-                          fontSize: "24px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleUploadFunction(cases._id)}
-                      />
-                    ) : (
-                      cases.arbitrator?.split(" ")[0]
-                    )} */}
-                    {cases.respondentEmail}
-                  </td>
+                  <td data-label="respondant name">{cases.respondentName}</td>
+                  <td data-label="respondant email">{cases.respondentEmail}</td>
                   <td data-label="respondence number">
                     {cases.respondentMobile}
                   </td>
@@ -355,11 +286,17 @@ const CaseDashboard = () => {
                     {cases.isFileUpload ? cases.fileName : "Single Case"}
                   </td>
                   <td data-label="attachment">
-                    {cases.attachments.length > 0
-                      ? cases.attachments.map((ele) => {
-                          return "vv";
-                        })
-                      : "No attach"}
+                    <div className="flex gap-1">
+                      {cases.attachments.length > 0
+                        ? cases.attachments.map((ele, ind) => {
+                            return (
+                              <Link key={ind} to={ele.url} target="_blank">
+                                <IoMdDownload className="cursor-pointer text-sm" />
+                              </Link>
+                            );
+                          })
+                        : "No attach"}
+                    </div>
                   </td>
                   <td data-label="arbitrator">
                     {cases.isArbitratorAssigned ? (
@@ -395,7 +332,6 @@ const CaseDashboard = () => {
           </DialogHeader>
 
           <Table>
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
                 <TableHead>Select</TableHead>
@@ -409,16 +345,17 @@ const CaseDashboard = () => {
             {options.map((el) => (
               <TableBody key={el.arbitrtorid} className="p-[5px]">
                 <TableRow>
-
-                  <RadioGroup>
-                    <div className="space-x-2 my-5 mx-4">
-                      <RadioGroupItem onClick={()=>setSelectedOption(el)} value="option-one" id="option-one" />
-                    </div>
-                  </RadioGroup>
-
                   <TableCell>
-                    {el.arbitratorName}
+                    <RadioGroup className="my-6 mx-1">
+                      <RadioGroupItem
+                        onClick={() => setSelectedOption(el)}
+                        value="option-one"
+                        id="option-one"
+                      />
+                    </RadioGroup>
                   </TableCell>
+
+                  <TableCell>{el.arbitratorName}</TableCell>
                   <TableCell>{el.arbitratorEmail}</TableCell>
                   <TableCell>{el.arbitratorContactNo}</TableCell>
                   <TableCell className="text-right">
@@ -431,39 +368,6 @@ const CaseDashboard = () => {
               </TableBody>
             ))}
           </Table>
-
-          {/* <div className="grid gap-6">
-            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
-              <Label
-                htmlFor="status"
-                className="text-sm font-medium text-gray-700 sm:col-span-1"
-              >
-                Arbitrator
-              </Label>
-              <div className="sm:col-span-3">
-                <CreatableSelect
-                  options={options}
-                  value={selectedOption}
-                  onChange={handleChange}
-                  onInputChange={handleInputChange}
-                  placeholder="Search for an email..."
-                  isSearchable
-                  filterOption={null}
-                  className="text-sm"
-                  isValidNewOption={() => false}
-                  noOptionsMessage={() => "No matching email found"}
-                />
-                {selectedOption && (
-                  <p className="text-sm text-green-600 mt-1">
-                    You selected:
-                    {selectedOption.value}
-                  </p>
-                )}
-                
-              </div>
-            </div>
-          </div> */}
-
           <DialogFooter className="mt-6 flex justify-end">
             <Button
               type="submit"
@@ -471,7 +375,7 @@ const CaseDashboard = () => {
               onClick={handleSelectArbitrator}
               className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
-              Appoint
+              {loading?"Appointing...":"Appoint"}
             </Button>
           </DialogFooter>
         </DialogContent>
