@@ -16,15 +16,20 @@ import {
 import { Label } from "@/components/ui/label";
 import CaseDashboard from "./CaseDashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { refreshers } from "@/global/action";
+import { forgotEmail, refreshers } from "@/global/action";
+import { Input } from "@/components/ui/input";
 
 const Uploadcase = () => {
   let dispatch = useDispatch();
   let refresher = useSelector((state) => state?.refresher);
+  const [disputeType, setDisputeType] = useState("");
   const [formData, setFormData] = useState({
     clientName: "",
     clientId: "",
     clientEmail: "",
+    clientAddress: "",
+    clientMobile: "",
+    disputeType: "",
   });
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
@@ -34,6 +39,7 @@ const Uploadcase = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  console.log(formData);
 
   const handleChange = (newValue) => {
     setSelectedOption(newValue);
@@ -42,6 +48,8 @@ const Uploadcase = () => {
       clientId: newValue.clientId,
       clientName: newValue.clientName,
       clientEmail: newValue.value,
+      clientAddress: newValue.clientAddress,
+      clientMobile: newValue.clientPhone,
     }));
   };
 
@@ -50,34 +58,46 @@ const Uploadcase = () => {
     setIsOpen(true);
   };
 
+  // button upload files in the modal
   const handleUpload = async (e) => {
     e.preventDefault();
+    setFormData((prev) => ({
+      ...prev,
+      disputeType: disputeType,
+    }));
+
+    if (!formData.clientName || !formData.clientId || !formData.clientEmail) {
+      toast.error("Please fill in client details");
+      return;
+    }
+    if (!disputeType) {
+      toast.error("Please fill dispute type");
+      return;
+    }
+
+    // console.log("form", formData);
+    // console.log("object", file.name);
+    // return;
 
     if (!file) {
       toast.error("Please select a file");
       return;
     }
 
-    if (!formData.clientName || !formData.clientId || !formData.clientEmail) {
-      toast.error("Please fill in all client details");
-      return;
-    }
-    console.log("form", formData);
-    console.log("object", file.name);
-
-    return;
-
     const submitData = new FormData();
     submitData.append("excelFile", file);
     submitData.append("clientName", formData.clientName);
     submitData.append("clientId", formData.clientId);
     submitData.append("clientEmail", formData.clientEmail);
+    submitData.append("clientAddress", formData.clientAddress);
+    submitData.append("clientMobile", formData.clientMobile);
     submitData.append("fileName", file.name);
+    submitData.append("disputeType", disputeType);
 
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASEURL}/uploadcasedata`,
+        `${import.meta.env.VITE_API_BASEURL}/cases/bulkupload`,
         {
           method: "POST",
           body: submitData,
@@ -133,6 +153,7 @@ const Uploadcase = () => {
     return `${day} ${monthNames[month]} ${year}`;
   }, []);
 
+  //Get all the client in the modal
   const getData = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
@@ -142,6 +163,8 @@ const Uploadcase = () => {
           label: `${user.contactNo} / ${user.name}`,
           clientId: user._id,
           clientName: user.name,
+          clientAddress: user.address,
+          clientPhone: user.contactNo,
         }));
         setData(formattedOptions);
         setOptions(formattedOptions);
@@ -211,7 +234,10 @@ const Uploadcase = () => {
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
+        <DialogContent
+          className="sm:max-w-[480px] p-6 rounded-lg shadow-lg"
+          style={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
           <DialogHeader className="mb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
               File Details
@@ -231,7 +257,7 @@ const Uploadcase = () => {
                 htmlFor="status"
                 className="text-sm font-medium text-gray-700 sm:col-span-1"
               >
-                Client Email
+                Client Email <span className="text-red-500">*</span>
               </Label>
               <div className="sm:col-span-3">
                 <CreatableSelect
@@ -251,6 +277,23 @@ const Uploadcase = () => {
                     You selected: {selectedOption.label.split("/")[1]}
                   </p>
                 )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+              <Label
+                htmlFor="status"
+                className="text-sm font-medium text-gray-700 sm:col-span-1"
+              >
+                Dispute Type <span className="text-red-500">*</span>
+              </Label>
+              <div className="sm:col-span-3">
+                <Input
+                  type="text"
+                  placeholder="Enter Dispute Type"
+                  value={disputeType}
+                  onChange={(e) => setDisputeType(e.target.value)}
+                />
               </div>
             </div>
 
