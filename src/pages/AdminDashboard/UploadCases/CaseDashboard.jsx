@@ -44,7 +44,7 @@ const CaseDashboard = () => {
   const [filterByBankName, setFilterByBankName] = useState("");
   // const [searchByFileName, setSearchByFileName] = useState("");
   const [searchByData, setSearchByData] = useState("");
-  const [searchArbitrator, setSearchArbitrator]=useState("")
+  const [searchArbitrator, setSearchArbitrator] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -58,9 +58,10 @@ const CaseDashboard = () => {
     arbitratorEmail: "",
   });
 
+  //Get the list of all arbitrator
   const getData = () => {
     axios
-      .get("http://localhost:3000/arbitrator/all")
+      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
       .then((res) => {
         const formattedOptions = res.data.user
           .filter((user) => user.status == true)
@@ -111,7 +112,6 @@ const CaseDashboard = () => {
   //   console.log("formdata", formData);
   // };
 
-
   //To select arbitrator
   const handleSelectArbitrator = () => {
     let obj = {
@@ -122,7 +122,7 @@ const CaseDashboard = () => {
     };
     setLoading(true);
     axios
-      .post("http://localhost:3000/arbitratorappointandnotifyall", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`, obj)
       .then((res) => {
         toast.success("Arbitrator appointed");
         setLoading(false);
@@ -135,9 +135,10 @@ const CaseDashboard = () => {
       });
   };
 
+  //all Case Data
   const allcaseData = () => {
     axios
-      .get(`http://localhost:3000/cases/all-cases`)
+      .get(`${import.meta.env.VITE_API_BASEURL}/cases/all-cases`)
       .then((res) => {
         setCaseData(res.data.cases);
       })
@@ -318,6 +319,7 @@ const CaseDashboard = () => {
         <NoDataFound />
       )}
 
+       {/* all arbitrator in the table */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           className="rounded-lg shadow-lg"
@@ -378,36 +380,42 @@ const CaseDashboard = () => {
                 </TableRow>
               </TableHeader>
               {options
-              .filter((el)=>{
-                if (!searchArbitrator) return true;
-              return (
-                el.arbitratorName.toLowerCase().includes(searchArbitrator) ||
-                el.arbitratorEmail.toLowerCase().includes(searchArbitrator) ||
-                el.arbitratorContactNo.toLowerCase().includes(searchArbitrator)
-              );
-              })
-              .map((el, index) => (
-                <TableBody key={el.arbitrtorid}>
-                  <TableRow>
-                    <TableCell>
-                    <RadioGroupItem
-                        type="radio"
-                        value={el.arbitrtorid}
-                        name="arbitrator"
-                      />
-                    </TableCell>
-                    <TableCell>{el.arbitratorName}</TableCell>
-                    <TableCell>{el.arbitratorEmail}</TableCell>
-                    <TableCell>{el.arbitratorContactNo}</TableCell>
-                    <TableCell className="text-right">
-                      {el.arbitratorExperties}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {el.arbitratorExperience}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ))}
+                .filter((el) => {
+                  if (!searchArbitrator) return true;
+                  return (
+                    el.arbitratorName
+                      .toLowerCase()
+                      .includes(searchArbitrator) ||
+                    el.arbitratorEmail
+                      .toLowerCase()
+                      .includes(searchArbitrator) ||
+                    el.arbitratorContactNo
+                      .toLowerCase()
+                      .includes(searchArbitrator)
+                  );
+                })
+                .map((el, index) => (
+                  <TableBody key={el.arbitrtorid}>
+                    <TableRow>
+                      <TableCell>
+                        <RadioGroupItem
+                          type="radio"
+                          value={el.arbitrtorid}
+                          name="arbitrator"
+                        />
+                      </TableCell>
+                      <TableCell>{el.arbitratorName}</TableCell>
+                      <TableCell>{el.arbitratorEmail}</TableCell>
+                      <TableCell>{el.arbitratorContactNo}</TableCell>
+                      <TableCell className="text-right">
+                        {el.arbitratorExperties}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {el.arbitratorExperience}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                ))}
             </Table>
           </RadioGroup>
 

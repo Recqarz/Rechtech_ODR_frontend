@@ -54,7 +54,7 @@ export const ResetOTP = () => {
     e.preventDefault();
     const otp = otpValues.join("");
     axios
-      .post("http://localhost:3000/resetpassword/verifyotp", {
+      .post(`${import.meta.env.VITE_API_BASEURL}/resetpassword/verifyotp`, {
         otp,
         emailId,
       })

@@ -23,7 +23,7 @@ export const ResetDashboard = () => {
       return;
     }
     axios
-      .post("http://localhost:3000/resetpassword/userexists", {
+      .post(`${import.meta.env.VITE_API_BASEURL}/resetpassword/userexists`, {
         emailId: email,
       })
       .then((res) => {
