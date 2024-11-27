@@ -16,7 +16,7 @@ const AllArbitrator = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3000/arbitrator/all")
+      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
       .then((res) => {
         // console.log(res.data.user);
         setData(res.data.user);

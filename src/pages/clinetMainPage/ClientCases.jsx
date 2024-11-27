@@ -12,7 +12,7 @@ const ClientCases = () => {
 
   const getArbitratorCaseData = () => {
     axios
-      .get("http://localhost:3000/uploadcasedata/clientcases", {
+      .get(`${import.meta.env.VITE_API_BASEURL}/uploadcasedata/clientcases`, {
         headers: {
           token: token,
         },

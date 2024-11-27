@@ -44,7 +44,7 @@ const ClientDashboard = () => {
   const handleClose = () => {
     console.log(editData);
     axios
-      .put(`http://localhost:3000/client/update/${editData._id}`, editData)
+      .put(`${import.meta.env.VITE_API_BASEURL}/client/update/${editData._id}`, editData)
       .then((res) => {
         setIsOpen(false);
         getData();
@@ -74,7 +74,7 @@ const ClientDashboard = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3000/client/all")
+      .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
       .then((res) => {
         console.log(res.data.user);
         setData(res.data.user);

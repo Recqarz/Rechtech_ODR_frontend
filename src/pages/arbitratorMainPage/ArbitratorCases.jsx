@@ -50,7 +50,7 @@ const ArbitratorCases = () => {
 
   const getArbitratorCaseData = () => {
     axios
-      .get("http://localhost:3000/cases/arbitratorcases", {
+      .get(`${import.meta.env.VITE_API_BASEURL}/cases/arbitratorcases`, {
         headers: {
           token: token,
         },
@@ -113,7 +113,7 @@ const ArbitratorCases = () => {
     };
     setLoading(true);
     axios
-      .post("http://localhost:3000/webex/create-meeting", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/webex/create-meeting`, obj)
       .then((res) => {
         toast.success("Meeting Scheduled successfully");
         setTitle("");
@@ -150,7 +150,7 @@ const ArbitratorCases = () => {
 
   function handleMeetComplete(id) {
     axios
-      .put("http://localhost:3000/cases/updatemeetstatus", { id })
+      .put(`${import.meta.env.VITE_API_BASEURL}/cases/updatemeetstatus`, { id })
       .then((res) => {
         toast.success("Case Updated");
         getArbitratorCaseData();

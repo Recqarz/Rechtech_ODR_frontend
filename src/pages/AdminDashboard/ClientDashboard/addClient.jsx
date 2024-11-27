@@ -19,7 +19,7 @@ const AddClient = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/autouid/client")
+      .get(`${import.meta.env.VITE_API_BASEURL}/autouid/client`)
       .then((res) => setFormData({ ...formData, uid: res.data.uid }))
       .catch((err) => toast.error("Something went wrong"));
   }, []);
@@ -67,7 +67,7 @@ const AddClient = () => {
       return;
     }
     axios
-      .post("http://localhost:3000/auth/register", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/auth/register`, obj)
       .then((res) => {
         toast.success("Client added successfully");
         navigate("/clienttable");
