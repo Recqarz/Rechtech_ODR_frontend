@@ -77,7 +77,6 @@ const AddArbitrator = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData.experties);
     const obj = {
       name: formData.name,
       contactNo: formData.contact,
@@ -89,6 +88,8 @@ const AddArbitrator = () => {
       uid: formData.uid,
       address:formData.address
     };
+    // console.log("object", obj.areaOfExperties)
+    // return ;
 
     if (
       !obj.name ||

@@ -5,6 +5,7 @@ import axios from "axios";
 import { FcStart, FcVideoCall } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { CgRecord } from "react-icons/cg";
+import { MdOutlineDone } from "react-icons/md";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +33,8 @@ import NoDataFound from "@/components/NoDataFound";
 import { IoMdDownload } from "react-icons/io";
 
 const ArbitratorCases = () => {
-  const [searchByData, setSearchByData]=useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchByData, setSearchByData] = useState("");
   const navigate = useNavigate();
   const [arbitratorCaseData, setArbitratorCaseData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +80,6 @@ const ArbitratorCases = () => {
     }
     if (isOpen) {
       setSelectStartDate(new Date());
-      // setSelectEndDate(new Date());
     }
   }, [isOpen]);
 
@@ -109,12 +110,11 @@ const ArbitratorCases = () => {
       startTime: startdate,
       endTime: enddate,
     };
-    // return console.log("obj", obj)
+    setLoading(true);
     axios
       .post("http://localhost:3000/webex/create-meeting", obj)
       .then((res) => {
         toast.success("Meeting Scheduled successfully");
-        console.log("dklfj", res);
         setTitle("");
         // setDescription("");
         setSelectStartDate(new Date());
@@ -123,10 +123,11 @@ const ArbitratorCases = () => {
         setTimeout(() => {
           getArbitratorCaseData();
         }, 2000);
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         toast.error("Something went wrong");
+        setLoading(false);
       });
   };
 
@@ -134,48 +135,57 @@ const ArbitratorCases = () => {
     window.open(meet.webLink, "_blank");
   }
 
-  const handleDurationChange = (value) => {  
-    const minutes = parseInt(value,10);  
-    console.log("minutes:", minutes);  
-    console.log("start:", selectStartDate);  
-    const endDate = new Date(selectStartDate.getTime());  
-    endDate.setMinutes(endDate.getMinutes() + minutes);   
-    setSelectEndDate(endDate);  
-  };  
+  const handleDurationChange = (value) => {
+    const minutes = parseInt(value, 10);
+    console.log("minutes:", minutes);
+    console.log("start:", selectStartDate);
+    const endDate = new Date(selectStartDate.getTime());
+    endDate.setMinutes(endDate.getMinutes() + minutes);
+    setSelectEndDate(endDate);
+  };
   useEffect(() => {
     console.log("End Date updated:", selectEndDate);
   }, [selectEndDate]);
 
+  function handleMeetComplete(id) {
+    axios
+      .put("http://localhost:3000/cases/updatemeetstatus", { id })
+      .then((res) => {
+        toast.success("Case Updated");
+        getArbitratorCaseData();
+      })
+      .catch((err) => {
+        toast.error("Error in updating case");
+      });
+  }
+
   return (
     <div>
       <div className="w-[100%] mx-auto mt-2 px-2">
-
-
-      <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
-            <input
-              type="text"
-              placeholder="Search"
-              className="flex-grow outline-none bg-transparent text-sm"
-              onChange={(e) => setSearchByData(e.target.value)}
-            />
-            <button className="text-gray-500 hover:text-gray-700">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-
+        <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
+          <input
+            type="text"
+            placeholder="Search"
+            className="flex-grow outline-none bg-transparent text-sm"
+            onChange={(e) => setSearchByData(e.target.value)}
+          />
+          <button className="text-gray-500 hover:text-gray-700">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+        </div>
 
         {arbitratorCaseData.length > 0 ? (
           <table cellSpacing="0">
@@ -195,75 +205,101 @@ const ArbitratorCases = () => {
             </thead>
             {arbitratorCaseData
               .filter((el) => {
-              if (!searchByData) return true;
-              return (
-                el.clientName.toLowerCase().includes(searchByData) ||
-                el.clientEmail.toLowerCase().includes(searchByData) ||
-                el.clientMobile.toLowerCase().includes(searchByData) ||
-                el.respondentName.toLowerCase().includes(searchByData) ||
-                el.respondentEmail.toLowerCase().includes(searchByData) ||
-                el.respondentMobile.toLowerCase().includes(searchByData) ||
-                el.disputeType.toLowerCase().includes(searchByData)
-              );
-            })
-            .map((cases) => (
-              <tbody key={cases._id}>
-                <tr className={styles.trbody}>
-                  <td data-label="client name">{cases.clientName}</td>
-                  <td data-label="client email" className={styles.clientEmail}>
-                    {cases.clientEmail}
-                  </td>
-                  <td data-label="client number">{cases.clientMobile}</td>
-                  <td data-label="respondant name">{cases.respondentName}</td>
-                  <td data-label="respondant email">{cases.respondentEmail}</td>
-                  <td data-label="respondence number">
-                    {cases.respondentMobile}
-                  </td>
-                  <td data-label="dispute type">{cases.disputeType}</td>
-                  <td data-label="case type">
-                    {cases.isFileUpload ? cases.fileName : "Single Case"}
-                  </td>
-                  <td data-label="attachment">
-                    <div className="flex gap-1">
-                      {cases.attachments.length > 0
-                        ? cases.attachments.map((ele, ind) => {
-                            return (
-                              <Link key={ind} to={ele.url} target="_blank">
-                                <IoMdDownload className="cursor-pointer text-sm" />
-                              </Link>
-                            );
-                          })
-                        : "No attach"}
-                    </div>
-                  </td>
-                  <td
-                    data-label="Meeting Schedule"
-                    style={{
-                      color: "blue",
-                      fontSize: "24px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {!cases.isMeetCompleted ? (
-                      cases.meetings.length < 1 ? (
-                        <FcVideoCall
-                          onClick={() => handleMeetingModal(cases._id)}
-                        />
-                      ) : convertToDateNow(cases.meetings[cases?.meetings.length - 1].end) >
-                         Date.now() ? (
-                        <FcStart
-                          onClick={() => handleMeeting(cases.meetings[cases?.meetings.length - 1])}
-                        />
-                      ) : (
-                        <FcVideoCall
-                          onClick={() => handleMeetingModal(cases._id)}
-                        />
-                      )
-                    ) : null}
-                  </td>
-                </tr>
-              </tbody>
-            ))}
+                if (!searchByData) return true;
+                return (
+                  el.clientName.toLowerCase().includes(searchByData) ||
+                  el.clientEmail.toLowerCase().includes(searchByData) ||
+                  el.clientMobile.toLowerCase().includes(searchByData) ||
+                  el.respondentName.toLowerCase().includes(searchByData) ||
+                  el.respondentEmail.toLowerCase().includes(searchByData) ||
+                  el.respondentMobile.toLowerCase().includes(searchByData) ||
+                  el.disputeType.toLowerCase().includes(searchByData)
+                );
+              })
+              .map((cases) => (
+                <tbody key={cases._id}>
+                  <tr className={styles.trbody}>
+                    <td data-label="client name">{cases.clientName}</td>
+                    <td
+                      data-label="client email"
+                      className={styles.clientEmail}
+                    >
+                      {cases.clientEmail}
+                    </td>
+                    <td data-label="client number">{cases.clientMobile}</td>
+                    <td data-label="respondant name">{cases.respondentName}</td>
+                    <td data-label="respondant email">
+                      {cases.respondentEmail}
+                    </td>
+                    <td data-label="respondence number">
+                      {cases.respondentMobile}
+                    </td>
+                    <td data-label="dispute type">{cases.disputeType}</td>
+                    <td data-label="case type">
+                      {cases.isFileUpload ? cases.fileName : "Single Case"}
+                    </td>
+                    <td data-label="attachment">
+                      <div className="flex gap-1">
+                        {cases.attachments.length > 0
+                          ? cases.attachments.map((ele, ind) => {
+                              return (
+                                <Link key={ind} to={ele.url} target="_blank">
+                                  <IoMdDownload className="cursor-pointer text-sm" />
+                                </Link>
+                              );
+                            })
+                          : "No attach"}
+                      </div>
+                    </td>
+                    <td
+                      data-label="Meeting Schedule"
+                      style={{
+                        color: "blue",
+                        fontSize: "24px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {!cases.isMeetCompleted ? (
+                        cases.meetings.length < 1 ? (
+                          <FcVideoCall
+                            onClick={() => handleMeetingModal(cases._id)}
+                          />
+                        ) : convertToDateNow(
+                            cases.meetings[cases?.meetings.length - 1].end
+                          ) > Date.now() ? (
+                          <div className="flex gap-1">
+                            <FcStart
+                              onClick={() =>
+                                handleMeeting(
+                                  cases.meetings[cases?.meetings.length - 1]
+                                )
+                              }
+                            />
+                            <MdOutlineDone
+                              onClick={() => handleMeetComplete(cases._id)}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex gap-1">
+                            <FcVideoCall
+                              onClick={() => handleMeetingModal(cases._id)}
+                            />
+                            <p>generate order</p>
+                            <MdOutlineDone
+                              onClick={() => handleMeetComplete(cases._id)}
+                            />
+                          </div>
+                        )
+                      ) : null}
+                      {/* {cases.isMeetCompleted ? 
+                      <>
+
+                      </>
+                      } */}
+                    </td>
+                  </tr>
+                </tbody>
+              ))}
           </table>
         ) : (
           <NoDataFound />
@@ -349,10 +385,11 @@ const ArbitratorCases = () => {
           <DialogFooter className="mt-6 flex justify-end">
             <Button
               type="submit"
+              disabled={loading}
               className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
               onClick={handleScheduleFunc}
             >
-              Schedule
+              {loading ? "Scheduling..." : "Schedule"}
             </Button>
           </DialogFooter>
         </DialogContent>
