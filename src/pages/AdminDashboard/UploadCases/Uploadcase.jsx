@@ -19,145 +19,149 @@ import { useDispatch, useSelector } from "react-redux";
 import { refreshers } from "@/global/action";
 
 const Uploadcase = () => {
-  // let dispatch = useDispatch();
-  // let refresher = useSelector((state) => state?.refresher);
-  // const [formData, setFormData] = useState({
-  //   clientName: "",
-  //   clientId: "",
-  //   clientEmail: "",
-  // });
-  // const [file, setFile] = useState(null);
-  // const [message, setMessage] = useState("");
-  // const [loading, setLoading] = useState(false);
+  let dispatch = useDispatch();
+  let refresher = useSelector((state) => state?.refresher);
+  const [formData, setFormData] = useState({
+    clientName: "",
+    clientId: "",
+    clientEmail: "",
+  });
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // const [data, setData] = useState([]);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [options, setOptions] = useState([]);
-  // const [selectedOption, setSelectedOption] = useState(null);
+  const [data, setData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  // const handleChange = (newValue) => {
-  //   setSelectedOption(newValue);
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     clientId: newValue.clientId,
-  //     clientName: newValue.clientName,
-  //     clientEmail: newValue.value,
-  //   }));
-  // };
+  const handleChange = (newValue) => {
+    setSelectedOption(newValue);
+    setFormData((prev) => ({
+      ...prev,
+      clientId: newValue.clientId,
+      clientName: newValue.clientName,
+      clientEmail: newValue.value,
+    }));
+  };
 
-  // const handleUploadFunction = () => {
-  //   setSelectedOption(null);
-  //   setIsOpen(true);
-  // };
+  const handleUploadFunction = () => {
+    setSelectedOption(null);
+    setIsOpen(true);
+  };
 
-  // const handleUpload = async (e) => {
-  //   e.preventDefault();
+  const handleUpload = async (e) => {
+    e.preventDefault();
 
-  //   if (!file) {
-  //     toast.error("Please select a file");
-  //     return;
-  //   }
+    if (!file) {
+      toast.error("Please select a file");
+      return;
+    }
 
-  //   if (!formData.clientName || !formData.clientId || !formData.clientEmail) {
-  //     toast.error("Please fill in all client details");
-  //     return;
-  //   }
+    if (!formData.clientName || !formData.clientId || !formData.clientEmail) {
+      toast.error("Please fill in all client details");
+      return;
+    }
+    console.log("form", formData)
+    console.log("object", file.name)
 
-  //   const submitData = new FormData();
-  //   submitData.append("excelFile", file);
-  //   submitData.append("clientName", formData.clientName);
-  //   submitData.append("clientId", formData.clientId);
-  //   submitData.append("clientEmail", formData.clientEmail);
-  //   submitData.append("fileName", file.name);
+    return;
 
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch("http://localhost:3000/uploadcasedata", {
-  //       method: "POST",
-  //       body: submitData,
-  //     });
+    const submitData = new FormData();
+    submitData.append("excelFile", file);
+    submitData.append("clientName", formData.clientName);
+    submitData.append("clientId", formData.clientId);
+    submitData.append("clientEmail", formData.clientEmail);
+    submitData.append("fileName", file.name);
 
-  //     const data = await response.json();
+    try {
+      setLoading(true);
+      const response = await fetch(`${import.meta.env.VITE_API_BASEURL}/uploadcasedata`, {
+        method: "POST",
+        body: submitData,
+      });
 
-  //     if (!response.ok) {
-  //       throw new Error(data.message || "Upload failed");
-  //     }
+      const data = await response.json();
 
-  //     setMessage(data.message);
-  //     toast.success("File uploaded successfully");
-  //     setSelectedOption(null);
-  //     dispatch(refreshers(!refresher));
-  //     setFormData({
-  //       clientName: "",
-  //       clientId: "",
-  //       clientEmail: "",
-  //     });
-  //     setFile(null);
-  //     const fileInput = document.querySelector('input[type="file"]');
-  //     if (fileInput) fileInput.value = "";
-  //     setIsOpen(false);
-  //   } catch (error) {
-  //     setMessage("Error uploading file");
-  //     toast.error("Error uploading file");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (!response.ok) {
+        throw new Error(data.message || "Upload failed");
+      }
 
-  // const formattedDate = useMemo(() => {
-  //   const now = new Date();
-  //   const day = now.getDate();
-  //   const month = now.getMonth();
-  //   const year = now.getFullYear();
-  //   const monthNames = [
-  //     "January",
-  //     "February",
-  //     "March",
-  //     "April",
-  //     "May",
-  //     "June",
-  //     "July",
-  //     "August",
-  //     "September",
-  //     "October",
-  //     "November",
-  //     "December",
-  //   ];
-  //   return `${day} ${monthNames[month]} ${year}`;
-  // }, []);
+      setMessage(data.message);
+      toast.success("File uploaded successfully");
+      setSelectedOption(null);
+      dispatch(refreshers(!refresher));
+      setFormData({
+        clientName: "",
+        clientId: "",
+        clientEmail: "",
+      });
+      setFile(null);
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+      setIsOpen(false);
+    } catch (error) {
+      setMessage("Error uploading file");
+      toast.error("Error uploading file");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // const getData = () => {
-  //   axios
-  //     .get("http://localhost:3000/client/all")
-  //     .then((res) => {
-  //       const formattedOptions = res.data.user.map((user) => ({
-  //         value: user.emailId,
-  //         label: `${user.contactNo} / ${user.name}`,
-  //         clientId: user.uid,
-  //         clientName: user.name,
-  //       }));
-  //       setData(formattedOptions);
-  //       setOptions(formattedOptions);
-  //     })
-  //     .catch((err) => {
-  //       toast.error("Failed to fetch client data");
-  //     });
-  // };
+  const formattedDate = useMemo(() => {
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return `${day} ${monthNames[month]} ${year}`;
+  }, []);
 
-  // const filterOptions = (inputValue) => {
-  //   return data.filter((option) =>
-  //     option.label.toLowerCase().includes(inputValue.toLowerCase())
-  //   );
-  // };
+  const getData = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
+      .then((res) => {
+        const formattedOptions = res.data.user.map((user) => ({
+          value: user.emailId,
+          label: `${user.contactNo} / ${user.name}`,
+          clientId: user._id,
+          clientName: user.name,
+        }));
+        setData(formattedOptions);
+        setOptions(formattedOptions);
+      })
+      .catch((err) => {
+        toast.error("Failed to fetch client data");
+      });
+  };
 
-  // const handleInputChange = (inputValue) => {
-  //   const filteredOptions = filterOptions(inputValue);
-  //   setOptions(filteredOptions);
-  // };
+  const filterOptions = (inputValue) => {
+    return data.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+  };
 
-  // useEffect(() => {
-  //   getData();
-  // }, []);
+  const handleInputChange = (inputValue) => {
+    const filteredOptions = filterOptions(inputValue);
+    setOptions(filteredOptions);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-3">
@@ -176,38 +180,35 @@ const Uploadcase = () => {
         </div>
       </div>
 
-      {/* Upload one case details in the forms */}
 
-      <div className="flex justify-end mr-2">
-        <div className="block border-2 border-dashed w-[50%] md:w-[30%] lg:w-[20%] mt-5">
-          <h1 className="text-center mt-1">Fill The Details Via Form</h1>
-          <div className="text-center p-4">
-          <Link to="/admin/cases/add">
-            <button className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white">
-              Add Case
-            </button>
-          </Link>
-          </div>
-        </div>
-      </div>
+      <div className="flex justify-end gap-5 p-4">  
+  {/* Upload one case details in the forms */}  
+  <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">  
+    <h1 className="text-center mt-1">Fill The Details Via Form</h1>  
+    <div className="text-center p-4">  
+      <Link to="/admin/cases/add">  
+        <button className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white">  
+          Add Case  
+        </button>  
+      </Link>  
+    </div>  
+  </div>  
 
-      {/* Upload Case Details in file */}
+  {/* Upload Case Details in file */}  
+  <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">  
+    <h1 className="text-center mt-1">Upload Bulk Case</h1>  
+    <div className="text-center p-4">  
+      <button  
+        className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white"  
+        onClick={handleUploadFunction}  
+      >  
+        File Upload  
+      </button>  
+    </div>  
+  </div>  
+</div>  
 
-      {/* <div className="flex justify-end mr-2">
-        <div className="block border-2 border-dashed w-[50%] md:w-[30%] lg:w-[20%] mt-5">
-          <h1 className="text-center mt-1">Upload Case Details</h1>
-          <div className="text-center p-4">
-            <button
-              className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white"
-              onClick={handleUploadFunction}
-            >
-              File Upload
-            </button>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
           <DialogHeader className="mb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
@@ -306,7 +307,7 @@ const Uploadcase = () => {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
       <CaseDashboard />
     </div>

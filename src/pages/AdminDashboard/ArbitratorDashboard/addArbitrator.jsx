@@ -23,13 +23,13 @@ const AddArbitrator = () => {
   useEffect(() => {
     // Fetch UID
     axios
-      .get("http://localhost:3000/autouid/arbitrator")
+      .get(`${import.meta.env.VITE_API_BASEURL}/autouid/arbitrator`)
       .then((res) => setFormData({ ...formData, uid: res.data.uid }))
       .catch(() => toast.error("Something went wrong"));
 
     // Fetch expertise suggestions
     axios
-      .get("http://localhost:3000/experties")
+      .get(`${import.meta.env.VITE_API_BASEURL}/experties`)
       .then((res) => {
         let properties = res.data.experties.map((ele) => {
           let name = ele.name;
@@ -112,7 +112,7 @@ const AddArbitrator = () => {
     }
 
     axios
-      .post("http://localhost:3000/auth/register", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/auth/register`, obj)
       .then(() => {
         toast.success("Arbitrator added successfully");
         setFormData({

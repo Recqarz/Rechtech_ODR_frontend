@@ -27,7 +27,7 @@ const AddCaseViaForm = () => {
   ]);
   const getfetchData = () => {
     axios
-      .get("http://localhost:3000/client/all")
+      .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
       .then((res) => {
         let resndata = res.data.user
           .filter((el) => {
@@ -47,7 +47,7 @@ const AddCaseViaForm = () => {
       });
   };
   const fetchCaseId = () => {
-    axios.get("http://localhost:3000/cases/auto-caseid").then((res) => {
+    axios.get(`${import.meta.env.VITE_API_BASEURL}/cases/auto-caseid`).then((res) => {
       setFormData((prevState) => ({
         ...prevState,
         caseId: res.data.data,
@@ -161,7 +161,7 @@ const AddCaseViaForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/cases/addcase",
+        `${import.meta.env.VITE_API_BASEURL}/cases/addcase`,
         formDataToSend,
         {
           headers: {

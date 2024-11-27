@@ -17,7 +17,7 @@ export const Login = () => {
       password: e.target[1].value,
     };
     axios
-      .post("http://localhost:3000/auth/login", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/auth/login`, obj)
       .then((res) => {
         localStorage.setItem("rechtechtoken", JSON.stringify(res.data.token));
         toast.success("Login successful");

@@ -88,7 +88,7 @@ export const SetPassword = () => {
       };
 
       axios
-        .put("http://localhost:3000/resetpassword/updatepassword", obj)
+        .put(`${import.meta.env.VITE_API_BASEURL}/resetpassword/updatepassword`, obj)
         .then((res) => {
           dispatch(forgotEmail(""));
           navigate("/");

@@ -10,7 +10,7 @@ const Webex = () => {
 
     if (code) {
       axios
-        .post("http://localhost:3000/webex/initialize-token", { code })
+        .post(`${import.meta.env.VITE_API_BASEURL}/webex/initialize-token`, { code })
         .then((response) => {
           toast.success("Token generated successfully");
         })

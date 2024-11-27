@@ -48,7 +48,7 @@ const ArbitratorDashboard = () => {
   const handleClose = () => {
     console.log(editData);
     axios
-      .put(`http://localhost:3000/arbitrator/update/${editData._id}`, editData)
+      .put(`${import.meta.env.VITE_API_BASEURL}/arbitrator/update/${editData._id}`, editData)
       .then((res) => {
         setIsOpen(false);
         getData();
@@ -74,7 +74,7 @@ const ArbitratorDashboard = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3000/arbitrator/all")
+      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
       .then((res) => {
         console.log(res.data.user);
         setData(res.data.user);
