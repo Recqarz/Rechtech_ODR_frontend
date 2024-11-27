@@ -6,6 +6,7 @@ import { FcStart, FcVideoCall } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { CgRecord } from "react-icons/cg";
 import { MdOutlineDone } from "react-icons/md";
+import { SiGoogleforms } from "react-icons/si";
 import {
   Dialog,
   DialogContent,
@@ -280,11 +281,11 @@ const ArbitratorCases = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 justify-center items-center">
                             <FcVideoCall
                               onClick={() => handleMeetingModal(cases._id)}
                             />
-                            <p>generate order</p>
+                            <SiGoogleforms className="text-[16px]" />
                             <MdOutlineDone
                               onClick={() => handleMeetComplete(cases._id)}
                             />
