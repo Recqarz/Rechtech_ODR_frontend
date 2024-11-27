@@ -36,13 +36,25 @@ import { Link, useNavigate } from "react-router-dom";
 import Loading from "@/components/Loading";
 // import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import CreatableSelect from "react-select/creatable";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
   const [data, setData] = useState([]);
   const [caseData, setCaseData] = useState([]);
-  const [filterByBankName, setFilterByBankName] = useState("");
-  // const [searchByFileName, setSearchByFileName] = useState("");
+
+  const [
+    selectArbitratorForMultipleClient,
+    setSelectArbitratorForMultipleClient,
+  ] = useState([]);
+  const [isClickedForMultiple, setIsClickedForMultiple] = useState(false);
+  const [selectAllboolean, setSelectAllboolean]=useState(false);
+
+  // const [filterByBankName, setFilterByBankName] = useState("");
+  const [searchByFileName, setSearchByFileName] = useState("");
+  console.log("s", searchByFileName);
   const [searchByData, setSearchByData] = useState("");
   const [searchArbitrator, setSearchArbitrator] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +63,7 @@ const CaseDashboard = () => {
   const [appointdata, setAppointdata] = useState("");
   const [loading, setLoading] = useState(false);
   let dispatch = useDispatch();
+
   let navigate = useNavigate();
   const [formData, setFormData] = useState({
     arbitrator: "",
@@ -78,8 +91,8 @@ const CaseDashboard = () => {
           }));
         setData(formattedOptions);
         setOptions(formattedOptions);
-        console.log("options", options);
-        console.log("formattedOptions", formattedOptions);
+        // console.log("options", options);
+        // console.log("formattedOptions", formattedOptions);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -98,7 +111,7 @@ const CaseDashboard = () => {
 
   // const handleInputChange = (inputValue) => {
   //   const filteredOptions = filterOptions(inputValue);
-  //   setOptions(filteredOptions);
+  //   setData(filteredOptions);
   // };
 
   // const handleChange = (newValue) => {
@@ -122,7 +135,10 @@ const CaseDashboard = () => {
     };
     setLoading(true);
     axios
-      .post(`${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`, obj)
+      .post(
+        `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`,
+        obj
+      )
       .then((res) => {
         toast.success("Arbitrator appointed");
         setLoading(false);
@@ -156,12 +172,12 @@ const CaseDashboard = () => {
     setAppointdata(value);
   };
 
-  const uniqueNames = [];
-  const seenNames = new Set();
+  const uniqueFileName = [];
+  const seeFileName = new Set();
   caseData.forEach((item) => {
-    if (!seenNames.has(item.clientName)) {
-      seenNames.add(item.clientName);
-      uniqueNames.push(item); // Add unique item to the array
+    if (!seeFileName.has(item.searchByFileName)) {
+      seeFileName.add(item.searchByFileName);
+      uniqueFileName.push(item);
     }
   });
 
@@ -172,27 +188,32 @@ const CaseDashboard = () => {
       ) : (
         <div className="flex flex-wrap gap-5 mt-5 mx-5">
           {/* filter by Bank Name */}
-          <div className="flex-shrink-0 w-full sm:w-[20%]">
+          <div className="flex-shrink-0 w-full sm:w-[20%] bg-blue-50">
             <Select
-              id="bank-name"
+              id="name"
               className="w-full"
-              onValueChange={(e) => {
-                setFilterByBankName(e);
-              }}
+              onValueChange={(e) => setSearchByFileName(e)}
             >
               <SelectTrigger className="w-full bg-blue-50">
-                <SelectValue placeholder="Bank Name" />
+                <SelectValue placeholder="File Name" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem key="all" value="all">
                     All
                   </SelectItem>
-                  {uniqueNames.map((item) => (
-                    <SelectItem key={item._id} value={item.clientName}>
-                      {item.clientName}
-                    </SelectItem>
-                  ))}
+                  <SelectItem key="Single Case" value="singlecase">
+                    Single Case
+                  </SelectItem>
+                  {uniqueFileName?.map((item) => {
+                    if (item.isFileUpload) {
+                      return (
+                        <SelectItem key={item._id} value={item.fileName}>
+                          {item.fileName}
+                        </SelectItem>
+                      );
+                    }
+                  })}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -223,6 +244,16 @@ const CaseDashboard = () => {
               </svg>
             </button>
           </div>
+
+          <div className="flex gap-2 items-center ml-10">
+            <Checkbox onClick={() => setIsClickedForMultiple(!isClickedForMultiple)} />
+            <p>Select Multiple</p>
+          </div>
+
+          {isClickedForMultiple?<div className="flex gap-2 items-center ml-5">
+            <Checkbox onClick={() => setSelectAllboolean(!selectAllboolean)} />
+            <p>Select All</p>
+          </div>:null}
         </div>
       )}
 
@@ -231,11 +262,12 @@ const CaseDashboard = () => {
         <table cellSpacing="0">
           <thead>
             <tr>
-              <th>Client Name</th>
-              <th>Client Email</th>
-              <th>Client No.</th>
+              <th>{isClickedForMultiple ? "Select" : null}</th>
+              <th>Claiment Name</th>
+              {/* <th>Claiment Email</th> */}
+              <th>Claiment No.</th>
               <th>Res. Name</th>
-              <th>Res. Email</th>
+              {/* <th>Res. Email</th> */}
               <th>Res. No.</th>
               <th>Type</th>
               <th>File</th>
@@ -244,15 +276,13 @@ const CaseDashboard = () => {
             </tr>
           </thead>
           {caseData
-            .filter((name) => {
-              if (!filterByBankName) return true;
-              if (filterByBankName == "all") {
-                return name;
-              } else {
-                return name.clientName
-                  .toLowerCase()
-                  .includes(filterByBankName.toLowerCase());
-              }
+            .filter((file) => {
+              if (!searchByFileName || searchByFileName === "all") return true;
+              else if (searchByFileName === "singlecase")
+                return file.fileName == "";
+              return file.fileName
+                ?.toLowerCase()
+                .includes(searchByFileName.toLowerCase());
             })
             .filter((el) => {
               if (!searchByData) return true;
@@ -270,13 +300,23 @@ const CaseDashboard = () => {
             .map((cases) => (
               <tbody key={cases._id}>
                 <tr className={styles.trbody}>
-                  <td data-label="client name">{cases.clientName}</td>
-                  <td data-label="client email" className={styles.clientEmail}>
-                    {cases.clientEmail}
+                  <td data-label="checkbox">
+                    {isClickedForMultiple || selectAllboolean? (
+                      <Input
+                        type="checkbox"
+                        checked={selectAllboolean}
+                        // checked={selectAllboolean}
+                        className="checkbox-small w-[12px] h-[12px]"
+                      />
+                    ) : null}
                   </td>
+                  <td data-label="client name">{cases.clientName}</td>
+                  {/* <td data-label="client email" className={styles.clientEmail}>
+                    {cases.clientEmail}
+                  </td> */}
                   <td data-label="client number">{cases.clientMobile}</td>
                   <td data-label="respondant name">{cases.respondentName}</td>
-                  <td data-label="respondant email">{cases.respondentEmail}</td>
+                  {/* <td data-label="respondant email">{cases.respondentEmail}</td> */}
                   <td data-label="respondence number">
                     {cases.respondentMobile}
                   </td>
@@ -319,7 +359,7 @@ const CaseDashboard = () => {
         <NoDataFound />
       )}
 
-       {/* all arbitrator in the table */}
+      {/* all arbitrator in the table */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           className="rounded-lg shadow-lg"
