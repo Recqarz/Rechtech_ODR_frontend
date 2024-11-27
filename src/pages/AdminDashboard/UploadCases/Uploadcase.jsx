@@ -62,8 +62,8 @@ const Uploadcase = () => {
       toast.error("Please fill in all client details");
       return;
     }
-    console.log("form", formData)
-    console.log("object", file.name)
+    console.log("form", formData);
+    console.log("object", file.name);
 
     return;
 
@@ -76,10 +76,13 @@ const Uploadcase = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASEURL}/uploadcasedata`, {
-        method: "POST",
-        body: submitData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASEURL}/uploadcasedata`,
+        {
+          method: "POST",
+          body: submitData,
+        }
+      );
 
       const data = await response.json();
 
@@ -180,33 +183,32 @@ const Uploadcase = () => {
         </div>
       </div>
 
+      <div className="flex justify-end gap-5 p-4">
+        {/* Upload one case details in the forms */}
+        <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">
+          <h1 className="text-center mt-1">Fill The Details Via Form</h1>
+          <div className="text-center p-4">
+            <Link to="/admin/cases/add">
+              <button className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white">
+                Add Case
+              </button>
+            </Link>
+          </div>
+        </div>
 
-      <div className="flex justify-end gap-5 p-4">  
-  {/* Upload one case details in the forms */}  
-  <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">  
-    <h1 className="text-center mt-1">Fill The Details Via Form</h1>  
-    <div className="text-center p-4">  
-      <Link to="/admin/cases/add">  
-        <button className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white">  
-          Add Case  
-        </button>  
-      </Link>  
-    </div>  
-  </div>  
-
-  {/* Upload Case Details in file */}  
-  <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">  
-    <h1 className="text-center mt-1">Upload Bulk Case</h1>  
-    <div className="text-center p-4">  
-      <button  
-        className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white"  
-        onClick={handleUploadFunction}  
-      >  
-        File Upload  
-      </button>  
-    </div>  
-  </div>  
-</div>  
+        {/* Upload Case Details in file */}
+        <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">
+          <h1 className="text-center mt-1">Upload Case Via File</h1>
+          <div className="text-center p-4">
+            <button
+              className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white"
+              onClick={handleUploadFunction}
+            >
+              File Upload
+            </button>
+          </div>
+        </div>
+      </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">

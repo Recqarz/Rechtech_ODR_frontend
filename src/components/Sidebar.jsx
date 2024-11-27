@@ -4,9 +4,11 @@ import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUpdater, updateRole } from "@/global/action";
 
 const Sidebar = () => {
+  let dispatch = useDispatch()
   const [isUsersOpen, setIsUsersOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -22,10 +24,12 @@ const Sidebar = () => {
   };
 
 const handleLogoutFunc=()=>{
-  console.log("logout");
+  // console.log("logout");
   localStorage.removeItem("rechtechrole");
   localStorage.removeItem("rechtechtoken");
-  localStorage.removeItem("token");
+  dispatch(loginUpdater(false))
+  dispatch(updateRole(""))
+  // localStorage.removeItem("token");
   navigate("/");
 }
 

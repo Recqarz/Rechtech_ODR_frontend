@@ -1,4 +1,4 @@
-import { updateRole } from "@/global/action";
+import { loginUpdater, updateRole } from "@/global/action";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -23,6 +23,7 @@ export const Login = () => {
         toast.success("Login successful");
         dispatch(updateRole(res.data.role));
         localStorage.setItem("rechtechrole", JSON.stringify(res.data.role));
+        dispatch(loginUpdater(true))
         navigate(`/${res.data.role}`);
       })
       .catch((err) => {
