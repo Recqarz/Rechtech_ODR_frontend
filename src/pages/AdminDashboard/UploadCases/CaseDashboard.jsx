@@ -207,6 +207,17 @@ const CaseDashboard = () => {
   };
   console.log("caseid", caseId);
 
+
+const alertForArbitratorSelect=()=>{
+  if(caseId.length==0){
+    toast.error("Please select at least one of the case!");
+  }else{
+    toast.error("Assign the arbitrator from the top!")
+  }
+}
+
+
+
   return (
     <div className="max-w-5xl mx-auto">
       {data.length === 0 ? (
@@ -392,7 +403,7 @@ const CaseDashboard = () => {
                           }}
                           onClick={() =>
                             isClickedForMultiple
-                              ? null
+                              ? alertForArbitratorSelect()
                               : handleUploadFunction(cases._id)
                           }
                         />
