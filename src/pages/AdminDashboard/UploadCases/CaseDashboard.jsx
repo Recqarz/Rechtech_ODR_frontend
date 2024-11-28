@@ -112,14 +112,12 @@ const CaseDashboard = () => {
         });
     } else {
       let obj = {
-        id: caseId,
+        data: caseId,
         arbitratorName: selectedOption.arbitratorName,
         arbitratorId: selectedOption.arbitrtorid,
         arbitratorEmail: selectedOption.arbitratorEmail,
       };
       setLoading(true);
-      console.log(obj);
-      return;
       axios
         .post(
           `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall/bulk`,
@@ -174,7 +172,7 @@ const CaseDashboard = () => {
     }
   });
 
-  // Modified function to handle individual case selection
+  //function to handle individual case selection
   const handleSelectMultipleClientForArbitrator = (id) => {
     setCaseId((prevIds) =>
       prevIds.includes(id)
@@ -183,7 +181,7 @@ const CaseDashboard = () => {
     );
   };
 
-  // Modified function to handle select all functionality
+  //function to handle select all functionality
   const handleAllClientForArbitrator = () => {
     // Toggle the select all status
     const newSelectAllStatus = !selectAllClientStatus;
@@ -221,25 +219,26 @@ const CaseDashboard = () => {
       setCaseId([]);
     }
   };
-  console.log("caseid", caseId);
 
+  const handleDownloadAll = (links) => {
+    links.forEach((link) => {
+      const anchor = document.createElement('a');
+      anchor.href = link.url;
+      anchor.target = "_blank";
+      anchor.download = ''; // Provide a filename if needed
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  };
 
-
-  //error for the multiple client arbitrator
-  // const alertForArbitratorSelect = () => {
-  //   if (caseId.length == 0) {
-  //     toast.error("Please select at least one of the case!");
-  //   } else {
-  //     toast.error("Assign the arbitrator from the top!");
-  //   }
-  // };
 
   return (
     <div className="max-w-5xl mx-auto">
       {data.length === 0 ? (
         ""
       ) : (
-        <div className="flex flex-wrap gap-5 mt-5 mx-5">
+        <div className="flex flex-wrap gap-2 mt-5 mx-5">
           <div className="flex-shrink-0 w-full sm:w-[20%] bg-blue-50">
             <Select
               id="name"
@@ -296,7 +295,44 @@ const CaseDashboard = () => {
             </button>
           </div>
 
-          <div className="flex gap-2 items-center ml-10">
+
+
+
+          {/* <div className="flex-shrink-0 w-full sm:w-[15%] bg-blue-50">
+            <Select
+              id="name"
+              className="w-full"
+              onValueChange={(e) => setSearchByFileName(e)}
+            >
+              <SelectTrigger className="w-full bg-blue-50">
+                <SelectValue placeholder="File Name" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem key="all" value="all">
+                    All
+                  </SelectItem>
+                  <SelectItem key="Single Case" value="singlecase">
+                    Single Case
+                  </SelectItem>
+                  {uniqueFileName?.map((item) => {
+                    if (item.isFileUpload) {
+                      return (
+                        <SelectItem key={item._id} value={item.fileName}>
+                          {item.fileName}
+                        </SelectItem>
+                      );
+                    }
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div> */}
+
+
+
+
+          <div className="flex gap-2 items-center ml-5">
             <Checkbox
               onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
             />
@@ -304,7 +340,7 @@ const CaseDashboard = () => {
           </div>
 
           {isClickedForMultiple ? (
-            <div className="flex gap-2 items-center ml-5">
+            <div className="flex gap-2 items-center ml-1">
               <Checkbox
                 value="allclient"
                 checked={selectAllClientStatus}
@@ -315,16 +351,13 @@ const CaseDashboard = () => {
           ) : null}
 
           {caseId.length > 0 ? (
-            <div className="flex gap-2 items-center ml-5">
+            <div className="flex gap-1 items-center">
               <FcBusinessman
                 onClick={handleUploadFunctionbulk}
                 style={{
-                  fontSize: "34px",
+                  fontSize: "24px",
                   cursor: "pointer",
                 }}
-                // onClick={() =>
-                //   isClickedForMultiple ? null : handleUploadFunction(cases._id)
-                // }
               />
               <p>Select Arbitrator</p>
             </div>
@@ -395,17 +428,12 @@ const CaseDashboard = () => {
                   </td>
                   <td data-label="attachment">
                     <div className="flex gap-1">
-                      {cases.attachments.length > 0
-                        ? cases.attachments.map((ele, ind) => {
-                            return (
-                              <Link key={ind} to={ele.url} target="_blank">
-                                <IoMdDownload className="cursor-pointer text-sm" />
-                              </Link>
-                            );
-                          })
+                      {cases.attachments.length > 0 ?
+                          <IoMdDownload className="cursor-pointer text-sm" onClick={()=>handleDownloadAll(cases.attachments)} />
                         : "No attach"}
                     </div>
                   </td>
+
                   <td data-label="arbitrator">
                     {cases.isArbitratorAssigned ? (
                       cases.arbitratorName.split(" ")[0]

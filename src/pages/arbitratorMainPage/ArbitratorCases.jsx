@@ -42,6 +42,7 @@ const ArbitratorCases = () => {
   const [selectStartDate, setSelectStartDate] = useState(new Date());
   const [selectEndDate, setSelectEndDate] = useState(new Date());
   const [title, setTitle] = useState("");
+  const [timeDuration, setTimeDuration] = useState("");
   // const [description, setDescription] = useState("");
   // const [meetingStatus, setMeetingStatus] = useState(false);
   const [caseId, setCaseId] = useState("");
@@ -89,7 +90,7 @@ const ArbitratorCases = () => {
     setIsOpen(true);
   };
 
-  function getformayyeddatetime(dates) {
+  function getFormattedDateTime(dates) {
     const inputDate = new Date(dates);
     const year = inputDate.getFullYear();
     const month = String(inputDate.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed, so add 1
@@ -102,14 +103,25 @@ const ArbitratorCases = () => {
   }
 
   const handleScheduleFunc = () => {
-    const startdate = getformayyeddatetime(selectStartDate);
-    const enddate = getformayyeddatetime(selectEndDate);
+    const startDate = getFormattedDateTime(selectStartDate);
+    const minutes = parseInt(timeDuration, 10);
+    if (isNaN(minutes)) {
+      console.error("Invalid time duration");
+      return;
+    }
+    // console.log("Minutes:", minutes);
+    // console.log("Start Date:", selectStartDate);
+    const endDate = new Date(selectStartDate.getTime());
+    endDate.setMinutes(endDate.getMinutes() + minutes);
+    setSelectEndDate(endDate);
+    const formattedEndDate = getFormattedDateTime(endDate); // Corrected function name
+    console.log("End Date Object:", formattedEndDate, startDate);
     let obj = {
       caseId: caseId,
       title: title,
       // description: description,
-      startTime: startdate,
-      endTime: enddate,
+      startTime: startDate,
+      endTime: formattedEndDate,
     };
     setLoading(true);
     axios
@@ -117,7 +129,6 @@ const ArbitratorCases = () => {
       .then((res) => {
         toast.success("Meeting Scheduled successfully");
         setTitle("");
-        // setDescription("");
         setSelectStartDate(new Date());
         setIsOpen(false);
         setCaseId("");
@@ -137,12 +148,7 @@ const ArbitratorCases = () => {
   }
 
   const handleDurationChange = (value) => {
-    const minutes = parseInt(value, 10);
-    console.log("minutes:", minutes);
-    console.log("start:", selectStartDate);
-    const endDate = new Date(selectStartDate.getTime());
-    endDate.setMinutes(endDate.getMinutes() + minutes);
-    setSelectEndDate(endDate);
+    setTimeDuration(value);
   };
   useEffect(() => {
     console.log("End Date updated:", selectEndDate);
@@ -159,6 +165,20 @@ const ArbitratorCases = () => {
         toast.error("Error in updating case");
       });
   }
+
+
+  //download files
+  const handleDownloadAll = (links) => {
+    links.forEach((link) => {
+      const anchor = document.createElement("a");
+      anchor.href = link.url;
+      anchor.target = "_blank";
+      anchor.download = "";
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  };
 
   return (
     <div>
@@ -193,10 +213,8 @@ const ArbitratorCases = () => {
             <thead>
               <tr>
                 <th>Client Name</th>
-                <th>Client Email</th>
                 <th>Client No.</th>
                 <th>Res. Name</th>
-                <th>Res. Email</th>
                 <th>Res. No.</th>
                 <th>Type</th>
                 <th>File</th>
@@ -221,17 +239,8 @@ const ArbitratorCases = () => {
                 <tbody key={cases._id}>
                   <tr className={styles.trbody}>
                     <td data-label="client name">{cases.clientName}</td>
-                    <td
-                      data-label="client email"
-                      className={styles.clientEmail}
-                    >
-                      {cases.clientEmail}
-                    </td>
                     <td data-label="client number">{cases.clientMobile}</td>
                     <td data-label="respondant name">{cases.respondentName}</td>
-                    <td data-label="respondant email">
-                      {cases.respondentEmail}
-                    </td>
                     <td data-label="respondence number">
                       {cases.respondentMobile}
                     </td>
@@ -239,19 +248,20 @@ const ArbitratorCases = () => {
                     <td data-label="case type">
                       {cases.isFileUpload ? cases.fileName : "Single Case"}
                     </td>
+
                     <td data-label="attachment">
                       <div className="flex gap-1">
-                        {cases.attachments.length > 0
-                          ? cases.attachments.map((ele, ind) => {
-                              return (
-                                <Link key={ind} to={ele.url} target="_blank">
-                                  <IoMdDownload className="cursor-pointer text-sm" />
-                                </Link>
-                              );
-                            })
-                          : "No attach"}
+                        {cases.attachments.length > 0 ? (
+                          <IoMdDownload
+                            className="cursor-pointer text-sm"
+                            onClick={() => handleDownloadAll(cases.attachments)}
+                          />
+                        ) : (
+                          "No attach"
+                        )}
                       </div>
                     </td>
+
                     <td
                       data-label="Meeting Schedule"
                       style={{
@@ -292,11 +302,6 @@ const ArbitratorCases = () => {
                           </div>
                         )
                       ) : null}
-                      {/* {cases.isMeetCompleted ? 
-                      <>
-
-                      </>
-                      } */}
                     </td>
                   </tr>
                 </tbody>
@@ -325,17 +330,6 @@ const ArbitratorCases = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </DialogDescription>
-              {/* <DialogDescription className="text-sm text-gray-600">
-                <Label className="block text-sm font-medium text-gray-700">
-                  Description:
-                </Label>
-                <Textarea
-                  type="text"
-                  className="mt-3"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </DialogDescription> */}
             </div>
           </DialogHeader>
 
@@ -365,7 +359,7 @@ const ArbitratorCases = () => {
               />
             </div>
 
-            {/* End Date Picker */}
+            {/* End Time Picker */}
             <div className="flex gap-20 items-center">
               <Label className="text-sm font-medium text-gray-700 my-2">
                 Time Duration
