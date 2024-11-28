@@ -112,14 +112,14 @@ const CaseDashboard = () => {
         });
     } else {
       let obj = {
-        data: caseId,
+        id: caseId,
         arbitratorName: selectedOption.arbitratorName,
         arbitratorId: selectedOption.arbitrtorid,
         arbitratorEmail: selectedOption.arbitratorEmail,
       };
       setLoading(true);
-      // console.log(obj);
-      // return;
+      console.log(obj);
+      return;
       axios
         .post(
           `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall/bulk`,
@@ -168,8 +168,8 @@ const CaseDashboard = () => {
   const uniqueFileName = [];
   const seeFileName = new Set();
   caseData.forEach((item) => {
-    if (!seeFileName.has(item.searchByFileName)) {
-      seeFileName.add(item.searchByFileName);
+    if (!seeFileName.has(item.fileName)) {
+      seeFileName.add(item.fileName);
       uniqueFileName.push(item);
     }
   });
@@ -221,34 +221,18 @@ const CaseDashboard = () => {
       setCaseId([]);
     }
   };
+  console.log("caseid", caseId);
 
 
 
   //error for the multiple client arbitrator
-  const alertForArbitratorSelect = () => {
-    if (caseId.length == 0) {
-      toast.error("Please select at least one of the case!");
-    } else {
-      toast.error("Assign the arbitrator from the top!");
-    }
-  };
-
-
-
-  const handleDownloadAll = (links) => {
-    links.forEach((link) => {
-      const anchor = document.createElement('a');
-      anchor.href = link.url;
-      anchor.target = "_blank";
-      anchor.download = ''; // Provide a filename if needed
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-    });
-  };
-
-
-
+  // const alertForArbitratorSelect = () => {
+  //   if (caseId.length == 0) {
+  //     toast.error("Please select at least one of the case!");
+  //   } else {
+  //     toast.error("Assign the arbitrator from the top!");
+  //   }
+  // };
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -338,6 +322,9 @@ const CaseDashboard = () => {
                   fontSize: "34px",
                   cursor: "pointer",
                 }}
+                // onClick={() =>
+                //   isClickedForMultiple ? null : handleUploadFunction(cases._id)
+                // }
               />
               <p>Select Arbitrator</p>
             </div>
@@ -408,14 +395,14 @@ const CaseDashboard = () => {
                   </td>
                   <td data-label="attachment">
                     <div className="flex gap-1">
-                      {cases.attachments.length > 0 ?
-                          <IoMdDownload className="cursor-pointer text-sm" onClick={()=>handleDownloadAll(cases.attachments)} />
-                        // ? cases.attachments.map((ele, ind) => {
-                        //     return (
-                        //       <Link key={ind} to={ele.url} target="_blank">
-                        //       </Link>
-                        //     );
-                        //   })
+                      {cases.attachments.length > 0
+                        ? cases.attachments.map((ele, ind) => {
+                            return (
+                              <Link key={ind} to={ele.url} target="_blank">
+                                <IoMdDownload className="cursor-pointer text-sm" />
+                              </Link>
+                            );
+                          })
                         : "No attach"}
                     </div>
                   </td>
