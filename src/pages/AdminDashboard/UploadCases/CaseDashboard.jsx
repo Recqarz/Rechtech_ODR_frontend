@@ -32,22 +32,15 @@ import {
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshers } from "@/global/action";
-import { Link, useNavigate } from "react-router-dom";
-import Loading from "@/components/Loading";
-// import { RadioGroup } from "@radix-ui/react-radio-group";
+import { Link } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import CreatableSelect from "react-select/creatable";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
   const [data, setData] = useState([]);
   const [caseData, setCaseData] = useState([]);
   const [isClickedForMultiple, setIsClickedForMultiple] = useState(false);
-  // const [selectAllboolean, setSelectAllboolean]=useState(false);
-
-  // const [filterByBankName, setFilterByBankName] = useState("");
   const [searchByFileName, setSearchByFileName] = useState("");
   const [searchByData, setSearchByData] = useState("");
   const [searchArbitrator, setSearchArbitrator] = useState("");
@@ -58,15 +51,11 @@ const CaseDashboard = () => {
   const [loading, setLoading] = useState(false);
   let dispatch = useDispatch();
 
-  // let navigate = useNavigate();
-  // const [formData, setFormData] = useState({
-  //   arbitrator: "",
-  //   arbitratorId: "",
-  //   arbitratorEmail: "",
-  // });
-  const [caseId, setCaseId]=useState([]);
+  // State for case selection
+  const [caseId, setCaseId] = useState([]);
+  const [selectAllClientStatus, setSelectAllClientStatus] = useState(false);
 
-  //Get the list of all arbitrator
+  // Get the list of all arbitrators
   const getData = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
@@ -86,8 +75,6 @@ const CaseDashboard = () => {
           }));
         setData(formattedOptions);
         setOptions(formattedOptions);
-        // console.log("options", options);
-        // console.log("formattedOptions", formattedOptions);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -98,33 +85,60 @@ const CaseDashboard = () => {
     getData();
   }, []);
 
-  //To select arbitrator
+  // To select arbitrator
   const handleSelectArbitrator = () => {
-    let obj = {
-      id: appointdata,
-      arbitratorName: selectedOption.arbitratorName,
-      arbitratorId: selectedOption.arbitrtorid,
-      arbitratorEmail: selectedOption.arbitratorEmail,
-    };
-    setLoading(true);
-    axios
-      .post(
-        `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`,
-        obj
-      )
-      .then((res) => {
-        toast.success("Arbitrator appointed");
-        setLoading(false);
-        setIsOpen(false);
-        dispatch(refreshers(!refresher));
-      })
-      .catch((err) => {
-        toast.error("Something went wrong");
-        setLoading(false);
-      });
+    if (!isClickedForMultiple) {
+      let obj = {
+        id: appointdata,
+        arbitratorName: selectedOption.arbitratorName,
+        arbitratorId: selectedOption.arbitrtorid,
+        arbitratorEmail: selectedOption.arbitratorEmail,
+      };
+      setLoading(true);
+      axios
+        .post(
+          `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`,
+          obj
+        )
+        .then((res) => {
+          toast.success("Arbitrator appointed");
+          setLoading(false);
+          setIsOpen(false);
+          dispatch(refreshers(!refresher));
+        })
+        .catch((err) => {
+          toast.error("Something went wrong");
+          setLoading(false);
+        });
+    } else {
+      let obj = {
+        id: caseId,
+        arbitratorName: selectedOption.arbitratorName,
+        arbitratorId: selectedOption.arbitrtorid,
+        arbitratorEmail: selectedOption.arbitratorEmail,
+      };
+      setLoading(true);
+      console.log(obj);
+      return;
+      // axios
+      //   .post(
+      //     `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`,
+      //     obj
+      //   )
+      //   .then((res) => {
+      //     toast.success("Arbitrator appointed");
+      //     setLoading(false);
+      //     setIsOpen(false);
+      //     dispatch(refreshers(!refresher));
+      //   })
+      //   .catch((err) => {
+      //     toast.error("Something went wrong");
+      //     setLoading(false);
+      //   });
+    }
   };
 
-  //all Case Data
+  // All Case Data
   const allcaseData = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/cases/all-cases`)
@@ -135,6 +149,7 @@ const CaseDashboard = () => {
         toast.error("Something went wrong");
       });
   };
+
   useEffect(() => {
     allcaseData();
   }, [refresher]);
@@ -143,6 +158,11 @@ const CaseDashboard = () => {
     setIsOpen(true);
     setSelectedOption(null);
     setAppointdata(value);
+  };
+
+  const handleUploadFunctionbulk = () => {
+    setIsOpen(true);
+    setSelectedOption(null);
   };
 
   const uniqueFileName = [];
@@ -154,34 +174,45 @@ const CaseDashboard = () => {
     }
   });
 
+  // Modified function to handle individual case selection
+  const handleSelectMultipleClientForArbitrator = (id) => {
+    setCaseId((prevIds) =>
+      prevIds.includes(id)
+        ? prevIds.filter((existingId) => existingId !== id)
+        : [...prevIds, id]
+    );
+  };
 
-const handleSelectMultipleClientForArbitrator=(id)=>{
-setCaseId([...caseId, id]);
-console.log("caseId", caseId);
-}
+  // Modified function to handle select all functionality
+  const handleAllClientForArbitrator = () => {
+    setSelectAllClientStatus(!selectAllClientStatus);
 
-const handleAllClientForArbitrator=()=>{
-  let x=[];
-  caseData.filter((el)=>{
-    if(el.arbitratorName==""){
-      x.push(el._id);
-      return;
+    if (!selectAllClientStatus) {
+      const unassignedCaseIds = caseData
+        .filter((el) => el.arbitratorName === "")
+        .filter((ele) => {
+          if (searchByFileName == "singlecase") {
+            return ele.fileName == "";
+          } else if (searchByFileName !== "all") {
+            return ele.fileName == searchByFileName;
+          } else {
+            return ele;
+          }
+        })
+        .map((el) => el._id);
+      setCaseId(unassignedCaseIds);
+    } else {
+      setCaseId([]);
     }
-  });
-  setCaseId(x);
-}
-console.log("caseId", caseId);
-
-
-
+  };
+  console.log("caseid", caseId);
 
   return (
     <div className="max-w-5xl mx-auto">
-      {data.length == 0 ? (
+      {data.length === 0 ? (
         ""
       ) : (
         <div className="flex flex-wrap gap-5 mt-5 mx-5">
-          {/* filter by Bank Name */}
           <div className="flex-shrink-0 w-full sm:w-[20%] bg-blue-50">
             <Select
               id="name"
@@ -213,7 +244,6 @@ console.log("caseId", caseId);
             </Select>
           </div>
 
-          {/* Search by  name, email, number of client and respondent*/}
           <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
             <input
               type="text"
@@ -240,31 +270,49 @@ console.log("caseId", caseId);
           </div>
 
           <div className="flex gap-2 items-center ml-10">
-            <Checkbox onClick={() => setIsClickedForMultiple(!isClickedForMultiple)} />
+            <Checkbox
+              onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
+            />
             <p>Select Multiple</p>
           </div>
 
-          {isClickedForMultiple?<div className="flex gap-2 items-center ml-5">
-            <Checkbox 
-            onClick={handleAllClientForArbitrator} 
+          {isClickedForMultiple ? (
+            <div className="flex gap-2 items-center ml-5">
+              <Checkbox
+                value="allclient"
+                checked={selectAllClientStatus}
+                onClick={handleAllClientForArbitrator}
+              />
+              <p>Select All</p>
+            </div>
+          ) : null}
 
-            />
-            <p>Select All</p>
-          </div>:null}
+          {caseId.length > 0 ? (
+            <div className="flex gap-2 items-center ml-5">
+              <FcBusinessman
+                onClick={handleUploadFunctionbulk}
+                style={{
+                  fontSize: "34px",
+                  cursor: "pointer",
+                }}
+                // onClick={() =>
+                //   isClickedForMultiple ? null : handleUploadFunction(cases._id)
+                // }
+              />
+              <p>Select Arbitrator</p>
+            </div>
+          ) : null}
         </div>
       )}
 
-      {/* table data */}
       {caseData.length > 0 ? (
         <table cellSpacing="0">
           <thead>
             <tr>
               <th>{isClickedForMultiple ? "Select" : null}</th>
               <th>Claimant Name</th>
-              {/* <th>Claimant Email</th> */}
               <th>Claimant No.</th>
               <th>Res. Name</th>
-              {/* <th>Res. Email</th> */}
               <th>Res. No.</th>
               <th>Type</th>
               <th>File</th>
@@ -299,8 +347,11 @@ console.log("caseId", caseId);
                       <input
                         type="checkbox"
                         value={cases._id}
-                        disabled={cases.isArbitratorAssigned?true:false}
-                        onClick={() => handleSelectMultipleClientForArbitrator(cases._id)}
+                        disabled={cases.isArbitratorAssigned ? true : false}
+                        onChange={() =>
+                          handleSelectMultipleClientForArbitrator(cases._id)
+                        }
+                        checked={caseId.includes(cases._id)}
                         className="checkbox-small w-[12px] h-[12px]"
                       />
                     ) : null}
@@ -332,14 +383,20 @@ console.log("caseId", caseId);
                     {cases.isArbitratorAssigned ? (
                       cases.arbitratorName.split(" ")[0]
                     ) : (
-                      <FcBusinessman
-                        style={{
-                          color: "blue",
-                          fontSize: "24px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleUploadFunction(cases._id)}
-                      />
+                      <div>
+                        <FcBusinessman
+                          style={{
+                            color: "blue",
+                            fontSize: "24px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() =>
+                            isClickedForMultiple
+                              ? null
+                              : handleUploadFunction(cases._id)
+                          }
+                        />
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -350,7 +407,6 @@ console.log("caseId", caseId);
         <NoDataFound />
       )}
 
-      {/* all arbitrator in the table */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           className="rounded-lg shadow-lg"
