@@ -63,7 +63,7 @@ const AllArbitratorfunc=()=>{
           >
             <div className="flex-1">
               <h1 className="px-8 mt-4 ml-4 md:ml-1 lg:ml-0 font-bold text-2xl">
-                Recht Tech
+                Sandhee
               </h1>
 
               <ul className="p-4 space-y-0 mt-5">
