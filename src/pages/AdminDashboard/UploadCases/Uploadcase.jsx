@@ -39,7 +39,7 @@ const Uploadcase = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
-  console.log(formData);
+  // console.log(formData);
 
   const handleChange = (newValue) => {
     setSelectedOption(newValue);

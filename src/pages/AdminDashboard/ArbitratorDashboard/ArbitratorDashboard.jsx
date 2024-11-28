@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/select";
 import toast from "react-hot-toast";
 
-
 const ArbitratorDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -48,7 +47,10 @@ const ArbitratorDashboard = () => {
   const handleClose = () => {
     console.log(editData);
     axios
-      .put(`${import.meta.env.VITE_API_BASEURL}/arbitrator/update/${editData._id}`, editData)
+      .put(
+        `${import.meta.env.VITE_API_BASEURL}/arbitrator/update/${editData._id}`,
+        editData
+      )
       .then((res) => {
         setIsOpen(false);
         getData();
@@ -58,7 +60,6 @@ const ArbitratorDashboard = () => {
       });
     // setIsOpen(false);
   };
- 
 
   const statusOptions = [
     { value: "all", label: "All" },
@@ -169,7 +170,7 @@ const ArbitratorDashboard = () => {
             </div>
           </div>
         )}
-        
+
         {/* Add Arbitrator */}
         <div className="flex justify-end w-[97%] mx-auto mt-6">
           <Link to={"/arbitrator/addarbitrator"}>
@@ -231,13 +232,20 @@ const ArbitratorDashboard = () => {
                       {arbitratior.noOfAssignCase}
                     </td>
                     <td data-label="address">
-                      {arbitratior.address.slice(0,10)}
+                      {arbitratior.address.slice(0, 10)}
                     </td>
-                    <td data-label="Status" className={arbitratior.status == true ? styles.status : styles.status2}>
+                    <td
+                      data-label="Status"
+                      className={
+                        arbitratior.status == true
+                          ? styles.status
+                          : styles.status2
+                      }
+                    >
                       {arbitratior.status == false ? "InActive" : "Active"}
                     </td>
                     <td data-label="Action">
-                    <FiEdit3
+                      <FiEdit3
                         style={{
                           color: "blue",
                           fontSize: "24px",
@@ -258,7 +266,7 @@ const ArbitratorDashboard = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit Clinet</DialogTitle>
+            <DialogTitle>Edit Arbitrator</DialogTitle>
             <DialogDescription>
               Make changes to client profile. Click save when you're done.
             </DialogDescription>
@@ -317,6 +325,22 @@ const ArbitratorDashboard = () => {
                 disabled={true}
               />
             </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="areaOfExperties" className="text-right">
+                Experties
+              </Label>
+              <Input
+                id="experties"
+                value={editData?.areaOfExperties}
+                onInput={(e) =>
+                  setEditData((editData.areaOfExperties = e.target.value))
+                }
+                className="col-span-3"
+                disabled={true}
+              />
+            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="status" className="text-right">
                 Status
