@@ -254,7 +254,7 @@ const ClientDashboard = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit Clinet</DialogTitle>
+            <DialogTitle>Edit Client</DialogTitle>
             <DialogDescription>
               Make changes to client profile. Click save when you're done.
             </DialogDescription>

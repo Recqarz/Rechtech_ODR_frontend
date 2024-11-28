@@ -242,7 +242,7 @@ const AddCaseViaForm = () => {
                 value={selectedOption}
                 onChange={handleSelectChange}
                 options={options}
-                placeholder="Select Claiment Name"
+                placeholder="Select claimant Name"
                 noOptionsMessage={({ inputValue }) => (
                   <div>No clients found</div>
                 )}
