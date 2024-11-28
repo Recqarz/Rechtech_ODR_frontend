@@ -44,17 +44,11 @@ const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
   const [data, setData] = useState([]);
   const [caseData, setCaseData] = useState([]);
-
-  const [
-    selectArbitratorForMultipleClient,
-    setSelectArbitratorForMultipleClient,
-  ] = useState([]);
   const [isClickedForMultiple, setIsClickedForMultiple] = useState(false);
-  const [selectAllboolean, setSelectAllboolean]=useState(false);
+  // const [selectAllboolean, setSelectAllboolean]=useState(false);
 
   // const [filterByBankName, setFilterByBankName] = useState("");
   const [searchByFileName, setSearchByFileName] = useState("");
-  console.log("s", searchByFileName);
   const [searchByData, setSearchByData] = useState("");
   const [searchArbitrator, setSearchArbitrator] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -64,12 +58,13 @@ const CaseDashboard = () => {
   const [loading, setLoading] = useState(false);
   let dispatch = useDispatch();
 
-  let navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    arbitrator: "",
-    arbitratorId: "",
-    arbitratorEmail: "",
-  });
+  // let navigate = useNavigate();
+  // const [formData, setFormData] = useState({
+  //   arbitrator: "",
+  //   arbitratorId: "",
+  //   arbitratorEmail: "",
+  // });
+  const [caseId, setCaseId]=useState([]);
 
   //Get the list of all arbitrator
   const getData = () => {
@@ -102,28 +97,6 @@ const CaseDashboard = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  // const filterOptions = (inputValue) => {
-  //   return data.filter((option) =>
-  //     option.label.toLowerCase().includes(inputValue.toLowerCase())
-  //   );
-  // };
-
-  // const handleInputChange = (inputValue) => {
-  //   const filteredOptions = filterOptions(inputValue);
-  //   setData(filteredOptions);
-  // };
-
-  // const handleChange = (newValue) => {
-  //   setSelectedOption(newValue);
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     arbitrator: newValue.value,
-  //     arbitratorId: newValue.arbitrtoriid,
-  //     arbitratorEmail: newValue.arbitratorEmail,
-  //   }));
-  //   console.log("formdata", formData);
-  // };
 
   //To select arbitrator
   const handleSelectArbitrator = () => {
@@ -180,6 +153,27 @@ const CaseDashboard = () => {
       uniqueFileName.push(item);
     }
   });
+
+
+const handleSelectMultipleClientForArbitrator=(id)=>{
+setCaseId([...caseId, id]);
+console.log("caseId", caseId);
+}
+
+const handleAllClientForArbitrator=()=>{
+  let x=[];
+  caseData.filter((el)=>{
+    if(el.arbitratorName==""){
+      x.push(el._id);
+      return;
+    }
+  });
+  setCaseId(x);
+}
+console.log("caseId", caseId);
+
+
+
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -251,7 +245,10 @@ const CaseDashboard = () => {
           </div>
 
           {isClickedForMultiple?<div className="flex gap-2 items-center ml-5">
-            <Checkbox onClick={() => setSelectAllboolean(!selectAllboolean)} />
+            <Checkbox 
+            onClick={handleAllClientForArbitrator} 
+
+            />
             <p>Select All</p>
           </div>:null}
         </div>
@@ -263,9 +260,9 @@ const CaseDashboard = () => {
           <thead>
             <tr>
               <th>{isClickedForMultiple ? "Select" : null}</th>
-              <th>Claiment Name</th>
-              {/* <th>Claiment Email</th> */}
-              <th>Claiment No.</th>
+              <th>Claimant Name</th>
+              {/* <th>Claimant Email</th> */}
+              <th>Claimant No.</th>
               <th>Res. Name</th>
               {/* <th>Res. Email</th> */}
               <th>Res. No.</th>
@@ -288,35 +285,29 @@ const CaseDashboard = () => {
               if (!searchByData) return true;
               return (
                 el.clientName.toLowerCase().includes(searchByData) ||
-                el.clientEmail.toLowerCase().includes(searchByData) ||
                 el.clientMobile.toLowerCase().includes(searchByData) ||
                 el.respondentName.toLowerCase().includes(searchByData) ||
-                el.respondentEmail.toLowerCase().includes(searchByData) ||
                 el.respondentMobile.toLowerCase().includes(searchByData) ||
                 el.disputeType.toLowerCase().includes(searchByData)
               );
             })
-
             .map((cases) => (
               <tbody key={cases._id}>
                 <tr className={styles.trbody}>
                   <td data-label="checkbox">
-                    {isClickedForMultiple || selectAllboolean? (
-                      <Input
+                    {isClickedForMultiple ? (
+                      <input
                         type="checkbox"
-                        checked={selectAllboolean}
-                        // checked={selectAllboolean}
+                        value={cases._id}
+                        disabled={cases.isArbitratorAssigned?true:false}
+                        onClick={() => handleSelectMultipleClientForArbitrator(cases._id)}
                         className="checkbox-small w-[12px] h-[12px]"
                       />
                     ) : null}
                   </td>
                   <td data-label="client name">{cases.clientName}</td>
-                  {/* <td data-label="client email" className={styles.clientEmail}>
-                    {cases.clientEmail}
-                  </td> */}
                   <td data-label="client number">{cases.clientMobile}</td>
                   <td data-label="respondant name">{cases.respondentName}</td>
-                  {/* <td data-label="respondant email">{cases.respondentEmail}</td> */}
                   <td data-label="respondence number">
                     {cases.respondentMobile}
                   </td>
