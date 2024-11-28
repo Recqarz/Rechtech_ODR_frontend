@@ -112,29 +112,29 @@ const CaseDashboard = () => {
         });
     } else {
       let obj = {
-        id: caseId,
+        data: caseId,
         arbitratorName: selectedOption.arbitratorName,
         arbitratorId: selectedOption.arbitrtorid,
         arbitratorEmail: selectedOption.arbitratorEmail,
       };
       setLoading(true);
-      console.log(obj);
-      return;
-      // axios
-      //   .post(
-      //     `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall`,
-      //     obj
-      //   )
-      //   .then((res) => {
-      //     toast.success("Arbitrator appointed");
-      //     setLoading(false);
-      //     setIsOpen(false);
-      //     dispatch(refreshers(!refresher));
-      //   })
-      //   .catch((err) => {
-      //     toast.error("Something went wrong");
-      //     setLoading(false);
-      //   });
+      // console.log(obj);
+      // return;
+      axios
+        .post(
+          `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall/bulk`,
+          obj
+        )
+        .then((res) => {
+          toast.success("Arbitrator appointed");
+          setLoading(false);
+          setIsOpen(false);
+          dispatch(refreshers(!refresher));
+        })
+        .catch((err) => {
+          toast.error("Something went wrong");
+          setLoading(false);
+        });
     }
   };
 
@@ -185,36 +185,68 @@ const CaseDashboard = () => {
 
   // Modified function to handle select all functionality
   const handleAllClientForArbitrator = () => {
-    setSelectAllClientStatus(!selectAllClientStatus);
-
-    if (!selectAllClientStatus) {
+    // Toggle the select all status
+    const newSelectAllStatus = !selectAllClientStatus;
+    setSelectAllClientStatus(newSelectAllStatus);
+  
+    // If selecting all, apply the same filtering logic as in the table render
+    if (newSelectAllStatus) {
       const unassignedCaseIds = caseData
-        .filter((el) => el.arbitratorName === "")
-        .filter((ele) => {
-          if (searchByFileName == "singlecase") {
-            return ele.fileName == "";
-          } else if (searchByFileName !== "all") {
-            return ele.fileName == searchByFileName;
-          } else {
-            return ele;
-          }
+        .filter((file) => {
+          // File name filter
+          if (!searchByFileName || searchByFileName === "all") return true;
+          else if (searchByFileName === "singlecase")
+            return file.fileName === "";
+          return file.fileName
+            ?.toLowerCase()
+            .includes(searchByFileName.toLowerCase());
         })
-        .map((el) => el._id);
+        .filter((el) => {
+          // Search data filter
+          if (!searchByData) return true;
+          return (
+            el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.respondentName.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.respondentMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.disputeType.toLowerCase().includes(searchByData.toLowerCase())
+          );
+        })
+        .filter(el => el.arbitratorName === "") // Only unassigned cases
+        .map(el => el._id);
+  
       setCaseId(unassignedCaseIds);
     } else {
+      // If deselecting, clear all selected cases
       setCaseId([]);
     }
   };
-  console.log("caseid", caseId);
 
 
-const alertForArbitratorSelect=()=>{
-  if(caseId.length==0){
-    toast.error("Please select at least one of the case!");
-  }else{
-    toast.error("Assign the arbitrator from the top!")
-  }
-}
+
+  //error for the multiple client arbitrator
+  const alertForArbitratorSelect = () => {
+    if (caseId.length == 0) {
+      toast.error("Please select at least one of the case!");
+    } else {
+      toast.error("Assign the arbitrator from the top!");
+    }
+  };
+
+
+
+  const handleDownloadAll = (links) => {
+    links.forEach((link) => {
+      const anchor = document.createElement('a');
+      anchor.href = link.url;
+      anchor.target = "_blank";
+      anchor.download = ''; // Provide a filename if needed
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  };
+
 
 
 
@@ -306,9 +338,6 @@ const alertForArbitratorSelect=()=>{
                   fontSize: "34px",
                   cursor: "pointer",
                 }}
-                // onClick={() =>
-                //   isClickedForMultiple ? null : handleUploadFunction(cases._id)
-                // }
               />
               <p>Select Arbitrator</p>
             </div>
@@ -379,14 +408,14 @@ const alertForArbitratorSelect=()=>{
                   </td>
                   <td data-label="attachment">
                     <div className="flex gap-1">
-                      {cases.attachments.length > 0
-                        ? cases.attachments.map((ele, ind) => {
-                            return (
-                              <Link key={ind} to={ele.url} target="_blank">
-                                <IoMdDownload className="cursor-pointer text-sm" />
-                              </Link>
-                            );
-                          })
+                      {cases.attachments.length > 0 ?
+                          <IoMdDownload className="cursor-pointer text-sm" onClick={()=>handleDownloadAll(cases.attachments)} />
+                        // ? cases.attachments.map((ele, ind) => {
+                        //     return (
+                        //       <Link key={ind} to={ele.url} target="_blank">
+                        //       </Link>
+                        //     );
+                        //   })
                         : "No attach"}
                     </div>
                   </td>
@@ -401,9 +430,10 @@ const alertForArbitratorSelect=()=>{
                             fontSize: "24px",
                             cursor: "pointer",
                           }}
+                          // disabled={isClickedForMultiple}
                           onClick={() =>
                             isClickedForMultiple
-                              ? alertForArbitratorSelect()
+                              ? null
                               : handleUploadFunction(cases._id)
                           }
                         />
