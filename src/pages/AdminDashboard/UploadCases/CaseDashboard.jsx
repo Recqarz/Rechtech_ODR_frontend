@@ -44,6 +44,9 @@ const CaseDashboard = () => {
   const [searchByFileName, setSearchByFileName] = useState("");
   const [searchByData, setSearchByData] = useState("");
   const [searchArbitrator, setSearchArbitrator] = useState("");
+  const [assignNotAssignArbitrator, setAssignNotAssignArbitrator] =
+    useState("");
+
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -120,7 +123,9 @@ const CaseDashboard = () => {
       setLoading(true);
       axios
         .post(
-          `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall/bulk`,
+          `${
+            import.meta.env.VITE_API_BASEURL
+          }/arbitratorappointandnotifyall/bulk`,
           obj
         )
         .then((res) => {
@@ -186,7 +191,7 @@ const CaseDashboard = () => {
     // Toggle the select all status
     const newSelectAllStatus = !selectAllClientStatus;
     setSelectAllClientStatus(newSelectAllStatus);
-  
+
     // If selecting all, apply the same filtering logic as in the table render
     if (newSelectAllStatus) {
       const unassignedCaseIds = caseData
@@ -200,19 +205,34 @@ const CaseDashboard = () => {
             .includes(searchByFileName.toLowerCase());
         })
         .filter((el) => {
+          if (!assignNotAssignArbitrator || assignNotAssignArbitrator === "all")
+            return el;
+          else if (assignNotAssignArbitrator == "notassigned") {
+            return !el.isArbitratorAssigned;
+          } else if (assignNotAssignArbitrator == "assigned") {
+            return el.isArbitratorAssigned;
+          }
+        })
+        .filter((el) => {
           // Search data filter
           if (!searchByData) return true;
           return (
             el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.respondentName.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.respondentMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.clientMobile
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
+            el.respondentName
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
+            el.respondentMobile
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
             el.disputeType.toLowerCase().includes(searchByData.toLowerCase())
           );
         })
-        .filter(el => el.arbitratorName === "") // Only unassigned cases
-        .map(el => el._id);
-  
+        .filter((el) => el.arbitratorName === "") // Only unassigned cases
+        .map((el) => el._id);
+
       setCaseId(unassignedCaseIds);
     } else {
       // If deselecting, clear all selected cases
@@ -222,16 +242,15 @@ const CaseDashboard = () => {
 
   const handleDownloadAll = (links) => {
     links.forEach((link) => {
-      const anchor = document.createElement('a');
+      const anchor = document.createElement("a");
       anchor.href = link.url;
       anchor.target = "_blank";
-      anchor.download = ''; // Provide a filename if needed
+      anchor.download = ""; // Provide a filename if needed
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
     });
   };
-
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -239,7 +258,8 @@ const CaseDashboard = () => {
         ""
       ) : (
         <div className="flex flex-wrap gap-2 mt-5 mx-5">
-          <div className="flex-shrink-0 w-full sm:w-[20%] bg-blue-50">
+          {/* Filter by file name */}
+          <div className="flex-shrink-0 w-full sm:w-[15%] bg-blue-50">
             <Select
               id="name"
               className="w-full"
@@ -270,6 +290,7 @@ const CaseDashboard = () => {
             </Select>
           </div>
 
+          {/* Search by name, email and so on */}
           <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
             <input
               type="text"
@@ -295,42 +316,31 @@ const CaseDashboard = () => {
             </button>
           </div>
 
-
-
-
-          {/* <div className="flex-shrink-0 w-full sm:w-[15%] bg-blue-50">
+          {/* to select assign or not assign arbitratotr */}
+          <div className="flex-shrink-0 w-full sm:w-[15%] bg-blue-50">
             <Select
               id="name"
               className="w-full"
-              onValueChange={(e) => setSearchByFileName(e)}
+              onValueChange={(e) => setAssignNotAssignArbitrator(e)}
             >
               <SelectTrigger className="w-full bg-blue-50">
-                <SelectValue placeholder="File Name" />
+                <SelectValue placeholder="Arbitrator" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem key="all" value="all">
                     All
                   </SelectItem>
-                  <SelectItem key="Single Case" value="singlecase">
-                    Single Case
+                  <SelectItem key="Single Case" value="assigned">
+                    Assigned Arbitrator
                   </SelectItem>
-                  {uniqueFileName?.map((item) => {
-                    if (item.isFileUpload) {
-                      return (
-                        <SelectItem key={item._id} value={item.fileName}>
-                          {item.fileName}
-                        </SelectItem>
-                      );
-                    }
-                  })}
+                  <SelectItem key="Single Case" value="notassigned">
+                    Not Assigned Arbitrator
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div> */}
-
-
-
+          </div>
 
           <div className="flex gap-2 items-center ml-5">
             <Checkbox
@@ -355,7 +365,7 @@ const CaseDashboard = () => {
               <FcBusinessman
                 onClick={handleUploadFunctionbulk}
                 style={{
-                  fontSize: "24px",
+                  fontSize: "30px",
                   cursor: "pointer",
                 }}
               />
@@ -399,6 +409,14 @@ const CaseDashboard = () => {
                 el.disputeType.toLowerCase().includes(searchByData)
               );
             })
+            .filter((el) => {
+              if (assignNotAssignArbitrator === "assigned") {
+                return el.isArbitratorAssigned;
+              } else if (assignNotAssignArbitrator == "notassigned") {
+                return !el.isArbitratorAssigned;
+              }
+              return el;
+            })
             .map((cases) => (
               <tbody key={cases._id}>
                 <tr className={styles.trbody}>
@@ -428,9 +446,14 @@ const CaseDashboard = () => {
                   </td>
                   <td data-label="attachment">
                     <div className="flex gap-1">
-                      {cases.attachments.length > 0 ?
-                          <IoMdDownload className="cursor-pointer text-sm" onClick={()=>handleDownloadAll(cases.attachments)} />
-                        : "No attach"}
+                      {cases.attachments.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm"
+                          onClick={() => handleDownloadAll(cases.attachments)}
+                        />
+                      ) : (
+                        "No attach"
+                      )}
                     </div>
                   </td>
 

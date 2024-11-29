@@ -193,7 +193,7 @@ const Uploadcase = () => {
     <div className="max-w-6xl mx-auto px-4 py-3">
       <div className=" flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
         <div className="flex items-center space-x-2">
-          <div className="text-sm text-gray-500 flex items-center space-x-2">
+          <div className="mx-7 md:mx-0 text-sm text-gray-500 flex items-center space-x-2">
             <Link to="/client/cases">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">
                 Cases

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUpdater, updateRole } from "@/global/action";
 
 const Sidebar = () => {
-  let dispatch = useDispatch()
+  let dispatch = useDispatch();
   const [isUsersOpen, setIsUsersOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -23,36 +23,38 @@ const Sidebar = () => {
     }
   };
 
-const handleLogoutFunc=()=>{
-  // console.log("logout");
-  localStorage.removeItem("rechtechrole");
-  localStorage.removeItem("rechtechtoken");
-  dispatch(loginUpdater(false))
-  dispatch(updateRole(""))
-  // localStorage.removeItem("token");
-  navigate("/");
-}
+  const handleLogoutFunc = () => {
+    // console.log("logout");
+    localStorage.removeItem("rechtechrole");
+    localStorage.removeItem("rechtechtoken");
+    dispatch(loginUpdater(false));
+    dispatch(updateRole(""));
+    // localStorage.removeItem("token");
+    navigate("/");
+  };
 
-const AllArbitratorfunc=()=>{
-  navigate("/client/allarbitrator");
-}
-
+  const AllArbitratorfunc = () => {
+    navigate("/client/allarbitrator");
+  };
 
   return (
     <>
       {/* Hamburger Menu Button - Only visible on medium and small screens */}
       <button
-        className="z-50 fixed top-4 left-4 p-2 rounded-lg bg-blue-50 shadow-lg md:hidden"
+        className="fixed top-6 left-4 p-2 rounded-lg bg-blue-50 shadow-lg md:hidden z-50"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
-        {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        {isSidebarOpen ? <FaTimes /> : <FaBars 
+        // style={{marginTop:"10px"}}
+
+        />}
       </button>
 
-      <div className="z-10 flex flex-col min-h-screen">
-        <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col min-h-screen z-40">
+        <div className="flex flex-1 overflow-hidden bg-blue-50">
           <aside
             className={`
-            fixed md:static w-52 bg-blue-50 shadow-lg flex flex-col justify-between h-screen
+            fixed w-52 bg-blue-50 shadow-lg flex flex-col justify-between h-auto
             transition-transform duration-300 ease-in-out
             ${
               isSidebarOpen
@@ -62,7 +64,7 @@ const AllArbitratorfunc=()=>{
           `}
           >
             <div className="flex-1">
-              <h1 className="px-8 mt-4 ml-4 md:ml-1 lg:ml-0 font-bold text-2xl">
+              <h1 className="px-8 mt-6 ml-5 md:ml-1 lg:ml-0 font-bold text-2xl">
                 Sandhee
               </h1>
 
@@ -93,24 +95,23 @@ const AllArbitratorfunc=()=>{
                     </div>
                   </li>
                 ) : null}
-                {
-                  role==="client"?
-                  <li
-                    className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
-                   
-                  >
-                    <div className="flex items-center" onClick={AllArbitratorfunc}>
+                {role === "client" ? (
+                  <li className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors">
+                    <div
+                      className="flex items-center"
+                      onClick={AllArbitratorfunc}
+                    >
                       <span className="mr-3">👥</span>
                       All Arbitrator
                     </div>
-                  </li>:null
-                }
+                  </li>
+                ) : null}
 
                 {isUsersOpen && (
                   <div className="ml-8 space-y-1">
                     {/* <Link to="/arbitratortable"> */}
                     <li
-                      className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      className="cursor-pointer flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
                       onClick={handleArbitratorPage}
                     >
                       Arbitrator
@@ -124,7 +125,15 @@ const AllArbitratorfunc=()=>{
                   </div>
                 )}
 
-                <Link to={role==="admin" ? "/admin/cases" : role==="arbitrator"? "/arbitrator/cases" : "/client/cases"}>
+                <Link
+                  to={
+                    role === "admin"
+                      ? "/admin/cases"
+                      : role === "arbitrator"
+                      ? "/arbitrator/cases"
+                      : "/client/cases"
+                  }
+                >
                   <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
                     <span className="mr-3">📁</span>
                     Cases
@@ -151,13 +160,19 @@ const AllArbitratorfunc=()=>{
             </div>
 
             {/* Bottom Section */}
-            <div className="p-4 border-t border-blue-100">
-              <ul className="space-y-2">
+
+            <div className="p-4 border-blue-100">
+              <ul
+                className={`space-y-2 border-t`}
+              >
                 <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
                   <span className="mr-3">⚙️</span>
                   Settings
                 </li>
-                <li className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" onClick={handleLogoutFunc}>
+                <li
+                  className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                  onClick={handleLogoutFunc}
+                >
                   <span className="mr-3">🚪</span>
                   Log out
                 </li>

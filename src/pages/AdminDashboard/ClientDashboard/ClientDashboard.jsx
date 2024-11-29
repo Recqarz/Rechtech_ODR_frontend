@@ -7,7 +7,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import NoDataFound from "@/components/NoDataFound";
 
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +35,6 @@ const ClientDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-
   const handleOpen = (arbitratior) => {
     setIsOpen(true);
     setEditData(arbitratior);
@@ -44,7 +42,10 @@ const ClientDashboard = () => {
   const handleClose = () => {
     console.log(editData);
     axios
-      .put(`${import.meta.env.VITE_API_BASEURL}/client/update/${editData._id}`, editData)
+      .put(
+        `${import.meta.env.VITE_API_BASEURL}/client/update/${editData._id}`,
+        editData
+      )
       .then((res) => {
         setIsOpen(false);
         getData();
@@ -92,17 +93,20 @@ const ClientDashboard = () => {
       <div className="mx-auto px-4 py-3">
         <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-500 flex items-center space-x-2">
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">User</span>
+            <div className="mx-7 md:mx-0 text-sm text-gray-500 flex items-center space-x-2">
+              <span className="cursor-pointer hover:text-blue-700 font-semibold">
+                User
+              </span>
               <span>›</span>
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">Client</span>
+              <span className="cursor-pointer hover:text-blue-700 font-semibold">
+                Client
+              </span>
             </div>
           </div>
 
           <div className="bg-blue-50 p-3 rounded-full">
             <LuUser className="text-blue-600 text-xl" />
           </div>
-
         </div>
 
         {/* Search button */}
@@ -110,14 +114,14 @@ const ClientDashboard = () => {
           ""
         ) : (
           <div className="mt-6 sm:mt-10 flex gap-4 sm:items-center">
-            <div className="w-[30%] relative md:w-[25%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
+            <div className="w-[30%] md:w-[20%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
               <input
                 type="text"
                 placeholder="Search here"
                 className="flex-grow outline-none bg-transparent px-2 py-0.5 text-sm"
                 onChange={(e) => setSearchdata(e.target.value)}
               />
-              <button className="p-0 absolute right-2">
+              {/* <button className="p-0 absolute left-96">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 text-gray-500"
@@ -132,7 +136,7 @@ const ClientDashboard = () => {
                     d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </button>
+              </button> */}
             </div>
 
             <div className="relative w-[15%] md:w-[21%] sm:w-auto">
@@ -230,11 +234,18 @@ const ClientDashboard = () => {
                     <td data-label="Address">
                       {arbitratior.address.slice(0, 10)}
                     </td>
-                    <td data-label="Status" className={arbitratior.status == true ? styles.status : styles.status2}>
+                    <td
+                      data-label="Status"
+                      className={
+                        arbitratior.status == true
+                          ? styles.status
+                          : styles.status2
+                      }
+                    >
                       {arbitratior.status == false ? "InActive" : "Active"}
                     </td>
                     <td data-label="Action">
-                    <FiEdit3
+                      <FiEdit3
                         style={{
                           color: "blue",
                           fontSize: "24px",

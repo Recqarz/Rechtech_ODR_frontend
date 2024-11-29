@@ -94,7 +94,7 @@ const ArbitratorDashboard = () => {
       <div className="max-w-6xl mx-auto px-4 py-3">
         <div className=" flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-500 flex items-center space-x-2">
+            <div className="mx-7 md:mx-0 text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">
                 User
               </span>
@@ -114,14 +114,14 @@ const ArbitratorDashboard = () => {
           ""
         ) : (
           <div className="mt-6 sm:mt-10 flex gap-4 sm:items-center">
-            <div className="w-[30%] relative md:w-[25%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
+            <div className="sm:w-[30%] md:w-[20%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
               <input
                 type="text"
                 placeholder="Search here"
                 className="flex-grow outline-none bg-transparent px-2 py-0.5 text-sm"
                 onChange={(e) => setSearchdata(e.target.value)}
               />
-              <button className="p-0 absolute right-2">
+              {/* <button className="absolute -right-10">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 text-gray-500"
@@ -136,10 +136,10 @@ const ArbitratorDashboard = () => {
                     d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-              </button>
+              </button> */}
             </div>
 
-            <div className="relative w-[15%] md:w-[21%] sm:w-auto">
+            <div className="w-[15%] md:w-[21%] sm:w-auto">
               <button
                 onClick={() => setIsStatusOpen(!isStatusOpen)}
                 className="flex items-center justify-between w-32 px-4 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
