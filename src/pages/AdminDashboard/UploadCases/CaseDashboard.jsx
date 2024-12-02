@@ -167,6 +167,9 @@ const CaseDashboard = () => {
     setSelectedOption(null);
   };
 
+
+
+  // to get unique file name in the filter
   const uniqueFileName = [];
   const seeFileName = new Set();
   caseData.forEach((item) => {
