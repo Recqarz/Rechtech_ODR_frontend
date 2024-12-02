@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { CgRecord } from "react-icons/cg";
 import { MdOutlineDone } from "react-icons/md";
 import { SiGoogleforms } from "react-icons/si";
+import { IoMdCloudDownload } from "react-icons/io";
+import { IoEye } from "react-icons/io5";
 import {
   Dialog,
   DialogContent,
@@ -321,7 +323,7 @@ const ArbitratorCases = () => {
       return;
     }
     const submitData = new FormData();
-    submitData.append("excelFile", file);
+    submitData.append("file", file);
     submitData.append("caseId", idForAward);
     axios
       .post(
@@ -335,6 +337,11 @@ const ArbitratorCases = () => {
       )
       .then((res) => {
         toast.success("Award sheet uploaded");
+        setIsOpen3(false);
+        setCaseId("")
+        setTimeout(() => {
+          getArbitratorCaseData();
+        }, 2000);
       })
       .catch((err) => {
         toast.error("Some error happen");
@@ -348,6 +355,16 @@ const ArbitratorCases = () => {
     setIsOpen4(true);
     setIdForOrderSheet(id);
   };
+
+  function handleDownloadAward(link) {
+    const anchor = document.createElement("a");
+    anchor.href = link;
+    anchor.target = "_blank";
+    anchor.download = "";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+  }
 
   return (
     <div>
@@ -455,6 +472,7 @@ const ArbitratorCases = () => {
                 <th>Type</th>
                 <th>File</th>
                 <th>Attachment</th>
+                <th>Recordings</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -516,16 +534,23 @@ const ArbitratorCases = () => {
                     </td>
 
                     <td data-label="attachment">
-                      <div className="flex gap-1">
+                      <div className="flex items-center">
                         {cases.attachments.length > 0 ? (
                           <IoMdDownload
-                            className="cursor-pointer text-sm"
+                            className="cursor-pointer text-sm ml-6"
                             onClick={() => handleDownloadAll(cases.attachments)}
                           />
                         ) : (
                           "No attach"
                         )}
                       </div>
+                    </td>
+                    <td>
+                      {cases.recordings.length > 0 ? (
+                        <IoEye className="ml-4 text-xl cursor-pointer" />
+                      ) : (
+                        <p className="font-semibold ml-2">No Meet.</p>
+                      )}
                     </td>
 
                     <td
@@ -564,7 +589,7 @@ const ArbitratorCases = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex gap-1 justify-center items-center">
+                          <div className="flex gap-1 items-center">
                             <FcVideoCall
                               onClick={() =>
                                 isClickedForMultiple
@@ -587,6 +612,17 @@ const ArbitratorCases = () => {
                       ) : null}
                       {cases.isMeetCompleted && !cases.isAwardCompleted ? (
                         <FaAward onClick={() => generateAwardFunc(cases._id)} />
+                      ) : null}
+                      {cases.isAwardCompleted ? (
+                        <p
+                          className="flex items-center text-[18px]"
+                          onClick={() => handleDownloadAward(cases.awards[0])}
+                        >
+                          <IoMdCloudDownload />{" "}
+                          <span className="text-[12px] font-semibold">
+                            Awards
+                          </span>
+                        </p>
                       ) : null}
                     </td>
                   </tr>
@@ -715,7 +751,7 @@ const ArbitratorCases = () => {
 
             <div className="space-y-4">
               <DialogDescription className="text-sm text-gray-600">
-                Only PDF or Excel file is Allowed!
+                Only PDF file is Allowed!
               </DialogDescription>
             </div>
 
@@ -744,7 +780,7 @@ const ArbitratorCases = () => {
                 Upload file
                 <input
                   type="file"
-                  accept=".xlsx, .xls, .pdf"
+                  accept=".pdf"
                   onChange={(e) => {
                     setFile(e.target.files[0]);
                   }}
