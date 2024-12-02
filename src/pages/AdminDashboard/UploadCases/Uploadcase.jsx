@@ -207,8 +207,8 @@ const Uploadcase = () => {
       </div>
 
       <div className="flex justify-end gap-5 p-4">
-        {/* Upload one case details in the forms */}
-        <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">
+         {/* Upload one case details in the forms */}
+         <div className="border-2 border-dashed w-[35%] md:w-[30%] lg:w-[20%] mt-5">
           <h1 className="text-center mt-1">Fill The Details Via Form</h1>
           <div className="text-center p-4">
             <Link to="/admin/cases/add">
@@ -220,7 +220,7 @@ const Uploadcase = () => {
         </div>
 
         {/* Upload Case Details in file */}
-        <div className="border-2 border-dashed w-[48%] md:w-[30%] lg:w-[20%] mt-5">
+        <div className="border-2 border-dashed w-[35%] md:w-[30%] lg:w-[20%] mt-5">
           <h1 className="text-center mt-1">Upload Case Via File</h1>
           <div className="text-center p-4">
             <button
@@ -231,7 +231,7 @@ const Uploadcase = () => {
             </button>
           </div>
         </div>
-      </div>
+        </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
