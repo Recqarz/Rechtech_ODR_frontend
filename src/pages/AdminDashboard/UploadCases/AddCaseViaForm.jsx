@@ -21,6 +21,9 @@ const AddCaseViaForm = () => {
     respondentMobile: "",
     respondentEmail: "",
     disputeType: "",
+    cardNo: "",
+    amount: "",
+    accountNumber: "",
   });
   const [fileInputs, setFileInputs] = useState([
     { id: 1, fileName: "", file: null },
@@ -47,12 +50,14 @@ const AddCaseViaForm = () => {
       });
   };
   const fetchCaseId = () => {
-    axios.get(`${import.meta.env.VITE_API_BASEURL}/cases/auto-caseid`).then((res) => {
-      setFormData((prevState) => ({
-        ...prevState,
-        caseId: res.data.data,
-      }));
-    });
+    axios
+      .get(`${import.meta.env.VITE_API_BASEURL}/cases/auto-caseid`)
+      .then((res) => {
+        setFormData((prevState) => ({
+          ...prevState,
+          caseId: res.data.data,
+        }));
+      });
   };
   useEffect(() => {
     getfetchData();
@@ -138,8 +143,10 @@ const AddCaseViaForm = () => {
       respondentMobile: formData.respondentMobile,
       respondentAddress: formData.respondentAddress,
       disputeType: formData.disputeType,
+      amount: formData.amount ? formData.amount : "",
+      accountNumber: formData.accountNumber ? formData.accountNumber : "",
+      cardNo: formData.cardNo ? formData.cardNo : "",
     };
-
     // Validation checks
     if (Object.values(caseData).some((value) => !value)) {
       toast.error("All fields are required");
@@ -185,6 +192,9 @@ const AddCaseViaForm = () => {
           respondentMobile: "",
           respondentEmail: "",
           disputeType: "",
+          cardNo: "",
+          amount: "",
+          accountNumber: "",
         });
         setSelectedOption(null);
         navigate("/admin/cases");
@@ -362,6 +372,48 @@ const AddCaseViaForm = () => {
 
             <div className="relative group">
               <input
+                type="tel"
+                name="cardNo"
+                value={formData.cardNo}
+                onChange={handleChange}
+                className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                placeholder="Card Number"
+              />
+              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-1 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                Card Number
+              </label>
+            </div>
+
+            <div className="relative group">
+              <input
+                type="tel"
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                placeholder="Amount"
+              />
+              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-1 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                Amount
+              </label>
+            </div>
+
+            <div className="relative group">
+              <input
+                type="tel"
+                name="accountNumber"
+                value={formData.accountNumber}
+                onChange={handleChange}
+                className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                placeholder="Account Number"
+              />
+              <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-1 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                Account Number
+              </label>
+            </div>
+
+            <div className="relative group">
+              <input
                 type="text"
                 name="disputeType"
                 value={formData.disputeType}
@@ -392,10 +444,53 @@ const AddCaseViaForm = () => {
               <div className="relative group">
                 <input
                   type="file"
+                  id={`fileInput-${input.id}`}
                   accept=".jpg,.jpeg,.png,.pdf,.xls,.xlsx"
-                  onChange={(e) => handleFileChange(e, input.id)}
-                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                  onChange={(e) => {
+                    handleFileChange(e, input.id);
+                    // Update file name display
+                    const fileInput = document.getElementById(
+                      `fileInput-${input.id}`
+                    );
+                    const fileNameDisplay = document.getElementById(
+                      `fileName-${input.id}`
+                    );
+                    if (fileInput.files.length > 0) {
+                      fileNameDisplay.textContent = fileInput.files[0].name;
+                    } else {
+                      fileNameDisplay.textContent = "No file chosen";
+                    }
+                  }}
+                  className="hidden"
                 />
+                <div className="flex items-center">
+                  <label
+                    htmlFor={`fileInput-${input.id}`}
+                    className="flex items-center px-4 py-3 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6 mr-2 text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                      />
+                    </svg>
+                    <span className="text-gray-700">Choose File</span>
+                  </label>
+                  <span
+                    id={`fileName-${input.id}`}
+                    className="ml-3 text-gray-600 truncate max-w-[200px]"
+                  >
+                    No file chosen
+                  </span>
+                </div>
               </div>
             </div>
           ))}
@@ -406,7 +501,7 @@ const AddCaseViaForm = () => {
                 type="button"
                 value="-"
                 onClick={handleSubstractFileInput}
-                className="text-xl p-1 font-bold block w-full text-white bg-green-500 rounded-md text-sm cursor-pointer"
+                className="text-xl p-1 font-bold block w-full text-white bg-green-500 rounded-md cursor-pointer"
               />
             </div>
             <div className="w-[5%] text-center">
@@ -414,7 +509,7 @@ const AddCaseViaForm = () => {
                 type="button"
                 value="+"
                 onClick={handleAddFileInput}
-                className="text-xl p-1 font-bold block w-full text-white bg-red-500 rounded-md text-sm cursor-pointer"
+                className="text-xl p-1 font-bold block w-full text-white bg-red-500 rounded-md cursor-pointer"
               />
             </div>
           </div>

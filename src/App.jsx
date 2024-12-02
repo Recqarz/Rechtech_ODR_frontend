@@ -9,20 +9,21 @@ import Allroutes from "./AllRoutes/Routes";
 import Webex from "./pages/webex";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPrivate from "./components/LoginPrivate";
-
+import { VerifyOTP } from "./pages/Respondent/respondentotp";
 
 function App() {
   return (
-    <div className="flex">
-      <Routes>
-        <Route path="/" element={<LoginPrivate Component={Login} />} />
-        <Route path="/resetdashboard" element={<ResetDashboard />} />
-        <Route path="/resetdashboard/otp" element={<ResetOTP />} />
-        <Route path="/resetdashboard/setpassword" element={<SetPassword />} />
-        <Route path="/webexauth" element={<Webex />} />
-        <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
-      </Routes>
-    </div>
+    // <div className="flex min-h-[100vh]">
+    <Routes>
+      <Route path="/" element={<LoginPrivate Component={Login} />} />
+      <Route path="/resetdashboard" element={<ResetDashboard />} />
+      <Route path="/resetdashboard/otp" element={<ResetOTP />} />
+      <Route path="/otplogin" element={<VerifyOTP />} />
+      <Route path="/resetdashboard/setpassword" element={<SetPassword />} />
+      <Route path="/webexauth" element={<Webex />} />
+      <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
+    </Routes>
+    // {/* </div> */}
   );
 }
 

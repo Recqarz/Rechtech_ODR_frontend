@@ -190,8 +190,8 @@ const Uploadcase = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-3">
-      <div className=" flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+    <div className="max-w-6xl mx-auto px-4 py-2 bg-gray-50 min-h-[100vh]">
+      <div className=" flex justify-between items-center ml-12 md:ml-0 bg-white mb-2 p-2 rounded-lg shadow-sm">
         <div className="flex items-center space-x-2">
           <div className="text-sm text-gray-500 flex items-center space-x-2">
             <Link to="/client/cases">

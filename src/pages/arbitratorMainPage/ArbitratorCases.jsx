@@ -166,7 +166,6 @@ const ArbitratorCases = () => {
       });
   }
 
-
   //download files
   const handleDownloadAll = (links) => {
     links.forEach((link) => {
@@ -183,7 +182,7 @@ const ArbitratorCases = () => {
   return (
     <div>
       <div className="w-[100%] mx-auto mt-2 px-2">
-        <div className="flex flex-shrink-0 w-full items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
+        <div className="flex flex-shrink-0 w-[80%] ml-14 mt-6 md:ml-0 md:mt-0 items-center sm:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
           <input
             type="text"
             placeholder="Search"
