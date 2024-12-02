@@ -90,7 +90,7 @@ const ClientDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto px-4 py-3">
-        <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className="flex justify-between items-center ml-12 md:ml-0 mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">User</span>

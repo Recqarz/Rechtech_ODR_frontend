@@ -1,6 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Webkit Browsers (Chrome, Safari, newer versions of Edge) */
+::-webkit-scrollbar {
+  width: 4px; /* Very thin vertical scrollbar */
+  height: 4px; /* Very thin horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light gray for the track */
+  border-radius: 4px; /* Rounded corners for track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Gray color for the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners for thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker gray on hover */
+}
+
+/* Firefox Scrollbar Styles */
+* {
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: #888 #f1f1f1; /* Thumb color and track color */
+}
+
+/* Custom Scrollbar for Specific Elements */
+.custom-scroll {
+  overflow-y: auto; /* Ensure the element is scrollable */
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #e0e0e0;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 2px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 2px;
+}
+
+/* Dark Mode Specific Scrollbars */
+.dark-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #4c4c4c #2c2c2c;
+}
+
+.dark-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dark-scroll::-webkit-scrollbar-thumb {
+  background: #4c4c4c;
+}
+
+.dark-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6c6c6c;
+}
+
+.dark-scroll::-webkit-scrollbar-track {
+  background: #2c2c2c;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -27,7 +96,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -53,7 +122,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 @layer base {

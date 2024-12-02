@@ -120,7 +120,9 @@ const CaseDashboard = () => {
       setLoading(true);
       axios
         .post(
-          `${import.meta.env.VITE_API_BASEURL}/arbitratorappointandnotifyall/bulk`,
+          `${
+            import.meta.env.VITE_API_BASEURL
+          }/arbitratorappointandnotifyall/bulk`,
           obj
         )
         .then((res) => {
@@ -186,7 +188,7 @@ const CaseDashboard = () => {
     // Toggle the select all status
     const newSelectAllStatus = !selectAllClientStatus;
     setSelectAllClientStatus(newSelectAllStatus);
-  
+
     // If selecting all, apply the same filtering logic as in the table render
     if (newSelectAllStatus) {
       const unassignedCaseIds = caseData
@@ -204,15 +206,21 @@ const CaseDashboard = () => {
           if (!searchByData) return true;
           return (
             el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.respondentName.toLowerCase().includes(searchByData.toLowerCase()) ||
-            el.respondentMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.clientMobile
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
+            el.respondentName
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
+            el.respondentMobile
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
             el.disputeType.toLowerCase().includes(searchByData.toLowerCase())
           );
         })
-        .filter(el => el.arbitratorName === "") // Only unassigned cases
-        .map(el => el._id);
-  
+        .filter((el) => el.arbitratorName === "") // Only unassigned cases
+        .map((el) => el._id);
+
       setCaseId(unassignedCaseIds);
     } else {
       // If deselecting, clear all selected cases
@@ -222,16 +230,15 @@ const CaseDashboard = () => {
 
   const handleDownloadAll = (links) => {
     links.forEach((link) => {
-      const anchor = document.createElement('a');
+      const anchor = document.createElement("a");
       anchor.href = link.url;
       anchor.target = "_blank";
-      anchor.download = ''; // Provide a filename if needed
+      anchor.download = ""; // Provide a filename if needed
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
     });
   };
-
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -295,9 +302,6 @@ const CaseDashboard = () => {
             </button>
           </div>
 
-
-
-
           {/* <div className="flex-shrink-0 w-full sm:w-[15%] bg-blue-50">
             <Select
               id="name"
@@ -328,9 +332,6 @@ const CaseDashboard = () => {
               </SelectContent>
             </Select>
           </div> */}
-
-
-
 
           <div className="flex gap-2 items-center ml-5">
             <Checkbox
@@ -428,9 +429,14 @@ const CaseDashboard = () => {
                   </td>
                   <td data-label="attachment">
                     <div className="flex gap-1">
-                      {cases.attachments.length > 0 ?
-                          <IoMdDownload className="cursor-pointer text-sm" onClick={()=>handleDownloadAll(cases.attachments)} />
-                        : "No attach"}
+                      {cases.attachments.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm"
+                          onClick={() => handleDownloadAll(cases.attachments)}
+                        />
+                      ) : (
+                        "No attach"
+                      )}
                     </div>
                   </td>
 

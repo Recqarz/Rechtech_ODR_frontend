@@ -1,12 +1,13 @@
-import { FORGOT_EMAIL, LOGIN, REFRESHER, ROLE } from "./action";
+import { FORGOT_EMAIL, LOGIN, REFRESHER, RESPONDENT_EMAIL, ROLE } from "./action";
 
 const initState = {
   forgotEmail: "",
+  respondentAccount: "",
   refresher: false,
   role: localStorage.getItem("rechtechrole")
     ? JSON.parse(localStorage.getItem("rechtechrole"))
-    : "",
-  isLogin : localStorage.getItem("rechtechrole")? true:false,
+    : sessionStorage.getItem("rechtechrole") ? JSON.parse(sessionStorage.getItem("rechtechrole")) : "",
+  isLogin : localStorage.getItem("rechtechrole") || sessionStorage.getItem("rechtechrole") ? true:false,
 };
 
 export function Reducer(state = initState, action) {
@@ -19,6 +20,8 @@ export function Reducer(state = initState, action) {
       return { ...state, role: action.payload };
     case LOGIN:
       return { ...state, isLogin: action.payload };
+    case RESPONDENT_EMAIL:
+      return { ...state, respondentAccount: action.payload };
     default:
       return state;
   }
