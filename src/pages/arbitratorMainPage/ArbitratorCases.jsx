@@ -80,7 +80,6 @@ const ArbitratorCases = () => {
       })
       .then((res) => {
         setArbitratorCaseData(res.data.caseData);
-        console.log("all", res.data.caseData);
       })
       .catch((err) => {
         toast.error("Something went wrong!");
@@ -100,7 +99,6 @@ const ArbitratorCases = () => {
     if (!isOpen) {
       setCaseId("");
       setTitle("");
-      // setDescription("");
     }
     if (isOpen) {
       setSelectStartDate(new Date());
@@ -116,7 +114,7 @@ const ArbitratorCases = () => {
   function getFormattedDateTime(dates) {
     const inputDate = new Date(dates);
     const year = inputDate.getFullYear();
-    const month = String(inputDate.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed, so add 1
+    const month = String(inputDate.getMonth() + 1).padStart(2, "0");
     const day = String(inputDate.getDate()).padStart(2, "0");
     const hours = String(inputDate.getHours()).padStart(2, "0");
     const minutes = String(inputDate.getMinutes()).padStart(2, "0");
@@ -338,7 +336,7 @@ const ArbitratorCases = () => {
       .then((res) => {
         toast.success("Award sheet uploaded");
         setIsOpen3(false);
-        setCaseId("")
+        setCaseId("");
         setTimeout(() => {
           getArbitratorCaseData();
         }, 2000);
@@ -346,8 +344,6 @@ const ArbitratorCases = () => {
       .catch((err) => {
         toast.error("Some error happen");
       });
-    // console.log(submitData);
-    // return;
   };
 
   // Generate order sheet
@@ -713,7 +709,7 @@ const ArbitratorCases = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Are you sure you want to end the meet */}
+      {/* Are you sure you want to end the meet always*/}
       <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
         <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
           <DialogHeader className="mb-4">
@@ -821,20 +817,18 @@ const ArbitratorCases = () => {
             </DialogTitle>
 
             <div className="space-y-4">
-              <DialogDescription className="text-sm text-gray-600">
-                <div className="relative group mt-6">
-                  <textarea
-                    name="about"
-                    // value={formData.about}
-                    // onChange={handleChange}
-                    rows="4"
-                    className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none peer"
-                    placeholder=" "
-                  />
-                  <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
-                    About (Max 500 Characters)
-                  </label>
-                </div>
+              <DialogDescription className="relative group mt-6 text-sm text-gray-600">
+                <textarea
+                  name="about"
+                  // value={formData.about}
+                  // onChange={handleChange}
+                  rows="4"
+                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none peer"
+                  placeholder=" "
+                />
+                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                  About (Max 500 Characters)
+                </label>
               </DialogDescription>
             </div>
           </DialogHeader>

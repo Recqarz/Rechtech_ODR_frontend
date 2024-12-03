@@ -307,10 +307,10 @@ const CaseDashboard = () => {
                   <SelectItem key="all" value="all">
                     All
                   </SelectItem>
-                  <SelectItem key="Single Case" value="assigned">
+                  <SelectItem key="assign arbitrator" value="assigned">
                     Assigned Arbitrator
                   </SelectItem>
-                  <SelectItem key="Single Case" value="notassigned">
+                  <SelectItem key="not assign arbitrator" value="notassigned">
                     Not Assigned Arbitrator
                   </SelectItem>
                 </SelectGroup>
