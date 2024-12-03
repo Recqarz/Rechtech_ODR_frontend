@@ -37,11 +37,14 @@ import NoDataFound from "@/components/NoDataFound";
 import { IoMdDownload } from "react-icons/io";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FaAward } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { recordingData } from "@/global/action";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
   const [searchByData, setSearchByData] = useState("");
   const navigate = useNavigate();
+  let dispatch = useDispatch();
   const [arbitratorCaseData, setArbitratorCaseData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
@@ -338,7 +341,7 @@ const ArbitratorCases = () => {
       .then((res) => {
         toast.success("Award sheet uploaded");
         setIsOpen3(false);
-        setCaseId("")
+        setCaseId("");
         setTimeout(() => {
           getArbitratorCaseData();
         }, 2000);
@@ -364,6 +367,11 @@ const ArbitratorCases = () => {
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
+  }
+
+  function handleRecordings(cases) {
+    dispatch(recordingData(cases.recordings))
+    navigate("/arbitrator/cases/recordings");
   }
 
   return (
@@ -547,7 +555,10 @@ const ArbitratorCases = () => {
                     </td>
                     <td>
                       {cases.recordings.length > 0 ? (
-                        <IoEye className="ml-4 text-xl cursor-pointer" />
+                        <IoEye
+                          onClick={() => handleRecordings(cases)}
+                          className="ml-4 text-xl cursor-pointer"
+                        />
                       ) : (
                         <p className="font-semibold ml-2">No Meet.</p>
                       )}

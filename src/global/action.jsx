@@ -3,6 +3,7 @@ export const RESPONDENT_EMAIL = "RESPONDENT_EMAIL";
 export const REFRESHER = "REFRESHER";
 export const ROLE = "ROLE";
 export const LOGIN = "LOGIN"
+export const RECORDINGS_DATA = "RECORDINGS_DATA"
 
 export const forgotEmail = (payload) => {
   return {
@@ -38,4 +39,12 @@ export const updateRole = (payload) => {
     payload,
   };
 };
+
+export const recordingData = (payload) => {
+  return {
+    type: RECORDINGS_DATA,
+    payload,
+  };
+};
+
 

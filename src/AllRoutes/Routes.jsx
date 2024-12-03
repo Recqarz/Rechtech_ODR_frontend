@@ -17,6 +17,7 @@ import AllArbitrator from "@/pages/clinetMainPage/AllArbitrator";
 import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
 import RespondentDashboard from "@/pages/Respondent/respondentDashboard";
 import RespondentCase from "@/pages/Respondent/respondentCases";
+import Recordings from "@/pages/arbitratorMainPage/recordings";
 
 const Allroutes = () => {
   return (
@@ -41,6 +42,7 @@ const Allroutes = () => {
           <Route path="/defaulter/:caseid" element={<DefaulterPage />} />
           <Route path="/respondent" element={<RespondentDashboard />} />
           <Route path="/respondent/cases" element={<RespondentCase />} />
+          <Route path="/arbitrator/cases/recordings" element={<Recordings />} />
         </Routes>
       </div>
     </div>
