@@ -1,5 +1,5 @@
 import React from 'react'
-import TableProps from './TableProps'
+import TableProps from './ArbitratorUserTable/TableProps'
 
 const CheckTable = () => {
   return (

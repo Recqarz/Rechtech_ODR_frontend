@@ -1,0 +1,49 @@
+table,
+td,
+th {
+  text-align: left;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  width: 98%;
+  margin-left: 8px;
+}
+
+th,
+td {
+  padding: 6px;
+}
+
+tr > th {
+  color: black;
+  font-size: 13px;
+}
+tr > td {
+  color: black;
+  font-size: 12px;
+}
+
+.trbody {
+  background-color: #eef3fe;
+}
+tbody tr {
+  box-shadow: 0 0 0 1px grey;
+}
+
+.number {
+  color: blue;
+}
+.status {
+  color: green;
+}
+
+.status2 {
+  color: red;
+}
+.buttonAdd{
+    background-color: blue;
+    font-size: 30px;
+    text-align: end;
+}
