@@ -90,7 +90,7 @@ const ClientDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto px-4 py-3">
-        <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className="flex justify-between items-center ml-12 md:ml-0 mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">User</span>
@@ -110,29 +110,29 @@ const ClientDashboard = () => {
           ""
         ) : (
           <div className="mt-6 sm:mt-10 flex gap-4 sm:items-center">
-            <div className="w-[30%] relative md:w-[25%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
+            <div className="w-[30%] md:w-[20%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
               <input
                 type="text"
                 placeholder="Search here"
                 className="flex-grow outline-none bg-transparent px-2 py-0.5 text-sm"
                 onChange={(e) => setSearchdata(e.target.value)}
               />
-              <button className="p-0 absolute right-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
+              <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
             </div>
 
             <div className="relative w-[15%] md:w-[21%] sm:w-auto">

@@ -15,11 +15,14 @@ import ClientCases from "@/pages/clinetMainPage/ClientCases";
 import ClientMain from "@/pages/clinetMainPage/ClientMain";
 import AllArbitrator from "@/pages/clinetMainPage/AllArbitrator";
 import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
+import RespondentDashboard from "@/pages/Respondent/respondentDashboard";
+import RespondentCase from "@/pages/Respondent/respondentCases";
+import Recordings from "@/pages/arbitratorMainPage/recordings";
 
 const Allroutes = () => {
   return (
     <div className="flex w-full">
-      <div className="fixed top-0 left-0">
+      <div className="fixed top-0 left-0 bottom-0 h-[100vh]">
         <Sidebar />
       </div>
       <div className="flex-1 md:ml-52">
@@ -37,6 +40,9 @@ const Allroutes = () => {
           <Route path="/admin/cases" element={<Uploadcase />} />
           <Route path="/admin/cases/add" element={<AddCaseViaForm />} />
           <Route path="/defaulter/:caseid" element={<DefaulterPage />} />
+          <Route path="/respondent" element={<RespondentDashboard />} />
+          <Route path="/respondent/cases" element={<RespondentCase />} />
+          <Route path="/arbitrator/cases/recordings" element={<Recordings />} />
         </Routes>
       </div>
     </div>

@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import toast from "react-hot-toast";
+import TableProps from "@/components/ArbitratorUserTable/TableProps";
 
 const ArbitratorDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,10 +90,15 @@ const ArbitratorDashboard = () => {
     getData();
   }, []);
 
+  const sendDataToArbitrator = (allarbitrator) => {
+    setData(allarbitrator);
+    console.log("arb", allarbitrator);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-3">
-        <div className=" flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className=" flex justify-between items-center ml-12 md:ml-0 mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">
@@ -114,17 +120,17 @@ const ArbitratorDashboard = () => {
           ""
         ) : (
           <div className="mt-6 sm:mt-10 flex gap-4 sm:items-center">
-            <div className="w-[30%] relative md:w-[25%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
+            <div className="sm:w-[30%] md:w-[20%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
               <input
                 type="text"
                 placeholder="Search here"
                 className="flex-grow outline-none bg-transparent px-2 py-0.5 text-sm"
                 onChange={(e) => setSearchdata(e.target.value)}
               />
-              <button className="p-0 absolute right-2">
+              <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-500"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -181,7 +187,6 @@ const ArbitratorDashboard = () => {
         </div>
 
         {/* Table Data */}
-
         {data.length > 0 ? (
           <table cellSpacing="0">
             <thead>
@@ -220,42 +225,26 @@ const ArbitratorDashboard = () => {
                 }
               })
               .map((arbitratior) => (
-                <tbody key={arbitratior._id}>
-                  <tr className={styles.trbody}>
-                    <td data-label="ID">{arbitratior.uid}</td>
-                    <td data-label="Name">{arbitratior.name}</td>
-                    <td data-label="Contact No." className={styles.number}>
-                      {arbitratior.contactNo}
-                    </td>
-                    <td data-label="Email ID">{arbitratior.emailId}</td>
-                    <td data-label="No. of assign Case">
-                      {arbitratior.noOfAssignCase}
-                    </td>
-                    <td data-label="address">
-                      {arbitratior.address.slice(0, 10)}
-                    </td>
-                    <td
-                      data-label="Status"
-                      className={
-                        arbitratior.status == true
-                          ? styles.status
-                          : styles.status2
-                      }
-                    >
-                      {arbitratior.status == false ? "InActive" : "Active"}
-                    </td>
-                    <td data-label="Action">
-                      <FiEdit3
-                        style={{
-                          color: "blue",
-                          fontSize: "24px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleOpen(arbitratior)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
+                <TableProps
+                  key={arbitratior._id}
+                  id_body={arbitratior.uid}
+                  name_body={arbitratior.name}
+                  number_body={arbitratior.contactNo}
+                  email_body={arbitratior.emailId}
+                  noOfAssginCases_body={arbitratior.noOfAssignCase}
+                  address_body={arbitratior.address.slice(0, 10)}
+                  status_body={
+                    arbitratior.status == false ? "InActive" : "Active"
+                  }
+                  action_body=<FiEdit3
+                    style={{
+                      color: "blue",
+                      fontSize: "24px",
+                      cursor: "pointer",
+                    }}
+                  />
+                  handleOpen={() => handleOpen(arbitratior)}
+                />
               ))}
           </table>
         ) : (
@@ -263,6 +252,9 @@ const ArbitratorDashboard = () => {
         )}
       </div>
 
+
+
+{/* Update the Status */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
