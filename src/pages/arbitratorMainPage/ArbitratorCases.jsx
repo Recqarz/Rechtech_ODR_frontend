@@ -71,7 +71,7 @@ const ArbitratorCases = () => {
   });
   // Generate Order Sheet
   const [idForOrderSheet, setIdForOrderSheet] = useState("");
-  const [fileForOrderSheet, setFileForOrderSheet]=useState("");
+  const [fileForOrderSheet, setFileForOrderSheet] = useState("");
 
   let token = JSON.parse(localStorage.getItem("rechtechtoken"));
 
@@ -324,6 +324,10 @@ const ArbitratorCases = () => {
       toast.error("Please select a file");
       return;
     }
+    if (!file.name.includes("pdf")) {
+      toast.error("Only pdf files is allowed");
+      return;
+    }
     const submitData = new FormData();
     submitData.append("file", file);
     submitData.append("caseId", idForAward);
@@ -356,24 +360,41 @@ const ArbitratorCases = () => {
     setIdForOrderSheet(id);
   };
 
-const handleOrderSheet=(e)=>{
-  e.preventDefault();
-  if (!fileForOrderSheet) {
-    toast.error("Please select a file");
-    return;
-  }
-  const submitOrderSheetData = new FormData();
-  submitOrderSheetData.append("file", fileForOrderSheet);
-  submitOrderSheetData.append("caseId", idForOrderSheet);
-
-  
-  console.log("object", submitOrderSheetData)
-  return;
-}
-
-
-
-
+  const handleOrderSheet = (e) => {
+    e.preventDefault();
+    if (!fileForOrderSheet) {
+      toast.error("Please select a file");
+      return;
+    }
+    if (!fileForOrderSheet.name.includes("pdf")) {
+      toast.error("Only pdf files is allowed");
+      return;
+    }
+    const submitOrderSheetData = new FormData();
+    submitOrderSheetData.append("file", fileForOrderSheet);
+    submitOrderSheetData.append("caseId", idForOrderSheet);
+    axios
+      .post(
+        `${import.meta.env.VITE_API_BASEURL}/cases/uploadordersheet`,
+        submitOrderSheetData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        toast.success("Order sheet uploaded");
+        setIsOpen4(false);
+        setIdForOrderSheet("");
+        setTimeout(() => {
+          getArbitratorCaseData();
+        }, 2000);
+      })
+      .catch((err) => {
+        toast.error("Some error happen");
+      });
+  };
 
   function handleDownloadAward(link) {
     const anchor = document.createElement("a");
@@ -385,12 +406,22 @@ const handleOrderSheet=(e)=>{
     document.body.removeChild(anchor);
   }
 
-
   function handleRecordings(cases) {
-    dispatch(recordingData(cases.recordings))
+    dispatch(recordingData(cases.recordings));
     navigate("/arbitrator/cases/recordings");
   }
 
+  const handleDownloadAllorder = (links) => {
+    links.forEach((link) => {
+      const anchor = document.createElement("a");
+      anchor.href = link;
+      anchor.target = "_blank";
+      anchor.download = "";
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  };
 
   return (
     <div>
@@ -499,6 +530,7 @@ const handleOrderSheet=(e)=>{
                 <th>File</th>
                 <th>Attachment</th>
                 <th>Recordings</th>
+                <th>Order</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -579,6 +611,19 @@ const handleOrderSheet=(e)=>{
                         />
                       ) : (
                         <p className="font-semibold ml-2">No Meet.</p>
+                      )}
+                    </td>
+
+                    <td>
+                      {cases.orderSheet.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm ml-6"
+                          onClick={() =>
+                            handleDownloadAllorder(cases.orderSheet)
+                          }
+                        />
+                      ) : (
+                        <p className="font-semibold ml-2">No Order.</p>
                       )}
                     </td>
 
@@ -913,17 +958,12 @@ const handleOrderSheet=(e)=>{
                 </div>
               ) : null}
             </div>
-
-
-
-
-
           </DialogHeader>
           <DialogFooter className="mt-6 flex justify-end">
             <Button
               type="submit"
               className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-            onClick={handleOrderSheet}
+              onClick={handleOrderSheet}
             >
               Generate Order Sheet
             </Button>
