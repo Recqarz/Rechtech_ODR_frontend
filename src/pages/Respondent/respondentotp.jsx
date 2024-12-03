@@ -1,12 +1,14 @@
+import { loginUpdater, updateRole } from "@/global/action";
 import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaLongArrowAltLeft } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export const VerifyOTP = () => {
   const navigate = useNavigate();
+  let dispatch = useDispatch()
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
   let respondentAccount = useSelector((state) => state?.respondentAccount);
@@ -54,15 +56,15 @@ export const VerifyOTP = () => {
     e.preventDefault();
     const otp = otpValues.join("");
     axios
-      .post(`${import.meta.env.VITE_API_BASEURL}/respondentlogin`, {
+      .post(`${import.meta.env.VITE_API_BASEURL}/auth/respondentlogin`, {
         otp,
         accountNumber: respondentAccount,
       })
       .then((res) => {
         sessionStorage.setItem("rechtechtoken", JSON.stringify(res.data.token));
+        sessionStorage.setItem("rechtechrole", JSON.stringify(res.data.role));
         toast.success("OTP verified and login successfully");
         dispatch(updateRole(res.data.role));
-        sessionStorage.setItem("rechtechrole", JSON.stringify(res.data.role));
         dispatch(loginUpdater(true));
         navigate(`/${res.data.role}`);
       })
