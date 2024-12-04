@@ -78,11 +78,10 @@ const ClientDashboard = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
       .then((res) => {
-        // console.log(res.data.user);
         setData(res.data.user);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong")
       });
   };
   useEffect(() => {

@@ -88,8 +88,6 @@ const AddArbitrator = () => {
       uid: formData.uid,
       address:formData.address
     };
-    // console.log("object", obj.areaOfExperties)
-    // return ;
 
     if (
       !obj.name ||

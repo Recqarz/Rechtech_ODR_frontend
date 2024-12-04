@@ -45,7 +45,7 @@ const ArbitratorDashboard = () => {
     setEditData(arbitratior);
   };
   const handleClose = () => {
-    console.log(editData);
+    // console.log(editData);
     axios
       .put(
         `${import.meta.env.VITE_API_BASEURL}/arbitrator/update/${editData._id}`,
@@ -77,11 +77,10 @@ const ArbitratorDashboard = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
       .then((res) => {
-        console.log(res.data.user);
         setData(res.data.user);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong")
       });
   };
 

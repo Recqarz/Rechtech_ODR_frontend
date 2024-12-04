@@ -4,19 +4,10 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { FcStart, FcVideoCall } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
-import { CgRecord } from "react-icons/cg";
 import { MdOutlineDone } from "react-icons/md";
 import { SiGoogleforms } from "react-icons/si";
 import { IoMdCloudDownload } from "react-icons/io";
 import { IoEye } from "react-icons/io5";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -26,13 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { cn } from "@/lib/utils";
 import NoDataFound from "@/components/NoDataFound";
 import { IoMdDownload } from "react-icons/io";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -135,7 +120,8 @@ const ArbitratorCases = () => {
     const startDate = getFormattedDateTime(selectStartDate);
     const minutes = parseInt(timeDuration, 10);
     if (isNaN(minutes)) {
-      console.error("Invalid time duration");
+      // console.error("Invalid time duration");
+      toast.error("Invalid time duration");
       return;
     }
     const endDate = new Date(selectStartDate.getTime());
@@ -378,7 +364,6 @@ const ArbitratorCases = () => {
     anchor.click();
     document.body.removeChild(anchor);
   }
-
 
   const generateOrderSheet = (id) => {
     setIsOpen4(true);
@@ -765,7 +750,6 @@ const ArbitratorCases = () => {
         setFileForOrderSheet={setFileForOrderSheet}
         handleOrderSheet={handleOrderSheet}
       />
-
     </div>
   );
 };
