@@ -21,8 +21,8 @@ import Recordings from "@/pages/arbitratorMainPage/recordings";
 
 const Allroutes = () => {
   return (
-    <div className="flex w-full">
-      <div className="fixed top-0 left-0 bottom-0 h-[100vh]">
+    <div className="flex w-full bg-gray-50">
+      <div className="fixed top-0 left-0 bottom-0 h-[100vh] z-30">
         <Sidebar />
       </div>
       <div className="flex-1 md:ml-52">

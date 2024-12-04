@@ -101,13 +101,14 @@ const Sidebar = () => {
               </Link>
 
               <ul className="p-4 space-y-1 mt-5">
-                {role !== "respondent" ? (
                   <Link
                     to={
                       role == "arbitrator"
                         ? "/arbitrator"
                         : role == "client"
                         ? "/client"
+                        : role == "respondent"
+                        ? "/respondent"
                         : "/admin"
                     }
                   >
@@ -119,7 +120,6 @@ const Sidebar = () => {
                       Dashboard
                     </li>
                   </Link>
-                ) : null}
 
                 {role === "admin" ? (
                   <li
@@ -154,7 +154,10 @@ const Sidebar = () => {
                       Arbitrator
                     </li>
                     <Link to="/clienttable">
-                      <li className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors">
+                      <li
+                        onClick={closeMenu}
+                        className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      >
                         Client
                       </li>
                     </Link>

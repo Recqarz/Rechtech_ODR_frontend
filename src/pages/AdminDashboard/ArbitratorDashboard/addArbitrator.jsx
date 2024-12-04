@@ -88,8 +88,6 @@ const AddArbitrator = () => {
       uid: formData.uid,
       address:formData.address
     };
-    // console.log("object", obj.areaOfExperties)
-    // return ;
 
     if (
       !obj.name ||
@@ -135,7 +133,7 @@ const AddArbitrator = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 py-3">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className="flex justify-between ml-10 md:ml-0 items-center mb-4 bg-white p-1 md:p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">
