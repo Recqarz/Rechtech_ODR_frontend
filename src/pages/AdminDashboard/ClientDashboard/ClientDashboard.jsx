@@ -1,4 +1,3 @@
-import styles from "../ArbitratorDashboard/ArbitratorDashboard.module.css";
 import { FiEdit3 } from "react-icons/fi";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { LuUser } from "react-icons/lu";
@@ -6,7 +5,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import NoDataFound from "@/components/NoDataFound";
-
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,20 +29,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import toast from "react-hot-toast";
+import TableProps from "@/components/ArbitratorUserTable/TableProps";
+import UpdateClientDetailsProps from "./UpdateClientDetailsProps";
 
 const ClientDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-
-  const handleOpen = (arbitratior) => {
+  const handleOpen = (client) => {
     setIsOpen(true);
-    setEditData(arbitratior);
+    setEditData(client);
   };
   const handleClose = () => {
-    console.log(editData);
+    // console.log(editData);
     axios
-      .put(`${import.meta.env.VITE_API_BASEURL}/client/update/${editData._id}`, editData)
+      .put(
+        `${import.meta.env.VITE_API_BASEURL}/client/update/${editData._id}`,
+        editData
+      )
       .then((res) => {
         setIsOpen(false);
         getData();
@@ -76,7 +78,7 @@ const ClientDashboard = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
       .then((res) => {
-        console.log(res.data.user);
+        // console.log(res.data.user);
         setData(res.data.user);
       })
       .catch((err) => {
@@ -93,16 +95,19 @@ const ClientDashboard = () => {
         <div className="flex justify-between items-center ml-12 md:ml-0 mb-4 bg-white p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-500 flex items-center space-x-2">
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">User</span>
+              <span className="cursor-pointer hover:text-blue-700 font-semibold">
+                User
+              </span>
               <span>›</span>
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">Client</span>
+              <span className="cursor-pointer hover:text-blue-700 font-semibold">
+                Client
+              </span>
             </div>
           </div>
 
           <div className="bg-blue-50 p-3 rounded-full">
             <LuUser className="text-blue-600 text-xl" />
           </div>
-
         </div>
 
         {/* Search button */}
@@ -118,21 +123,21 @@ const ClientDashboard = () => {
                 onChange={(e) => setSearchdata(e.target.value)}
               />
               <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
             </div>
 
             <div className="relative w-[15%] md:w-[21%] sm:w-auto">
@@ -176,7 +181,7 @@ const ClientDashboard = () => {
           </Link>
         </div>
 
-        {/* Table Data */}
+        {/* Client data in the table*/}
 
         {data.length > 0 ? (
           <table cellSpacing="0">
@@ -215,133 +220,41 @@ const ClientDashboard = () => {
                   return stat.status == false;
                 }
               })
-              .map((arbitratior) => (
-                <tbody key={arbitratior._id}>
-                  <tr className={styles.trbody}>
-                    <td data-label="ID">{arbitratior.uid}</td>
-                    <td data-label="Name">{arbitratior.name}</td>
-                    <td data-label="Contact No." className={styles.number}>
-                      {arbitratior.contactNo}
-                    </td>
-                    <td data-label="Email ID">{arbitratior.emailId}</td>
-                    <td data-label="No. of assign Case">
-                      {arbitratior.caseAdded}
-                    </td>
-                    <td data-label="Address">
-                      {arbitratior.address.slice(0, 10)}
-                    </td>
-                    <td data-label="Status" className={arbitratior.status == true ? styles.status : styles.status2}>
-                      {arbitratior.status == false ? "InActive" : "Active"}
-                    </td>
-                    <td data-label="Action">
-                    <FiEdit3
-                        style={{
-                          color: "blue",
-                          fontSize: "24px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleOpen(arbitratior)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
+              .map((client) => (
+                <TableProps
+                  key={client._id}
+                  id_body={client.uid}
+                  name_body={client.name}
+                  number_body={client.contactNo}
+                  email_body={client.emailId}
+                  noOfAssginCases_body={client.caseAdded}
+                  address_body={client.address.slice(0, 10)}
+                  status_body={client.status == false ? "InActive" : "Active"}
+                  action_body=<FiEdit3
+                    style={{
+                      color: "blue",
+                      fontSize: "24px",
+                      cursor: "pointer",
+                    }}
+                  />
+                  handleOpen={() => handleOpen(client)}
+                />
               ))}
           </table>
         ) : (
           <NoDataFound />
         )}
       </div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Client</DialogTitle>
-            <DialogDescription>
-              Make changes to client profile. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="uid" className="text-right">
-                ID
-              </Label>
-              <Input
-                id="uid"
-                value={editData?.uid}
-                onInput={(e) => setEditData((editData.uid = e.target.value))}
-                className="col-span-3"
-                disabled={true}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                value={editData?.name}
-                onInput={(e) => setEditData((editData.name = e.target.value))}
-                className="col-span-3"
-                disabled={true}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="contactNo" className="text-right">
-                Contact No.
-              </Label>
-              <Input
-                id="contactNo"
-                value={editData?.contactNo}
-                onInput={(e) =>
-                  setEditData((editData.contactNo = e.target.value))
-                }
-                className="col-span-3"
-                disabled={true}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="emailId" className="text-right">
-                Email
-              </Label>
-              <Input
-                id="emailId"
-                value={editData?.emailId}
-                onInput={(e) =>
-                  setEditData((editData.emailId = e.target.value))
-                }
-                className="col-span-3"
-                disabled={true}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">
-                Status
-              </Label>
-              <Select
-                id="status"
-                onValueChange={(value) =>
-                  setEditData({ ...editData, status: value === "active" })
-                }
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" onClick={handleClose}>
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Modal for update status */}
+
+      <UpdateClientDetailsProps
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        editData={editData}
+        setEditData={setEditData}
+        handleClose={handleClose}
+      />
     </div>
   );
 };

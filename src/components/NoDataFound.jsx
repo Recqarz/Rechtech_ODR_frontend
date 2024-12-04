@@ -12,7 +12,7 @@ const NoDataFound = () => {
       </h2>
       
       <p className="text-gray-500 text-center max-w-md">
-        We can not find any data matching your criteria. Please click on Add button for new data.
+        We can not find any data matching your criteria.
       </p>
     </div>
   )

@@ -18,6 +18,7 @@ import CaseDashboard from "./CaseDashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotEmail, refreshers } from "@/global/action";
 import { Input } from "@/components/ui/input";
+import UploadCaseBulkProps from "./UploadCaseBulkProps";
 
 const Uploadcase = () => {
   let dispatch = useDispatch();
@@ -233,7 +234,26 @@ const Uploadcase = () => {
         </div>
         </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+
+{/* Case upload in bulk */}
+
+<UploadCaseBulkProps
+isOpen={isOpen}
+  setIsOpen={setIsOpen}
+  formattedDate={formattedDate}
+  options={options}
+  selectedOption={selectedOption}
+  handleChange={handleChange}
+  handleInputChange={handleInputChange}
+  disputeType={disputeType}
+  setDisputeType={setDisputeType}
+  setFile={setFile}
+  message={message}
+  setMessage={setMessage}
+  handleUpload={handleUpload}
+
+/>
+      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           className="sm:max-w-[480px] p-6 rounded-lg shadow-lg"
           style={{ maxHeight: "80vh", overflowY: "auto" }}
@@ -352,7 +372,7 @@ const Uploadcase = () => {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <CaseDashboard />
     </div>
