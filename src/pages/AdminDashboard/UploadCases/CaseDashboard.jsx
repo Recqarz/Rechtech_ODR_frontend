@@ -36,6 +36,7 @@ import { Link } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import CasesTableProps from "@/components/AdminCases/CasesTableProps";
+import AssignArbitratorProps from "./AssignArbitratorProps";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -480,7 +481,21 @@ const CaseDashboard = () => {
         <NoDataFound />
       )}
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      {/* Assign Arbitrator */}
+
+      <AssignArbitratorProps
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        searchArbitrator={searchArbitrator}
+        setSearchArbitrator={setSearchArbitrator}
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        options={options}
+        loading={loading}
+        handleSelectArbitrator={handleSelectArbitrator}
+      />
+
+      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           className="rounded-lg shadow-lg"
           style={{ maxHeight: "80vh", overflowY: "auto" }}
@@ -590,7 +605,7 @@ const CaseDashboard = () => {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

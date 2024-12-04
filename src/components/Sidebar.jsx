@@ -154,7 +154,7 @@ const Sidebar = () => {
                       Arbitrator
                     </li>
                     <Link to="/clienttable">
-                      <li className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors">
+                      <li onClick={closeMenu} className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors">
                         Client
                       </li>
                     </Link>
