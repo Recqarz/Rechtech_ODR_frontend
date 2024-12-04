@@ -91,7 +91,7 @@ const AddClient = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 py-3">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className="flex justify-between items-center mb-4 ml-10 md:ml-0 bg-white p-1 md:p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
             {/* <h1 className="text-2xl font-bold text-gray-800">Add Arbitrator</h1> */}
             <div className="text-sm text-gray-500 flex items-center space-x-2">

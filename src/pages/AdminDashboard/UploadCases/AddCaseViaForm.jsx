@@ -130,6 +130,21 @@ const AddCaseViaForm = () => {
   const handleAddNewCaseData = async (e) => {
     e.preventDefault();
 
+    if (
+      formData.clientName === "" ||
+      formData.clientEmail === "" ||
+      formData.clientMobile === "" ||
+      formData.clientAddress === "" ||
+      formData.respondentName === "" ||
+      formData.respondentEmail === "" ||
+      formData.respondentMobile === "" ||
+      formData.respondentAddress === "" ||
+      formData.disputeType === ""
+    ) {
+      toast.error("All fields are required");
+      return;
+    }
+
     // Create the case data object
     const caseData = {
       caseId: formData.caseId,
@@ -248,7 +263,7 @@ const AddCaseViaForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative group">
               <CreatableSelect
-                className="z-40 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
+                className="z-20 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
                 value={selectedOption}
                 onChange={handleSelectChange}
                 options={options}
@@ -310,7 +325,7 @@ const AddCaseViaForm = () => {
 
             <div className="relative group">
               <CreatableSelect
-                className="z-20 block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
+                className="z-[15] block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
                 value={selectedOption2}
                 onChange={handleSelectChange2}
                 options={options2}
@@ -496,7 +511,7 @@ const AddCaseViaForm = () => {
           ))}
 
           <div className="flex items-center justify-end gap-4 mt-4">
-            <div className="w-[5%] text-center">
+            <div className="w-[60px] text-center">
               <input
                 type="button"
                 value="-"
@@ -504,7 +519,7 @@ const AddCaseViaForm = () => {
                 className="text-xl p-1 font-bold block w-full text-white bg-green-500 rounded-md cursor-pointer"
               />
             </div>
-            <div className="w-[5%] text-center">
+            <div className="w-[60px] text-center">
               <input
                 type="button"
                 value="+"

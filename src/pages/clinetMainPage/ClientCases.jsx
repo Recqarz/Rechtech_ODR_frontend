@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../AdminDashboard/ArbitratorDashboard/ArbitratorDashboard.module.css";
 import { FcVideoCall } from "react-icons/fc";
 import NoDataFound from "@/components/NoDataFound";
+import toast from "react-hot-toast";
 
 const ClientCases = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const ClientCases = () => {
 
   const getArbitratorCaseData = () => {
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/uploadcasedata/clientcases`, {
+      .get(`${import.meta.env.VITE_API_BASEURL}/cases/clientcases`, {
         headers: {
           token: token,
         },

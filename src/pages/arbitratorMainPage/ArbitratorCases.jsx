@@ -341,7 +341,7 @@ const ArbitratorCases = () => {
       return;
     }
     if (!file.name.includes("pdf")) {
-      toast.error("Only Pdf file is allowed");
+      toast.error("Only pdf files is allowed");
       return;
     }
     const submitData = new FormData();
@@ -369,7 +369,6 @@ const ArbitratorCases = () => {
         toast.error("Some error happen");
       });
   };
-  // download award
   function handleDownloadAward(link) {
     const anchor = document.createElement("a");
     anchor.href = link;
@@ -380,7 +379,6 @@ const ArbitratorCases = () => {
     document.body.removeChild(anchor);
   }
 
-  // Generate order sheet
 
   const generateOrderSheet = (id) => {
     setIsOpen4(true);
@@ -428,7 +426,6 @@ const ArbitratorCases = () => {
     dispatch(recordingData(cases.recordings));
     navigate("/arbitrator/cases/recordings");
   }
-
   return (
     <div>
       <div className="w-[100%] mx-auto mt-10 px-2">
@@ -636,6 +633,19 @@ const ArbitratorCases = () => {
                       )}
                     </td>
 
+                    <td>
+                      {cases.orderSheet.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm ml-6"
+                          onClick={() =>
+                            handleDownloadAllorder(cases.orderSheet)
+                          }
+                        />
+                      ) : (
+                        <p className="font-semibold ml-2">No Order.</p>
+                      )}
+                    </td>
+
                     <td
                       data-label="Meeting Schedule"
                       style={{
@@ -755,6 +765,7 @@ const ArbitratorCases = () => {
         setFileForOrderSheet={setFileForOrderSheet}
         handleOrderSheet={handleOrderSheet}
       />
+
     </div>
   );
 };

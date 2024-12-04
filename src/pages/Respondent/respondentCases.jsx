@@ -5,11 +5,8 @@ import { useSelector } from "react-redux";
 
 const RespondentCase = () => {
   const [data, setData] = useState([]);
-  let role = useSelector((state) => state.role);
   function fetchData() {
-    let token = sessionStorage.getItem("rechtechtoken")
-      ? sessionStorage.getItem(JSON.parse("rechtechtoken"))
-      : null;
+    let token = JSON.parse(sessionStorage.getItem("rechtechtoken"))
     if (!token) {
       toast.error("You are not logged in");
       return;
@@ -18,11 +15,12 @@ const RespondentCase = () => {
       .get(`${import.meta.env.VITE_API_BASEURL}/cases/allrespondentcases`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          token: `${token}`,
         },
       })
       .then((response) => {
         setData(response.data.data);
+        console.log(response.data.data)
       })
       .catch((error) => {
         toast.error("Something went wrong");
