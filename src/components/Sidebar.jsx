@@ -101,13 +101,14 @@ const Sidebar = () => {
               </Link>
 
               <ul className="p-4 space-y-1 mt-5">
-                {role !== "respondent" ? (
                   <Link
                     to={
                       role == "arbitrator"
                         ? "/arbitrator"
                         : role == "client"
                         ? "/client"
+                        : role == "respondent"
+                        ? "/respondent"
                         : "/admin"
                     }
                   >
@@ -119,7 +120,6 @@ const Sidebar = () => {
                       Dashboard
                     </li>
                   </Link>
-                ) : null}
 
                 {role === "admin" ? (
                   <li
