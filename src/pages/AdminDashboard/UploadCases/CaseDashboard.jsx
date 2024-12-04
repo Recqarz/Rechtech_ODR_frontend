@@ -35,6 +35,7 @@ import { refreshers } from "@/global/action";
 import { Link } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import CasesTableProps from "@/components/AdminCases/CasesTableProps";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -167,8 +168,6 @@ const CaseDashboard = () => {
     setSelectedOption(null);
   };
 
-
-
   // to get unique file name in the filter
   const uniqueFileName = [];
   const seeFileName = new Set();
@@ -260,8 +259,8 @@ const CaseDashboard = () => {
         ""
       ) : (
         <div className="flex flex-wrap gap-2 mt-5 mx-5">
-           {/* Filter by file name */}
-           <div className="flex-shrink-0 sm:w-[15%] bg-blue-50">
+          {/* Filter by file name */}
+          <div className="flex-shrink-0 sm:w-[15%] bg-blue-50">
             <Select
               id="name"
               className="w-full"
@@ -379,7 +378,6 @@ const CaseDashboard = () => {
       )}
 
       {/* Case Dashboard Data */}
-
       {caseData.length > 0 ? (
         <table cellSpacing="0">
           <thead>
@@ -423,68 +421,59 @@ const CaseDashboard = () => {
               return el;
             })
             .map((cases) => (
-              <tbody key={cases._id}>
-                <tr className={styles.trbody}>
-                  <td data-label="checkbox">
-                    {isClickedForMultiple ? (
-                      <input
-                        type="checkbox"
-                        value={cases._id}
-                        disabled={cases.isArbitratorAssigned ? true : false}
-                        onChange={() =>
-                          handleSelectMultipleClientForArbitrator(cases._id)
+              <CasesTableProps
+                key={cases._id}
+                checkbox={
+                  isClickedForMultiple ? (
+                    <input
+                      type="checkbox"
+                      value={cases._id}
+                      disabled={cases.isArbitratorAssigned ? true : false}
+                      onChange={() =>
+                        handleSelectMultipleClientForArbitrator(cases._id)
+                      }
+                      checked={caseId.includes(cases._id)}
+                      className="checkbox-small w-[12px] h-[12px]"
+                    />
+                  ) : null
+                }
+                cl_name={cases.clientName}
+                cl_number={cases.clientMobile}
+                res_name={cases.respondentName}
+                res_num={cases.respondentMobile}
+                dispute_type={cases.disputeType}
+                file={cases.isFileUpload ? cases.fileName : "Single Case"}
+                attachment={
+                  cases.attachments.length > 0 ? (
+                    <IoMdDownload
+                      className="cursor-pointer text-sm"
+                      onClick={() => handleDownloadAll(cases.attachments)}
+                    />
+                  ) : (
+                    "No attach"
+                  )
+                }
+                arbitrator={
+                  cases.isArbitratorAssigned ? (
+                    cases.arbitratorName.split(" ")[0]
+                  ) : (
+                    <div>
+                      <FcBusinessman
+                        style={{
+                          color: "blue",
+                          fontSize: "24px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          isClickedForMultiple
+                            ? null
+                            : handleUploadFunction(cases._id)
                         }
-                        checked={caseId.includes(cases._id)}
-                        className="checkbox-small w-[12px] h-[12px]"
                       />
-                    ) : null}
-                  </td>
-                  <td data-label="client name">{cases.clientName}</td>
-                  <td data-label="client number">{cases.clientMobile}</td>
-                  <td data-label="respondant name">{cases.respondentName}</td>
-                  <td data-label="respondence number">
-                    {cases.respondentMobile}
-                  </td>
-                  <td data-label="dispute type">{cases.disputeType}</td>
-                  <td data-label="case type">
-                    {cases.isFileUpload ? cases.fileName : "Single Case"}
-                  </td>
-                  <td data-label="attachment">
-                    <div className="flex gap-1">
-                      {cases.attachments.length > 0 ? (
-                        <IoMdDownload
-                          className="cursor-pointer text-sm"
-                          onClick={() => handleDownloadAll(cases.attachments)}
-                        />
-                      ) : (
-                        "No attach"
-                      )}
                     </div>
-                  </td>
-
-                  <td data-label="arbitrator">
-                    {cases.isArbitratorAssigned ? (
-                      cases.arbitratorName.split(" ")[0]
-                    ) : (
-                      <div>
-                        <FcBusinessman
-                          style={{
-                            color: "blue",
-                            fontSize: "24px",
-                            cursor: "pointer",
-                          }}
-                          // disabled={isClickedForMultiple}
-                          onClick={() =>
-                            isClickedForMultiple
-                              ? null
-                              : handleUploadFunction(cases._id)
-                          }
-                        />
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
+                  )
+                }
+              />
             ))}
         </table>
       ) : (

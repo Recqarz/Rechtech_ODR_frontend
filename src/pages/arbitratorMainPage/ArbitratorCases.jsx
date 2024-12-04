@@ -39,6 +39,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FaAward } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { recordingData } from "@/global/action";
+import OrderSheet from "./OrderSheet";
+import GenerateAward from "./GenerateAward";
+import DoneWithMeet from "./DoneWithMeet";
+import ScheduleMeeting from "./ScheduleMeeting";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
@@ -71,7 +75,7 @@ const ArbitratorCases = () => {
   });
   // Generate Order Sheet
   const [idForOrderSheet, setIdForOrderSheet] = useState("");
-  const [fileForOrderSheet, setFileForOrderSheet]=useState("");
+  const [fileForOrderSheet, setFileForOrderSheet] = useState("");
 
   let token = JSON.parse(localStorage.getItem("rechtechtoken"));
 
@@ -232,6 +236,18 @@ const ArbitratorCases = () => {
     });
   };
 
+  const handleDownloadAllorder = (links) => {
+    links.forEach((link) => {
+      const anchor = document.createElement("a");
+      anchor.href = link;
+      anchor.target = "_blank";
+      anchor.download = "";
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  };
+
   //function to handle individual case selection
   const handleSelectMultipleClientForArbitrator = (id) => {
     setCaseIdForMeeting((prevIds) =>
@@ -324,6 +340,10 @@ const ArbitratorCases = () => {
       toast.error("Please select a file");
       return;
     }
+    if (!file.name.includes("pdf")) {
+      toast.error("Only Pdf file is allowed");
+      return;
+    }
     const submitData = new FormData();
     submitData.append("file", file);
     submitData.append("caseId", idForAward);
@@ -349,32 +369,7 @@ const ArbitratorCases = () => {
         toast.error("Some error happen");
       });
   };
-
-  // Generate order sheet
-  const generateOrderSheet = (id) => {
-    setIsOpen4(true);
-    setIdForOrderSheet(id);
-  };
-
-const handleOrderSheet=(e)=>{
-  e.preventDefault();
-  if (!fileForOrderSheet) {
-    toast.error("Please select a file");
-    return;
-  }
-  const submitOrderSheetData = new FormData();
-  submitOrderSheetData.append("file", fileForOrderSheet);
-  submitOrderSheetData.append("caseId", idForOrderSheet);
-
-  
-  console.log("object", submitOrderSheetData)
-  return;
-}
-
-
-
-
-
+  // download award
   function handleDownloadAward(link) {
     const anchor = document.createElement("a");
     anchor.href = link;
@@ -385,12 +380,54 @@ const handleOrderSheet=(e)=>{
     document.body.removeChild(anchor);
   }
 
+  // Generate order sheet
+
+  const generateOrderSheet = (id) => {
+    setIsOpen4(true);
+    setIdForOrderSheet(id);
+  };
+
+  const handleOrderSheet = (e) => {
+    e.preventDefault();
+    if (!fileForOrderSheet) {
+      toast.error("Please select a file");
+      return;
+    }
+
+    if (!fileForOrderSheet.name.includes("pdf")) {
+      toast.error("Only Pdf file is allowed");
+      return;
+    }
+    const submitOrderSheetData = new FormData();
+    submitOrderSheetData.append("file", fileForOrderSheet);
+    submitOrderSheetData.append("caseId", idForOrderSheet);
+    axios
+      .post(
+        `${import.meta.env.VITE_API_BASEURL}/cases/uploadordersheet`,
+        submitOrderSheetData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        toast.success("Order sheet uploaded");
+        setIsOpen4(false);
+        setIdForOrderSheet("");
+        setTimeout(() => {
+          getArbitratorCaseData();
+        }, 2000);
+      })
+      .catch((err) => {
+        toast.error("Some error happen");
+      });
+  };
 
   function handleRecordings(cases) {
-    dispatch(recordingData(cases.recordings))
+    dispatch(recordingData(cases.recordings));
     navigate("/arbitrator/cases/recordings");
   }
-
 
   return (
     <div>
@@ -453,13 +490,17 @@ const handleOrderSheet=(e)=>{
             </Select>
           </div>
 
-          <div className="flex gap-2 items-center ml-3">
-            <Checkbox
-              onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
-              checked={isClickedForMultiple}
-            />
-            <p>Select Multiple</p>
-          </div>
+          {arbitratorCaseData.length > 0 ? (
+            <div className="flex gap-2 items-center ml-3">
+              <Checkbox
+                onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
+                checked={isClickedForMultiple}
+              />
+              <p>Select Multiple</p>
+            </div>
+          ) : (
+            ""
+          )}
 
           {isClickedForMultiple ? (
             <div className="flex gap-2 items-center ml-1">
@@ -472,7 +513,7 @@ const handleOrderSheet=(e)=>{
             </div>
           ) : null}
 
-          {caseIdForMeeting.length > 0 ? (
+          {caseIdForMeeting.length > 0 && isClickedForMultiple ? (
             <div className="flex gap-1 items-center">
               <FcVideoCall
                 onClick={handleUploadFunctionbulk}
@@ -499,6 +540,7 @@ const handleOrderSheet=(e)=>{
                 <th>File</th>
                 <th>Attachment</th>
                 <th>Recordings</th>
+                <th>Order</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -579,6 +621,18 @@ const handleOrderSheet=(e)=>{
                         />
                       ) : (
                         <p className="font-semibold ml-2">No Meet.</p>
+                      )}
+                    </td>
+                    <td>
+                      {cases.orderSheet.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm ml-6"
+                          onClick={() =>
+                            handleDownloadAllorder(cases.orderSheet)
+                          }
+                        />
+                      ) : (
+                        <p className="font-semibold ml-2">No Order.</p>
                       )}
                     </td>
 
@@ -664,272 +718,43 @@ const handleOrderSheet=(e)=>{
       </div>
 
       {/* Schedule Meeting */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-lg font-semibold text-gray-800">
-              Schedule Meeting
-            </DialogTitle>
-            <div className="space-y-4">
-              <DialogDescription className="text-sm text-gray-600">
-                <Label className="block text-sm font-medium text-gray-700">
-                  Title:
-                </Label>
-                <Input
-                  type="text"
-                  className="mt-3"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </DialogDescription>
-            </div>
-          </DialogHeader>
-
-          <DialogHeader className="space-y-4">
-            {/* Start Date Picker */}
-            <DialogTitle className="text-lg font-semibold text-gray-800">
-              Time
-            </DialogTitle>
-            <div className="flex gap-10 items-center">
-              <Label className="text-sm font-medium text-gray-700 my-2">
-                Start Date and Time
-              </Label>
-              <DatePicker
-                selected={selectStartDate}
-                onChange={(date) => setSelectStartDate(date)}
-                showTimeSelect
-                dateFormat="Pp"
-                minDate={new Date()}
-                minTime={
-                  selectStartDate &&
-                  selectStartDate.toDateString() === new Date().toDateString()
-                    ? new Date()
-                    : new Date().setHours(0, 0)
-                }
-                maxTime={new Date().setHours(23, 59)}
-                customInput={<Input type="datetime" />}
-              />
-            </div>
-
-            {/* End Time Picker */}
-            <div className="flex gap-20 items-center">
-              <Label className="text-sm font-medium text-gray-700 my-2">
-                Time Duration
-              </Label>
-              <Select onValueChange={handleDurationChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select Duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 minutes</SelectItem>
-                  <SelectItem value="45">45 minutes</SelectItem>
-                  <SelectItem value="60">60 minutes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </DialogHeader>
-
-          <DialogFooter className="mt-6 flex justify-end">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-              onClick={handleScheduleFunc}
-            >
-              {loading ? "Scheduling..." : "Schedule"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ScheduleMeeting
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={title}
+        setTitle={setTitle}
+        selectStartDate={selectStartDate}
+        setSelectStartDate={setSelectStartDate}
+        handleDurationChange={handleDurationChange}
+        loading={loading}
+        handleScheduleFunc={handleScheduleFunc}
+      />
 
       {/* Are you sure you want to end the meet always*/}
-      <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-lg font-semibold text-gray-800">
-              Are you sure, You want to end up meet for ever?
-            </DialogTitle>
-          </DialogHeader>
-
-          <DialogFooter className="mt-6 flex justify-end">
-            <Button
-              type="submit"
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-              onClick={handleMeetingNotCompleted}
-            >
-              No
-            </Button>
-            <Button
-              type="submit"
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-              onClick={handleMeetCompletedFunc}
-            >
-              Yes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DoneWithMeet
+        isOpen2={isOpen2}
+        setIsOpen2={setIsOpen2}
+        handleMeetingNotCompleted={handleMeetingNotCompleted}
+        handleMeetCompletedFunc={handleMeetCompletedFunc}
+      />
 
       {/* Upload Award  */}
-      <Dialog open={isOpen3} onOpenChange={setIsOpen3}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-lg font-semibold text-gray-800">
-              Upload the Award sheet.
-            </DialogTitle>
-
-            <div className="space-y-4">
-              <DialogDescription className="text-sm text-red-500 font-semibold">
-                Only PDF file is Allowed!
-              </DialogDescription>
-            </div>
-
-            <div className="flex flex-col">
-              <Label className="block text-sm font-medium text-gray-700 mb-1">
-                PDF File <span className="text-red-500">*</span>
-              </Label>
-              <label
-                htmlFor="uploadFile1"
-                className="w-[200px] md:w-[300px] ml-[100px] md:ml-[120px] lg:ml-[120px] mt-[-15px] bg-white text-gray-500 font-semibold text-base rounded h-40 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed font-[sans-serif]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-11 mb-2 fill-gray-500"
-                  viewBox="0 0 32 32"
-                >
-                  <path
-                    d="M23.75 11.044a7.99 7.99 0 0 0-15.5-.009A8 8 0 0 0 9 27h3a1 1 0 0 0 0-2H9a6 6 0 0 1-.035-12 1.038 1.038 0 0 0 1.1-.854 5.991 5.991 0 0 1 11.862 0A1.08 1.08 0 0 0 23 13a6 6 0 0 1 0 12h-3a1 1 0 0 0 0 2h3a8 8 0 0 0 .75-15.956z"
-                    data-original="#000000"
-                  />
-                  <path
-                    d="M20.293 19.707a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L15 16.414V29a1 1 0 0 0 2 0V16.414z"
-                    data-original="#000000"
-                  />
-                </svg>
-                Upload file
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => {
-                    setFile(e.target.files[0]);
-                  }}
-                  id="uploadFile1"
-                  className="hidden"
-                />
-                <p className="text-xs font-medium text-gray-400 mt-2">
-                  Only .pdf file is allowed.
-                </p>
-              </label>
-              {file ? (
-                <div className="text-sm text-gray-600 mt-2 text-center">
-                  Selected file: {file.name}
-                </div>
-              ) : null}
-            </div>
-          </DialogHeader>
-
-          <DialogFooter className="mt-6 flex justify-end">
-            <Button
-              type="submit"
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-              onClick={handleAwardGenerateFunc}
-            >
-              Upload
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <GenerateAward
+        isOpen3={isOpen3}
+        setIsOpen3={setIsOpen3}
+        file={file}
+        setFile={setFile}
+        handleAwardGenerateFunc={handleAwardGenerateFunc}
+      />
 
       {/* Genetate Order Sheet */}
-
-      <Dialog open={isOpen4} onOpenChange={setIsOpen4}>
-        <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-lg font-semibold text-gray-800">
-              Generate Order sheet.
-            </DialogTitle>
-
-            {/* <div className="space-y-4">
-              <DialogDescription className="relative group mt-6 text-sm text-gray-600">
-                <textarea
-                  name="textForOrderSheet"
-                  value={textForOrderSheet}
-                  onChange={(e)=>setTextForOrderSheet(e.target.value)}
-                  rows="4"
-                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none peer"
-                  placeholder=" "
-                />
-                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
-                  About (Max 500 Characters)
-                </label>
-              </DialogDescription>
-            </div> */}
-
-            <div className="space-y-4">
-              <DialogDescription className="text-sm text-red-500 font-semibold">
-                Only PDF file is Allowed!
-              </DialogDescription>
-            </div>
-
-            <div className="flex flex-col">
-              <Label className="block text-sm font-medium text-gray-700 mb-1">
-                PDF File <span className="text-red-500">*</span>
-              </Label>
-              <label
-                htmlFor="uploadOrdersheetFile1"
-                className="w-[200px] md:w-[300px] ml-[100px] md:ml-[120px] lg:ml-[120px] mt-[-15px] bg-white text-gray-500 font-semibold text-base rounded h-40 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed font-[sans-serif]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-11 mb-2 fill-gray-500"
-                  viewBox="0 0 32 32"
-                >
-                  <path
-                    d="M23.75 11.044a7.99 7.99 0 0 0-15.5-.009A8 8 0 0 0 9 27h3a1 1 0 0 0 0-2H9a6 6 0 0 1-.035-12 1.038 1.038 0 0 0 1.1-.854 5.991 5.991 0 0 1 11.862 0A1.08 1.08 0 0 0 23 13a6 6 0 0 1 0 12h-3a1 1 0 0 0 0 2h3a8 8 0 0 0 .75-15.956z"
-                    data-original="#000000"
-                  />
-                  <path
-                    d="M20.293 19.707a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L15 16.414V29a1 1 0 0 0 2 0V16.414z"
-                    data-original="#000000"
-                  />
-                </svg>
-                Upload file
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => {
-                    setFileForOrderSheet(e.target.files[0]);
-                  }}
-                  id="uploadOrdersheetFile1"
-                  className="hidden"
-                />
-                <p className="text-xs font-medium text-gray-400 mt-2">
-                  Only .pdf file is allowed.
-                </p>
-              </label>
-              {fileForOrderSheet ? (
-                <div className="text-sm text-gray-600 mt-2 text-center">
-                  Selected file: {fileForOrderSheet.name}
-                </div>
-              ) : null}
-            </div>
-
-
-
-
-
-          </DialogHeader>
-          <DialogFooter className="mt-6 flex justify-end">
-            <Button
-              type="submit"
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-            onClick={handleOrderSheet}
-            >
-              Generate Order Sheet
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <OrderSheet
+        isOpen4={isOpen4}
+        setIsOpen4={setIsOpen4}
+        fileForOrderSheet={fileForOrderSheet}
+        setFileForOrderSheet={setFileForOrderSheet}
+        handleOrderSheet={handleOrderSheet}
+      />
     </div>
   );
 };

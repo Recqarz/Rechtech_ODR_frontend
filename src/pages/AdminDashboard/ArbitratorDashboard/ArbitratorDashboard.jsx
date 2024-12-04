@@ -1,4 +1,3 @@
-import styles from "./ArbitratorDashboard.module.css";
 import { FiEdit3 } from "react-icons/fi";
 import { LuUser } from "react-icons/lu";
 import { useEffect, useState } from "react";
@@ -6,7 +5,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import NoDataFound from "@/components/NoDataFound";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -89,11 +87,6 @@ const ArbitratorDashboard = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  const sendDataToArbitrator = (allarbitrator) => {
-    setData(allarbitrator);
-    console.log("arb", allarbitrator);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -252,9 +245,7 @@ const ArbitratorDashboard = () => {
         )}
       </div>
 
-
-
-{/* Update the Status */}
+      {/* Modal for update status */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
