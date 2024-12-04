@@ -6,6 +6,7 @@ import axios from "axios";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { FiEdit3 } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AllArbitrator = () => {
   const [data, setData] = useState([]);
@@ -18,11 +19,10 @@ const AllArbitrator = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
       .then((res) => {
-        // console.log(res.data.user);
         setData(res.data.user);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Something went wrong.")
       });
   };
 

@@ -45,7 +45,6 @@ const AddClient = () => {
       uid: formData.uid,
       address:formData.address
     };
-    console.log(obj);
     if (
       !obj.name ||
       !obj.emailId ||
