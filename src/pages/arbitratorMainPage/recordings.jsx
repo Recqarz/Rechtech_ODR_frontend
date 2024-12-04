@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Recordings = () => {
   let data = useSelector((state) => state.recordingsData);
@@ -32,25 +33,25 @@ const Recordings = () => {
           <tbody>
             {data.map((item) => (
               <tr key={item.id}>
-                <td className="px-6 py-4 text-sm text-gray-900 border-b border-gray-200">
-                  {item.playbackUrl}
+                <td className="px-6 py-1 text-sm text-gray-900 border-b border-gray-200">
+                  <Link className="text-blue-700 hover:underline" to={item.playbackUrl} target="_blank">View</Link>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900 border-b border-gray-200">
+                <td className="px-6 py-1 text-sm text-gray-900 border-b border-gray-200">
                   {item.password || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900 border-b border-gray-200 hidden md:table-cell">
+                <td className="px-6 py-1 text-sm text-gray-900 border-b border-gray-200 hidden md:table-cell">
                   {item.timeRecorded
                     ?.split("T")[0]
                     ?.split("-")
                     ?.reverse()
                     ?.join("-") || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900 border-b border-gray-200 hidden lg:table-cell">
+                <td className="px-6 py-1 text-sm text-gray-900 border-b border-gray-200 hidden lg:table-cell">
                   {item.durationSeconds
                     ? `${Math.floor(item.durationSeconds / 60)} min`
                     : "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900 border-b border-gray-200 hidden lg:table-cell">
+                <td className="px-6 py-1 text-sm text-gray-900 border-b border-gray-200 hidden lg:table-cell">
                   {item.topic || "N/A"}
                 </td>
               </tr>
