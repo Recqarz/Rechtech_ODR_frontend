@@ -2,6 +2,7 @@ import DashboardHeader from "@/components/dashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LuUser } from "react-icons/lu";
+import LineChartComponent from "./chart";
 
 const AdminDashboard = () => {
   return (
@@ -24,6 +25,9 @@ const AdminDashboard = () => {
         </div>
 
         <DashboardHeader />
+        <div className="px-2 mt-8 flex justify-between">
+          <LineChartComponent />
+        </div>
       </div>
     </div>
   );
