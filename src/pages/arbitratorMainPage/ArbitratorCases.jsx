@@ -617,20 +617,6 @@ const ArbitratorCases = () => {
                         <p className="font-semibold ml-2">No Order.</p>
                       )}
                     </td>
-
-                    <td>
-                      {cases.orderSheet.length > 0 ? (
-                        <IoMdDownload
-                          className="cursor-pointer text-sm ml-6"
-                          onClick={() =>
-                            handleDownloadAllorder(cases.orderSheet)
-                          }
-                        />
-                      ) : (
-                        <p className="font-semibold ml-2">No Order.</p>
-                      )}
-                    </td>
-
                     <td
                       data-label="Meeting Schedule"
                       style={{
