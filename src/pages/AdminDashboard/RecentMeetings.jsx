@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 const RecentMeetings = () => {
   const [meetings, setMeetings] = useState([]);
-  console.log(meetings);
 
   useEffect(() => {
     getRecentMeetingData();
@@ -19,7 +18,6 @@ const RecentMeetings = () => {
         }/webex/recent-fullMeetingDataWithCaseDetails`
       )
       .then((res) => {
-        // console.log(res.data.data);
         setMeetings(res.data.data);
       })
       .catch((err) => {
