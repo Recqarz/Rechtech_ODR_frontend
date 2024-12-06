@@ -2,7 +2,11 @@ import DashboardHeader from "@/components/dashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LuUser } from "react-icons/lu";
-import LineChartComponent from "./chart";
+import ArbitratorStatus from "./ArbitratorStatus";
+import UpcomingMeetingCalenderDay from "./UpcomingMeetingCalenderDay";
+import RecentMeetings from "./RecentMeetings";
+
+import LineChartComponent from "./chart"
 
 const AdminDashboard = () => {
   return (
@@ -25,6 +29,11 @@ const AdminDashboard = () => {
         </div>
 
         <DashboardHeader />
+
+        <UpcomingMeetingCalenderDay />
+        <div className="flex flex-col lg:flex-row">
+          <RecentMeetings />
+          <ArbitratorStatus />
         <div className="px-2 mt-8 flex justify-between">
           <LineChartComponent />
         </div>
