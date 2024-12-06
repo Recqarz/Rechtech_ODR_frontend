@@ -60,19 +60,19 @@ const DashboardHeader = () => {
   };
 
   return (
-    <div className="px-6 m-auto mt-4 grid grid-cols-2 lg:grid-cols-4 justify-items-center gap-2">
+    <div className="px-6 m-auto mt-4 grid grid-cols-2 lg:grid-cols-4 justify-items-center gap-3">
       <div
-        className="w-[150px] md:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
+        className="w-[140px] md:w-[180px] xl:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
         onClick={handleRedirectToArbitrator}
       >
         <div className="h-[40px] w-[40px] rounded-full bg-blue-300 ml-2"></div>
-        <div className="ml-4 md:ml-8 text-center">
+        <div className="ml-3 md:ml-8 text-center">
           <h4 className="text-md font-semibold mb-0">Arbitrator</h4>
           <h2 className="text-lg font-bold">{arbitrator}+</h2>
         </div>
       </div>
       <div
-        className="w-[150px] md:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
+        className="w-[140px] md:w-[180px] xl:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
         onClick={handleRedirectToClient}
       >
         <div className="h-[40px] w-[40px] rounded-3xl bg-[#6be5e8] ml-2"></div>
@@ -82,7 +82,7 @@ const DashboardHeader = () => {
         </div>
       </div>
       <div
-        className="w-[150px] md:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
+        className="w-[140px] md:w-[180px] xl:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center cursor-pointer"
         onClick={handleRedirectToCases}
       >
         <div className="h-[40px] w-[40px] rounded-3xl bg-blue-300 ml-2"></div>
@@ -91,7 +91,7 @@ const DashboardHeader = () => {
           <h2 className="text-lg font-bold">{cases}+</h2>
         </div>
       </div>
-      <div className="w-[150px] md:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center">
+      <div className="w-[140px] md:w-[180px] xl:w-[200px] h-[80px] border-[1.5px] border-black bg-blue-100 rounded-2xl flex items-center">
         <div className="h-[40px] w-[40px] rounded-3xl bg-[#6be5e8] ml-2"></div>
         <div className="ml-4 md:ml-8 text-center">
           <h4 className="text-md font-semibold mb-0 ">Awards</h4>

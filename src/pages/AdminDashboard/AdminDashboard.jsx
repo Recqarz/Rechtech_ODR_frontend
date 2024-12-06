@@ -4,24 +4,25 @@ import { Input } from "@/components/ui/input";
 import { LuUser } from "react-icons/lu";
 import ArbitratorStatus from "./ArbitratorStatus";
 import UpcomingMeetingCalenderDay from "./UpcomingMeetingCalenderDay";
-import RecentMeetings from "./RecentMeetings";
 
-import LineChartComponent from "./chart"
+import LineChartComponent from "./chart";
+import RecentMeetings from "./RecentMeetings";
 
 const AdminDashboard = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-6xl px-6 py-2 m-auto overflow-x-hidden">
-        <div className="ml-10 md:ml-0 flex md:justify-between items-center bg-white rounded-md shadow-sm py-2 px-4 mt-2 md:mt-0">
-          <div className="flex items-center space-x-2">
+        <div className="ml-10 md:ml-0 flex justify-between items-center bg-white rounded-md shadow-sm py-2 px-4 mt-2 md:mt-0">
+          {/* <div className="flex items-center space-x-2">
             <Input
               className="h-8 w-[200px] md:w-[250px]"
               type="text"
               placeholder="Serach here"
             />
             <Button className="h-8 px-3">Search</Button>
-          </div>
-          <div className="hidden md:block">
+          </div> */}
+          <h2 className="font-semibold">Dashboard</h2>
+          <div>
             <div className="bg-blue-50 p-3 rounded-full">
               <LuUser className="text-blue-600 text-xl" />
             </div>
@@ -29,13 +30,16 @@ const AdminDashboard = () => {
         </div>
 
         <DashboardHeader />
-
-        <UpcomingMeetingCalenderDay />
-        <div className="flex flex-col lg:flex-row">
-          <RecentMeetings />
-          <ArbitratorStatus />
-        <div className="px-2 mt-8 flex justify-between">
+        <div className="px-2 mt-8 lg:flex justify-between ">
           <LineChartComponent />
+          <UpcomingMeetingCalenderDay />
+        </div>
+
+        <div className="lg:flex justify-between mb-4">
+          <RecentMeetings />
+          <div className="hidden lg:block">
+            <ArbitratorStatus />
+          </div>
         </div>
       </div>
     </div>
