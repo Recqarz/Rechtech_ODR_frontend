@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
   CircularProgressbarWithChildren,
   buildStyles,
@@ -7,9 +8,25 @@ import "react-circular-progressbar/dist/styles.css";
 import styled from "styled-components";
 
 const ArbitratorStatus = () => {
-  const innerCircle = 75; // "Arbitration Completed"
-  const middleCircle = 25; // "In Use"
-  const outerCircle = 50; // "Free"
+  const [innerCircle, setInnerCircle] = useState(0); // "Arbitration Completed"
+  const [middleCircle, setMiddleCircle] = useState(0); // "In Use"
+  const [outerCircle, setOuterCircle] = useState(0); // "Free"
+
+  const fetchData = async()=>{
+    axios.get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/getArbitratorStatus`)
+     .then(response => {
+       setInnerCircle(response.data.innerCircle);
+       setMiddleCircle(response.data.middleCircle);
+       setOuterCircle(response.data.outerCircle);
+      })
+      .catch(error => {
+        console.error("Error fetching arbitrator status: ", error);
+      });
+  }
+
+  useEffect(()=>{
+    fetchData();
+  },[])
 
   // Color definitions for each status
   const colors = {
