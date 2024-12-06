@@ -617,7 +617,6 @@ const ArbitratorCases = () => {
                         <p className="font-semibold ml-2">No Order.</p>
                       )}
                     </td>
-
                     <td
                       data-label="Meeting Schedule"
                       style={{
