@@ -13,6 +13,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const role = useSelector((state) => state.role);
+  console.log(role)
 
   const handleArbitratorPage = () => {
     setIsSidebarOpen(false);
