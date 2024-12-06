@@ -19,13 +19,13 @@ const ArbitratorStatus = () => {
   };
 
   return (
-    <div className="mt-8">
-      <h3 className="ml-20 font-semibold">Arbitrator Status</h3>
-      <Container className="border-2 border-slate-400 ml-5 md:ml-16 mt-2 rounded-lg h-[360px]">
-        <ChartContainer style={{ marginTop: "120px" }}>
+    <div className="mt-8 ">
+      <h3 className="ml-2 font-semibold">Arbitrator Status</h3>
+      <Container className="border-2 border-slate-400  mt-2 rounded-lg h-[230px]">
+        <ChartContainer style={{ marginTop: "60px" }}>
           <div className="flex items-center justify-center">
             {/* Outer Circle */}
-            <Layer style={{ zIndex: 3, width: "200px", height: "200px" }}>
+            <Layer style={{ zIndex: 3, width: "100px", height: "100px" }}>
               <CircularProgressbarWithChildren
                 value={outerCircle}
                 styles={buildStyles({
@@ -40,8 +40,8 @@ const ArbitratorStatus = () => {
             <Layer
               style={{
                 zIndex: 2,
-                width: "150px",
-                height: "150px",
+                width: "80px",
+                height: "80px",
               }}
             >
               <CircularProgressbarWithChildren
@@ -58,8 +58,8 @@ const ArbitratorStatus = () => {
             <Layer
               style={{
                 zIndex: 1,
-                width: "90px",
-                height: "90px",
+                width: "60px",
+                height: "60px",
               }}
             >
               <CircularProgressbarWithChildren
@@ -75,23 +75,29 @@ const ArbitratorStatus = () => {
         </ChartContainer>
 
         {/* Legend for status */}
-        <Legend style={{ position: "relative" }}>
-          <h1 style={{ position: "absolute", top: "-80px", left: "60px" }}>
+        <Legend
+        className="text-sm font-semibold"
+        style={{ position: "relative" }}>
+          <h1 style={{ position: "absolute", top: "-95px", left: "80px" }}>
             Status
           </h1>
           <LegendItem
+          className="text-xs font-semibold"
             color={colors.inUse}
-            style={{ position: "absolute", left: "58px", top: "-30px" }}
+            style={{ position: "absolute", left: "80px", top: "-50px" }}
           >
             In Use
           </LegendItem>
           <LegendItem
+          className="text-xs font-semibold"
             color={colors.free}
-            style={{ position: "absolute", left: "58px", top: "-50px" }}
+            style={{ position: "absolute", left: "80px", top: "-70px" }}
           >
             Free
           </LegendItem>
-          <LegendItem color={colors.arbitrationCompleted}>
+          <LegendItem className="text-xs font-semibold"
+          style={{ position: "absolute", left: "30px", top: "-30px" }}
+          color={colors.arbitrationCompleted}>
             Arbitration Completed
           </LegendItem>
         </Legend>
@@ -102,7 +108,7 @@ const ArbitratorStatus = () => {
 
 // Styled-components for layout
 const Container = styled.div`
-  width: 300px;
+  width: 200px;
   text-align: center;
 `;
 
@@ -122,7 +128,7 @@ const Layer = styled.div`
 `;
 
 const Legend = styled.div`
-  margin-top: 45px;
+  margin-top: 5px;
 `;
 
 const LegendItem = styled.div`

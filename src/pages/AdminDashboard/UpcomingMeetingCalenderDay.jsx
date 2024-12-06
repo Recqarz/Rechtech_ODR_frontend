@@ -66,14 +66,14 @@ const UpcomingMeetingCalendarDay = () => {
   );
 
   return (
-    <div className="p-4 mt-10">
-      <h1 className="text-lg font-bold mb-4 ml-10">Upcoming Meetings</h1>
-      <div className="grid grid-cols-5 gap-4 max-w-xl ml-2 md:ml-8 lg:ml-10">
+    <div className="p-4 shadow-lg rounded-md bg-blue-50 mt-4 lg:mt-0">
+      <h1 className="text-lg font-bold mb-4 ">Upcoming Meetings</h1>
+      <div className="grid grid-cols-5 gap-4 max-w-xl  ">
         {filteredTimeSlots.length > 0
           ? filteredTimeSlots.map((slot) => (
               <div
                 key={slot.label}
-                className="relative border-l h-[350px] border-gray-300"
+                className="relative border-l h-[280px] border-gray-300"
               >
                 <div className="text-center text-sm md:text-md">
                   {slot.label}
@@ -104,15 +104,15 @@ const UpcomingMeetingCalendarDay = () => {
                     return (
                       <div
                         key={meeting.id}
-                        className="absolute bg-blue-500 text-white p-2 rounded shadow mt-10 max-h-10"
+                        className="absolute bg-blue-500 text-white px-2 py-1 rounded shadow mt-10 max-h-8"
                         style={{
                           top: `${verticalOffset}px`,
                           left: "10%",
-                          width: "80%",
+                          width: "40px",
                         }}
                         onClick={() => handleRedirectMeetLink(meeting.link)}
                       >
-                        <p className="text-[6.5px] lg:text-[11px] cursor-pointer">
+                        <p className="text-[6.5px] lg:text-[8px] cursor-pointer">
                           {meeting.title}
                         </p>
                       </div>
@@ -123,7 +123,7 @@ const UpcomingMeetingCalendarDay = () => {
           : timeSlotsForNotMeeting.map((slot) => (
               <div
                 key={slot.label}
-                className="border-l h-[350px] border-gray-300"
+                className="border-l h-[280px] border-gray-300"
               >
                 <div className="text-center text-sm md:text-md">
                   {slot.label}

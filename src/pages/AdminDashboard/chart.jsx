@@ -40,11 +40,11 @@ const LineChartComponent = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl px-6 py-4  bg-blue-50 border-[1.5px] border-black rounded-3xl">
+    <div className="w-full max-w-2xl px-6 py-4   bg-blue-50 border-[1.5px] border-black rounded-3xl">
       <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
         Case Completed
       </h2>
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={280}>
         <LineChart data={chartData}>
           <XAxis
             dataKey="week"
