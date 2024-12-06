@@ -6,6 +6,8 @@ import ArbitratorStatus from "./ArbitratorStatus";
 import UpcomingMeetingCalenderDay from "./UpcomingMeetingCalenderDay";
 import RecentMeetings from "./RecentMeetings";
 
+import LineChartComponent from "./chart"
+
 const AdminDashboard = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -32,6 +34,8 @@ const AdminDashboard = () => {
         <div className="flex flex-col lg:flex-row">
           <RecentMeetings />
           <ArbitratorStatus />
+        <div className="px-2 mt-8 flex justify-between">
+          <LineChartComponent />
         </div>
       </div>
     </div>
