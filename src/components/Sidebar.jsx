@@ -39,7 +39,9 @@ const Sidebar = () => {
     navigate("/client/allarbitrator");
   };
 
-  const closeMenu = () => {
+  // Docs Navigation
+
+  const handleDocumentFunc = () => {
     setIsSidebarOpen(false);
     setIsUsersOpen(false);
     if (role === "admin") {
@@ -48,9 +50,29 @@ const Sidebar = () => {
       navigate("/arbitrator/arbitratordashboard/documents");
     } else if (role === "client") {
       navigate("/client/clientdashboard/documents");
-    }else if(role==="respondent"){
-      navigate("/respondent/respondentdashboard/documents")
+    } else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/documents");
     }
+  };
+
+  // Ticket navigation
+  const handleTicketFunc = () => {
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+    if (role === "admin") {
+      navigate("/admin/admindashboard/tickets");
+    } else if (role === "arbitrator") {
+      navigate("/arbitrator/arbitratordashboard/tickets");
+    } else if (role === "client") {
+      navigate("/client/clientdashboard/tickets");
+    } else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/tickets");
+    }
+  };
+
+  const closeMenu = () => {
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
   };
 
   return (
@@ -106,30 +128,34 @@ const Sidebar = () => {
                   className="px-6 mt-6 md:mt-0 cursor-pointer text-center md:text-left"
                   onClick={closeMenu}
                 >
-                  <img className="h-[80%] w-[80%]" src="/logo-transparent-svg.svg" alt="" />
+                  <img
+                    className="h-[80%] w-[80%]"
+                    src="/logo-transparent-svg.svg"
+                    alt=""
+                  />
                 </h1>
               </Link>
 
               <ul className="px-4 pb-4 space-y-1">
-                  <Link
-                    to={
-                      role == "arbitrator"
-                        ? "/arbitrator"
-                        : role == "client"
-                        ? "/client"
-                        : role == "respondent"
-                        ? "/respondent"
-                        : "/admin"
-                    }
+                <Link
+                  to={
+                    role == "arbitrator"
+                      ? "/arbitrator"
+                      : role == "client"
+                      ? "/client"
+                      : role == "respondent"
+                      ? "/respondent"
+                      : "/admin"
+                  }
+                >
+                  <li
+                    onClick={closeMenu}
+                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                   >
-                    <li
-                      onClick={closeMenu}
-                      className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
-                    >
-                      <span className="mr-3">📊</span>
-                      Dashboard
-                    </li>
-                  </Link>
+                    <span className="mr-3">📊</span>
+                    Dashboard
+                  </li>
+                </Link>
 
                 {role === "admin" ? (
                   <li
@@ -205,22 +231,20 @@ const Sidebar = () => {
                 ) : null}
 
                 <li
-                  onClick={closeMenu}
+                  onClick={handleDocumentFunc}
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                 >
                   <span className="mr-3">📄</span>
                   Documents
                 </li>
 
-                {role !== "respondent" ? (
-                  <li
-                    onClick={closeMenu}
-                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
-                  >
-                    <span className="mr-3">🎫</span>
-                    Tickets
-                  </li>
-                ) : null}
+                <li
+                  onClick={handleTicketFunc}
+                  className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                >
+                  <span className="mr-3">🎫</span>
+                  Tickets
+                </li>
 
                 {role !== "respondent" ? (
                   <li
