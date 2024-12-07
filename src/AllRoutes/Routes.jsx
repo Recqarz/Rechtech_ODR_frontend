@@ -18,6 +18,10 @@ import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
 import RespondentDashboard from "@/pages/Respondent/respondentDashboard";
 import RespondentCase from "@/pages/Respondent/respondentCases";
 import Recordings from "@/pages/arbitratorMainPage/recordings";
+import AdminDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/AdminDocumentSec";
+import ArbitratorDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/ArbitratorDocumentSec";
+import ClientDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/ClientDocumentSec";
+import RespondentDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/RespondentDocumentSec";
 
 const Allroutes = () => {
   return (
@@ -43,6 +47,25 @@ const Allroutes = () => {
           <Route path="/respondent" element={<RespondentDashboard />} />
           <Route path="/respondent/cases" element={<RespondentCase />} />
           <Route path="/arbitrator/cases/recordings" element={<Recordings />} />
+          <Route
+            path="/admin/admindashboard/documents"
+            element={<AdminDocumentSec />}
+          />
+
+          <Route
+            path="/arbitrator/arbitratordashboard/documents"
+            element={<ArbitratorDocumentSec />}
+          />
+
+          <Route
+            path="/client/clientdashboard/documents"
+            element={<ClientDocumentSec />}
+          />
+
+          <Route
+            path="/respondent/respondentdashboard/documents"
+            element={<RespondentDocumentSec />}
+          />
         </Routes>
       </div>
     </div>
