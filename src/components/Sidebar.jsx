@@ -13,7 +13,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const role = useSelector((state) => state.role);
-  console.log(role)
+  console.log(role);
 
   const handleArbitratorPage = () => {
     setIsSidebarOpen(false);
@@ -42,6 +42,15 @@ const Sidebar = () => {
   const closeMenu = () => {
     setIsSidebarOpen(false);
     setIsUsersOpen(false);
+    if (role === "admin") {
+      navigate("/admin/admindashboard/documents");
+    } else if (role === "arbitrator") {
+      navigate("/arbitrator/arbitratordashboard/documents");
+    } else if (role === "client") {
+      navigate("/client/clientdashboard/documents");
+    }else if(role==="respondent"){
+      navigate("/respondent/respondentdashboard/documents")
+    }
   };
 
   return (
@@ -195,15 +204,13 @@ const Sidebar = () => {
                   </li>
                 ) : null}
 
-                {role !== "respondent" ? (
-                  <li
-                    onClick={closeMenu}
-                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
-                  >
-                    <span className="mr-3">📄</span>
-                    Documents
-                  </li>
-                ) : null}
+                <li
+                  onClick={closeMenu}
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                >
+                  <span className="mr-3">📄</span>
+                  Documents
+                </li>
 
                 {role !== "respondent" ? (
                   <li
