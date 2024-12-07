@@ -4,10 +4,15 @@ import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
 import { IoEye } from "react-icons/io5";
 import DocumentsProps from "../DocumentsProps";
 import SearchByDataProps from "@/components/SearchByDataProps";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { recordingData } from "@/global/action";
 
 const AdminDocumentSec = () => {
   const [allDocsForAdmin, setAllDocsForAdmin] = useState([]);
   const [searchData, setSearchData] = useState("");
+  let dispatch = useDispatch();
+  let navigate = useNavigate();
 
   // All Case Data
   const getAllDocsData = () => {

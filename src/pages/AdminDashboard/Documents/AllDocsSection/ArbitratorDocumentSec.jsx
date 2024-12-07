@@ -6,8 +6,13 @@ import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
 import { IoEye } from "react-icons/io5";
 import toast from "react-hot-toast";
 import NoDataFound from "@/components/NoDataFound";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { recordingData } from "@/global/action";
 
 const ArbitratorDocumentSec = () => {
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
   const [allDocsForArbitrator, setAllDocsForArbitrator] = useState([]);
   const [searchData, setSearchData] = useState("");
 
