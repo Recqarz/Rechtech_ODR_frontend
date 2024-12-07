@@ -103,37 +103,37 @@ const Sidebar = () => {
                 }
               >
                 <h1
-                  className="px-6 mt-6 md:mt-4 font-bold text-2xl cursor-pointer text-center md:text-left"
+                  className="px-6 mt-6 md:mt-0 cursor-pointer text-center md:text-left"
                   onClick={closeMenu}
                 >
-                  Sandhee
+                  <img className="h-[80%] w-[80%]" src="/logo-transparent-svg.svg" alt="" />
                 </h1>
               </Link>
 
-              <ul className="p-4 space-y-1 mt-5">
-                <Link
-                  to={
-                    role == "arbitrator"
-                      ? "/arbitrator"
-                      : role == "client"
-                      ? "/client"
-                      : role == "respondent"
-                      ? "/respondent"
-                      : "/admin"
-                  }
-                >
-                  <li
-                    onClick={closeMenu}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+              <ul className="px-4 pb-4 space-y-1">
+                  <Link
+                    to={
+                      role == "arbitrator"
+                        ? "/arbitrator"
+                        : role == "client"
+                        ? "/client"
+                        : role == "respondent"
+                        ? "/respondent"
+                        : "/admin"
+                    }
                   >
-                    <span className="mr-3">📊</span>
-                    Dashboard
-                  </li>
-                </Link>
+                    <li
+                      onClick={closeMenu}
+                      className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    >
+                      <span className="mr-3">📊</span>
+                      Dashboard
+                    </li>
+                  </Link>
 
                 {role === "admin" ? (
                   <li
-                    className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
+                    className="flex items-center justify-between px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
                     onClick={() => setIsUsersOpen(!isUsersOpen)}
                   >
                     <div className="flex items-center">
@@ -145,7 +145,7 @@ const Sidebar = () => {
 
                 {role === "client" && role !== "respondent" ? (
                   <li
-                    className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
+                    className="flex items-center justify-between px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
                     onClick={AllArbitratorfunc}
                   >
                     <div className="flex items-center">
@@ -158,7 +158,7 @@ const Sidebar = () => {
                 {isUsersOpen && (
                   <div className="ml-8 space-y-1">
                     <li
-                      className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      className="flex items-center px-4 py-[5px] text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
                       onClick={handleArbitratorPage}
                     >
                       Arbitrator
@@ -166,7 +166,7 @@ const Sidebar = () => {
                     <Link to="/clienttable">
                       <li
                         onClick={closeMenu}
-                        className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
+                        className="flex items-center px-4 py-[5px] text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
                       >
                         Client
                       </li>
@@ -187,7 +187,7 @@ const Sidebar = () => {
                 >
                   <li
                     onClick={closeMenu}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                   >
                     <span className="mr-3">📁</span>
                     Cases
@@ -197,7 +197,7 @@ const Sidebar = () => {
                 {role !== "respondent" ? (
                   <li
                     onClick={closeMenu}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                   >
                     <span className="mr-3">📅</span>
                     Meetings
@@ -215,7 +215,7 @@ const Sidebar = () => {
                 {role !== "respondent" ? (
                   <li
                     onClick={closeMenu}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                   >
                     <span className="mr-3">🎫</span>
                     Tickets
@@ -225,7 +225,7 @@ const Sidebar = () => {
                 {role !== "respondent" ? (
                   <li
                     onClick={closeMenu}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors"
                   >
                     <span className="mr-3">📞</span>
                     Consultation Requests
@@ -237,15 +237,15 @@ const Sidebar = () => {
             {/* Bottom Section */}
             <div className="p-4 border-t border-blue-100">
               <ul className="space-y-2">
-                <li
-                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                {/* <li
+                  className="flex items-center px-4 py-[5px] text-gray-700 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                   onClick={closeMenu}
                 >
                   <span className="mr-3">⚙️</span>
                   Settings
-                </li>
+                </li> */}
                 <li
-                  className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                  className="flex items-center px-4 py-[5px] text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                   onClick={handleLogoutFunc}
                 >
                   <span className="mr-3">🚪</span>
