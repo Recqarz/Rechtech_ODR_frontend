@@ -5,7 +5,6 @@ import Allroutes from "./AllRoutes/Routes";
 import Webex from "./pages/webex";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPrivate from "./components/LoginPrivate";
-import { VerifyOTP } from "./pages/Respondent/respondentotp";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { loginUpdater, updateRole } from "./global/action";
@@ -13,6 +12,7 @@ import Login from "./pages/logins";
 import { ResetDashboards } from "./pages/ResetPassword/resetDashboards";
 import { ResetOTPS } from "./pages/ResetPassword/ResetOtps";
 import { SetPasswords } from "./pages/ResetPassword/SetPasswords";
+import VerifyOTP from "./pages/Respondent/respondentotp";
 
 function App() {
   let dispatch = useDispatch();
