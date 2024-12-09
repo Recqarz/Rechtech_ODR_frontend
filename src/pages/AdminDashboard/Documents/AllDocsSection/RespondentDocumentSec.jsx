@@ -15,7 +15,6 @@ const RespondentDocumentSec = () => {
   let navigate = useNavigate();
   const [allDocsForArbitrator, setAllDocsForArbitrator] = useState([]);
   const [searchData, setSearchData] = useState("");
-  console.log("object", allDocsForArbitrator);
 
   function fetchData() {
     let token = JSON.parse(sessionStorage.getItem("rechtechtoken"));
@@ -115,12 +114,12 @@ const RespondentDocumentSec = () => {
                   </th>
                   <th className="p-2 transition-colors cursor-pointer border-slate-200 bg-slate-50 hover:bg-slate-100">
                     <p className="flex items-center justify-between gap-2 font-sans text-sm  font-xs leading-none text-slate-700">
-                      Attachment
+                      Arbitrator
                     </p>
                   </th>
                   <th className="p-2 transition-colors cursor-pointer border-slate-200 bg-slate-50 hover:bg-slate-100">
                     <p className="flex items-center justify-between gap-2 font-sans text-sm  font-xs leading-none text-slate-700">
-                      Arbitrator
+                      Attachment
                     </p>
                   </th>
                   <th className="p-2 transition-colors cursor-pointer border-slate-200 bg-slate-50 hover:bg-slate-100">
@@ -196,7 +195,7 @@ const RespondentDocumentSec = () => {
                           onClick={() => handleDownloadAward(recent.awards[0])}
                         >
                           <IoMdCloudDownload />{" "}
-                          <span className="font-semibold">Awards</span>
+                          <span className="font-semibold text-[12px]">Awards</span>
                         </div>
                       ) : (
                         "No Award"
