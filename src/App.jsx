@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Login } from "./pages/login";
-import { ResetDashboard } from "./pages/ResetPassword/ResetDashboard";
-import { ResetOTP } from "./pages/ResetPassword/ResetOTP";
-import { SetPassword } from "./pages/ResetPassword/SetPassword";
 import Allroutes from "./AllRoutes/Routes";
 import Webex from "./pages/webex";
 import PrivateRoute from "./components/PrivateRoute";
@@ -13,6 +9,10 @@ import { VerifyOTP } from "./pages/Respondent/respondentotp";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { loginUpdater, updateRole } from "./global/action";
+import Login from "./pages/logins";
+import { ResetDashboards } from "./pages/ResetPassword/resetDashboards";
+import { ResetOTPS } from "./pages/ResetPassword/ResetOtps";
+import { SetPasswords } from "./pages/ResetPassword/SetPasswords";
 
 function App() {
   let dispatch = useDispatch();
@@ -52,11 +52,13 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LoginPrivate Component={Login} />} />
-      <Route path="/resetdashboard" element={<ResetDashboard />} />
-      <Route path="/resetdashboard/otp" element={<ResetOTP />} />
+      <Route path="/resetdashboard" element={<ResetDashboards />} />
+      <Route path="/resetdashboard/otp" element={<ResetOTPS />} />
       <Route path="/otplogin" element={<VerifyOTP />} />
-      <Route path="/resetdashboard/setpassword" element={<SetPassword />} />
+      <Route path="/resetdashboard/setpassword" element={<SetPasswords />} />
       <Route path="/webexauth" element={<Webex />} />
+      <Route path="/logins" element={<Login />} />
+      <Route path="/resetdashboards" element={<ResetDashboards />} />
       <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
     </Routes>
   );
