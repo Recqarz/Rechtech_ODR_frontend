@@ -1,35 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RaiseTicketProps from "../RaiseTicketProps";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const RespondentTicket = () => {
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_BASEURL}/tickets/new-ticketId`)
+      .then((res) => {
+        setFormData({ ...formData, ticketId: res.data.ticketId });
+      })
+      .catch((err) => {
+        toast.error("Error fetching new ticket ID:");
+      });
+  }, []);
+
   const [formData, setFormData] = useState({
-    ticketID: "",
-    respondent_name: "",
-    respondent_Number: "",
-    respondent_email: "",
-    respondent_category: "",
-    respondent_currentTime: "",
-    respondent_query: "",
+    ticketId: "",
+    name: "",
+    contactNumber: "",
+    email: "",
+    category: "",
+    query: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddNewTicket = () => {
-    console.log("submit form");
+  const handleAddNewTicket = (e) => {
+    e.preventDefault();
+    if (
+      !formData.name ||
+      !formData.contactNumber ||
+      !formData.email ||
+      !formData.category ||
+      !formData.query
+    ) {
+      toast.error("All fields are required.");
+      return;
+    }
+    axios
+      .post(`${import.meta.env.VITE_API_BASEURL}/tickets/new-ticket`, formData)
+      .then((res) => {
+        toast.success("Ticket raised successfully!");
+        setFormData({
+          ticketId: "",
+          name: "",
+          contactNumber: "",
+          email: "",
+          category: "",
+          query: "",
+        });
+      })
+      .catch((err) => {
+        toast.error("Error raising ticket:");
+      });
   };
 
   return (
-    <div>
+    <div className="px-2 mt-20 md:mt-0">
       <RaiseTicketProps
-        ticketId={formData.ticketID}
-        name={formData.respondent_name}
-        contactNum={formData.respondent_Number}
-        email={formData.respondent_email}
-        category={formData.respondent_category}
-        currentDate={formData.respondent_currentTime}
-        query={formData.respondent_query}
+        ticketId={formData.ticketId}
+        name={formData.name}
+        contactNum={formData.contactNumber}
+        email={formData.email}
+        category={formData.category}
+        query={formData.query}
         handleChange={handleChange}
         handleAddNewTicket={handleAddNewTicket}
       />

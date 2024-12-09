@@ -227,8 +227,10 @@ const Login = () => {
 
             <p className="text-xs font-semibold text-center">
               Dont Have an Account?{" "}
-              <span className="text-blue-800 font-semibold cursor-pointer">
-                Create Account
+              <span className="text-blue-800 font-semibold cursor-pointer"
+              onClick={()=>navigate("/register")}
+              >
+                Register here
               </span>
             </p>
           </form>

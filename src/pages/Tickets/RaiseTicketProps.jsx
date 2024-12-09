@@ -6,19 +6,18 @@ const RaiseTicketProps = ({
   contactNum,
   email,
   category,
-  currentDate,
   query,
   handleChange,
   handleAddNewTicket,
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm px-4 py-6 mt-12">
+    <div className="bg-white max-w-5xl mx-auto rounded-xl shadow-sm px-4 py-6 mt-2 mb-2">
       <form onSubmit={handleAddNewTicket} className="space-y-6">
         <div className="flex justify-center">
           <div className="relative group w-1/3">
             <input
               type="text"
-              name="ticketID"
+              name="ticketId"
               disabled={true}
               value={ticketId}
               onChange={handleChange}
@@ -36,7 +35,7 @@ const RaiseTicketProps = ({
           <div className="relative group">
             <input
               type="text"
-              name="Name"
+              name="name"
               value={name}
               onChange={handleChange}
               className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
@@ -88,25 +87,11 @@ const RaiseTicketProps = ({
               Category
             </label>
           </div>
-
-          <div className="relative group">
-            <input
-              type="date"
-              name="date"
-              value={currentDate}
-              onChange={handleChange}
-              className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
-              placeholder=""
-            />
-            <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
-              Date
-            </label>
-          </div>
         </div>
 
         <div className="relative group mt-6">
           <textarea
-            name="about"
+            name="query"
             value={query}
             onChange={handleChange}
             rows="4"
