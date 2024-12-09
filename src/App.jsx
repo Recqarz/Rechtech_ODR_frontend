@@ -13,6 +13,8 @@ import Login from "./pages/logins";
 import { ResetDashboards } from "./pages/ResetPassword/resetDashboards";
 import { ResetOTPS } from "./pages/ResetPassword/ResetOtps";
 import { SetPasswords } from "./pages/ResetPassword/SetPasswords";
+import ResepondentOtps from "./pages/Respondent/resepondentotps";
+import Test from "./pages/test";
 
 function App() {
   let dispatch = useDispatch();
@@ -54,11 +56,12 @@ function App() {
       <Route path="/" element={<LoginPrivate Component={Login} />} />
       <Route path="/resetdashboard" element={<ResetDashboards />} />
       <Route path="/resetdashboard/otp" element={<ResetOTPS />} />
-      <Route path="/otplogin" element={<VerifyOTP />} />
+      <Route path="/otplogin" element={<ResepondentOtps />} />
       <Route path="/resetdashboard/setpassword" element={<SetPasswords />} />
       <Route path="/webexauth" element={<Webex />} />
       <Route path="/logins" element={<Login />} />
       <Route path="/resetdashboards" element={<ResetDashboards />} />
+      <Route path="/test" element={<Test />} />
       <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
     </Routes>
   );
