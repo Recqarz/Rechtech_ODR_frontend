@@ -1,6 +1,4 @@
 import DashboardHeader from "@/components/dashboardHeader";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import React from "react";
 import { LuUser } from "react-icons/lu";
 
@@ -16,7 +14,6 @@ const ClientMain = () => {
             </div>
           </div>
         </div>
-
         <DashboardHeader />
       </div>
     </div>
