@@ -79,6 +79,7 @@ const Sidebar = () => {
   };
 
   const closeMenu = () => {
+    navigate("/admin/admindashboard/meetings")
     setIsSidebarOpen(false);
     setIsUsersOpen(false);
   };

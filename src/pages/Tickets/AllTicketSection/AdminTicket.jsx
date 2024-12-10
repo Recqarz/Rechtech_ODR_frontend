@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,7 +129,7 @@ const AdminTicket = () => {
 
         {ticket.length > 0 ? (
           <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
-            <div className="grid mt-5  lg:px-3 rounded-md grid-cols-[60px,1fr,50px,60px] md:grid-cols-[60px,1fr,1fr,50px,100px,60px]  lg:grid-cols-[60px,1fr,1fr,1fr,50px,100px,60px] text-sm text-white gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
+            <div className="grid mt-5  lg:px-3 rounded-md grid-cols-[60px,1fr,50px,60px] md:grid-cols-[60px,1fr,1fr,50px,100px,60px]  lg:grid-cols-[60px,1fr,1fr,1fr,50px,100px,60px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
               <p className="truncate min-w-[60px]">Ticket Id</p>
               <p className="truncate">Name</p>
               <p className="truncate hidden md:block">Email</p>
