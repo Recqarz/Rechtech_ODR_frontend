@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [loginRole, setLoginRole] = useState("client");
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
   let dispatch = useDispatch();
 
@@ -53,12 +53,19 @@ const Login = () => {
       axios
         .post(`${import.meta.env.VITE_API_BASEURL}/auth/login`, obj)
         .then((res) => {
-          localStorage.setItem("rechtechtoken", JSON.stringify(res.data.token));
-          toast.success("Login successful");
-          dispatch(updateRole(res.data.role));
-          localStorage.setItem("rechtechrole", JSON.stringify(res.data.role));
-          dispatch(loginUpdater(true));
-          navigate(`/${res.data.role}`);
+          if (res.data.role === loginRole) {
+            localStorage.setItem(
+              "rechtechtoken",
+              JSON.stringify(res.data.token)
+            );
+            toast.success("Login successful");
+            dispatch(updateRole(res.data.role));
+            localStorage.setItem("rechtechrole", JSON.stringify(res.data.role));
+            dispatch(loginUpdater(true));
+            navigate(`/${res.data.role}`);
+          } else {
+            toast.error("Invalid credentials");
+          }
         })
         .catch((err) => {
           toast.error("Invalid email or password");
@@ -220,8 +227,10 @@ const Login = () => {
 
             <p className="text-xs font-semibold text-center">
               Dont Have an Account?{" "}
-              <span className="text-blue-800 font-semibold cursor-pointer">
-                Create Account
+              <span className="text-blue-800 font-semibold cursor-pointer"
+              onClick={()=>navigate("/register")}
+              >
+                Register here
               </span>
             </p>
           </form>

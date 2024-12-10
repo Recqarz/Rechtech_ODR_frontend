@@ -26,6 +26,7 @@ import RespondentTicket from "@/pages/Tickets/AllTicketSection/RespondentTicket"
 import ClientTicket from "@/pages/Tickets/AllTicketSection/ClientTicket";
 import ArbitratorTicket from "@/pages/Tickets/AllTicketSection/ArbitratorTicket";
 import AdminTicket from "@/pages/Tickets/AllTicketSection/AdminTicket";
+import AdminMeetings from "@/pages/meetings/adminMeetings";
 
 
 const Allroutes = () => {
@@ -34,7 +35,7 @@ const Allroutes = () => {
       <div className="fixed top-0 left-0 bottom-0 h-[100vh] z-30">
         <Sidebar />
       </div>
-      <div className="flex-1 md:ml-52">
+      <div className="flex-1 md:ml-[175px]">
         <Routes>
           <Route path="/client" element={<ClientMain />} />
           <Route path="/client/cases" element={<ClientCases />} />
@@ -90,6 +91,10 @@ const Allroutes = () => {
           <Route
             path="/respondent/respondentdashboard/tickets"
             element={<RespondentTicket />}
+          />
+           <Route
+            path="/admin/admindashboard/meetings"
+            element={<AdminMeetings />}
           />
         </Routes>
       </div>

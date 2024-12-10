@@ -16,33 +16,41 @@ const DocumentsProps = ({
           <td className="border-b border-slate-200">
             <div className="flex items-center gap-3">
               <div className="flex flex-col">
-                <p className="text-xs text-slate-500">{cl_name}</p>
+                <p className="text-xs text-black">{cl_name}</p>
               </div>
             </div>
           </td>
           <td className="p-1 border-slate-200">
             <div className="flex flex-col">
-              <p className="text-xs text-slate-500">{res_name}</p>
+              <p className="text-xs text-black">{res_name}</p>
+            </div>
+          </td>
+          <td className="p-1 border-b border-slate-200">
+            <div>
+              <p className="text-xs text-black">{arb_name}</p>
             </div>
           </td>
           <td className="p-1 border-b border-slate-200">
             <div className="w-max">
               <div className="flex flex-col">
-                <p className="text-xs text-slate-500">{attach}</p>
+                <p className="text-xs text-black">{attach}</p>
               </div>
             </div>
           </td>
           <td className="p-1 border-b border-slate-200">
-            <p className="text-xs text-slate-500">{arb_name}</p>
+            <div>
+              <p className="text-xs text-black">{order}</p>
+            </div>
           </td>
           <td className="p-1 border-b border-slate-200">
-            <p className="text-xs text-slate-500">{order}</p>
+            <div>
+              <div className="text-xs text-black">{award}</div>
+            </div>
           </td>
           <td className="p-1 border-b border-slate-200">
-            <p className="text-xs text-slate-500">{award}</p>
-          </td>
-          <td className="p-1 border-b border-slate-200">
-            <p className="text-xs text-slate-500">{recording}</p>
+            <div>
+              <p className="text-xs text-black">{recording}</p>
+            </div>
           </td>
         </tr>
       </tbody>
