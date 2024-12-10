@@ -26,6 +26,7 @@ import RespondentTicket from "@/pages/Tickets/AllTicketSection/RespondentTicket"
 import ClientTicket from "@/pages/Tickets/AllTicketSection/ClientTicket";
 import ArbitratorTicket from "@/pages/Tickets/AllTicketSection/ArbitratorTicket";
 import AdminTicket from "@/pages/Tickets/AllTicketSection/AdminTicket";
+import AdminMeetings from "@/pages/meetings/adminMeetings";
 
 
 const Allroutes = () => {
@@ -90,6 +91,10 @@ const Allroutes = () => {
           <Route
             path="/respondent/respondentdashboard/tickets"
             element={<RespondentTicket />}
+          />
+           <Route
+            path="/admin/admindashboard/meetings"
+            element={<AdminMeetings />}
           />
         </Routes>
       </div>
