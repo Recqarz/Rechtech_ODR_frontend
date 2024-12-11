@@ -9,6 +9,7 @@ import CaseDashboard from "./CaseDashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotEmail, refreshers } from "@/global/action";
 import UploadCaseBulkProps from "./UploadCaseBulkProps";
+import { FaAngleRight } from "react-icons/fa";
 
 const Uploadcase = () => {
   let dispatch = useDispatch();
@@ -176,8 +177,8 @@ const Uploadcase = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-2 bg-gray-50 min-h-[100vh]">
-      <div className=" flex justify-between items-center ml-12 md:ml-0 bg-white mb-2 p-2 rounded-lg shadow-sm">
+    <div className="max-w-[1070px] mx-auto px-4 py-2 min-h-[100vh]">
+      {/* <div className=" flex justify-between items-center ml-12 md:ml-0 bg-white mb-2 p-2 rounded-lg shadow-sm">
         <div className="flex items-center space-x-2">
           <div className="text-sm text-gray-500 flex items-center space-x-2">
             <Link to="/admin/cases">
@@ -190,12 +191,22 @@ const Uploadcase = () => {
         <div className="bg-blue-50 p-3 rounded-full">
           <LuUser className="text-blue-600 text-xl" />
         </div>
+      </div> */}
+      <div className="ml-10 md:ml-0 flex justify-between items-center shadow-2xl bg-[#0f2d6b] rounded-md   py-2 px-4 mt-1 md:mt-0">
+        <h2 className="font-semibold text-white  text-sm cursor-pointer flex gap-1 items-center">
+          Cases 
+        </h2>
+        <div>
+          <div className="bg-blue-50 p-2 md:p-3 rounded-full">
+            <LuUser className="text-blue-600 text-md md:text-xl" />
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-end gap-5 p-4">
+      <div className="md:flex md:justify-end gap-5 p-4">
         {/* Upload one case details in the forms */}
-        <div className="border-2 border-dashed w-[35%] md:w-[30%] lg:w-[20%] mt-5">
-          <h1 className="text-center mt-1">Fill The Details Via Form</h1>
+        <div className="border-2 border-dashed w-[100%] md:w-[30%] lg:w-[20%] mt-5">
+          <h1 className="text-center mt-1 text-white">Case Via Form</h1>
           <div className="text-center p-4">
             <Link to="/admin/cases/add">
               <button className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white">
@@ -206,8 +217,8 @@ const Uploadcase = () => {
         </div>
 
         {/* Upload Case Details in file */}
-        <div className="border-2 border-dashed w-[35%] md:w-[30%] lg:w-[20%] mt-5">
-          <h1 className="text-center mt-1">Upload Case Via File</h1>
+        <div className="border-2 border-dashed w-[100%] md:w-[30%] lg:w-[20%] mt-5">
+          <h1 className="text-center mt-1 text-white">Case Via File</h1>
           <div className="text-center p-4">
             <button
               className="bg-blue-700 hover:bg-blue-800 px-4 py-1 rounded-sm text-white"

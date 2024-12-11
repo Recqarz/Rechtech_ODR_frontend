@@ -31,6 +31,7 @@ import {
 import toast from "react-hot-toast";
 import TableProps from "@/components/ArbitratorUserTable/TableProps";
 import UpdateClientDetailsProps from "./UpdateClientDetailsProps";
+import { FaAngleRight } from "react-icons/fa";
 
 const ClientDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +82,7 @@ const ClientDashboard = () => {
         setData(res.data.user);
       })
       .catch((err) => {
-        toast.error("Something went wrong")
+        toast.error("Something went wrong");
       });
   };
   useEffect(() => {
@@ -89,23 +90,17 @@ const ClientDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto px-4 py-3">
-        <div className="flex justify-between items-center ml-12 md:ml-0 mb-4 bg-white p-2 rounded-lg shadow-sm">
-          <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-500 flex items-center space-x-2">
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">
-                User
-              </span>
-              <span>›</span>
-              <span className="cursor-pointer hover:text-blue-700 font-semibold">
-                Client
-              </span>
+    <div className="min-h-screen">
+      <div className="max-w-[1070px] mx-auto px-4 py-3">
+        <div className="ml-10 md:ml-0 flex justify-between items-center shadow-2xl bg-[#0f2d6b] rounded-md   py-2 px-4 mt-1 md:mt-0">
+          <h2 className="font-semibold text-white  text-sm cursor-pointer flex gap-1 items-center">
+            Users <FaAngleRight className="text-xs mt-1" />{" "}
+            <span className="hover:text-blue-500">Client</span>
+          </h2>
+          <div>
+            <div className="bg-blue-50 p-2 md:p-3 rounded-full">
+              <LuUser className="text-blue-600 text-md md:text-xl" />
             </div>
-          </div>
-
-          <div className="bg-blue-50 p-3 rounded-full">
-            <LuUser className="text-blue-600 text-xl" />
           </div>
         </div>
 
@@ -172,9 +167,9 @@ const ClientDashboard = () => {
         )}
 
         {/* Add Arbitrator */}
-        <div className="flex justify-end w-[97%] mx-auto mt-6">
+        <div className="flex justify-end w-[97%] mx-auto mt-5">
           <Link to={"/client/addclient"}>
-            <button className="bg-[#B9DCFD] hover:bg-blue-500 font-semibold text-[16px] p-2 text-black py-2 px-4 flex items-center gap-0 border-1 border-slate-950">
+            <button className="bg-[#B9DCFD] rounded-sm hover:bg-blue-500 font-semibold text-[16px] p-2 text-black py-2 px-4 flex items-center gap-0 border-1 border-slate-950">
               <span>Add</span>
             </button>
           </Link>
@@ -183,7 +178,8 @@ const ClientDashboard = () => {
         {/* Client data in the table*/}
 
         {data.length > 0 ? (
-          <table cellSpacing="0">
+          <div>
+            {/* <table cellSpacing="0">
             <thead>
               <tr>
                 <th>ID</th>
@@ -195,7 +191,19 @@ const ClientDashboard = () => {
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-            </thead>
+            </thead> */}
+            <div className="flex flex-col gap-2 mt-1 mb-2">
+              <div className="grid mt-5 font-semibold lg:px-3 rounded-md grid-cols-[60px,1fr,70px,50px] md:grid-cols-[60px,1fr,1fr,70px,50px]  lg:grid-cols-[70px,1fr,1fr,180px,50px,100px,60px,60px] xl:grid-cols-[70px,1fr,1fr,250px,50px,100px,60px,60px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
+                <p className="truncate">ID</p>
+                <p className="truncate">Name</p>
+                <p className="truncate hidden lg:block">Contact No.</p>
+                <p className="truncate hidden md:block">Email ID</p>
+                <p className="truncate hidden lg:block">Cases Added</p>
+                <p className="truncate hidden lg:block">Address</p>
+                <p className="truncate">Status</p>
+                <p className="truncate">Action</p>
+              </div>
+            </div>
             {data
               .filter((item) => {
                 if (item === "All") {
@@ -239,7 +247,8 @@ const ClientDashboard = () => {
                   handleOpen={() => handleOpen(client)}
                 />
               ))}
-          </table>
+            {/* </table> */}
+          </div>
         ) : (
           <NoDataFound />
         )}

@@ -31,7 +31,7 @@ const UpdateArbitratorDetailsProps = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[300px] h-[90vh] scrollbar-hide rounded-md overflow-y-auto md:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Arbitrator</DialogTitle>
           <DialogDescription>

@@ -31,7 +31,7 @@ const UploadCaseBulkProps = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="sm:max-w-[480px] p-6 rounded-lg shadow-lg"
+        className="sm:max-w-[480px] scrollbar-hide p-6 rounded-lg shadow-lg"
         style={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         <DialogHeader className="mb-4">
