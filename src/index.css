@@ -7,9 +7,9 @@
   height: 4px; /* Very thin horizontal scrollbar */
 }
 
-/* body{
+body{
   background-color: #012061;
-} */
+}
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1; /* Light gray for the track */

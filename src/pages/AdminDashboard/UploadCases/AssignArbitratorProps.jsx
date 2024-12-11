@@ -28,7 +28,7 @@ const AssignArbitratorProps = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="rounded-lg shadow-lg"
+        className="rounded-lg shadow-lg scrollbar-hide"
         style={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         <DialogHeader className="mb-4">

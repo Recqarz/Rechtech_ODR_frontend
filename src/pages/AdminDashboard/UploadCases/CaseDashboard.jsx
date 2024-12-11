@@ -237,13 +237,13 @@ const CaseDashboard = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-[1070px] mx-auto">
       {data.length === 0 ? (
         ""
       ) : (
-        <div className="flex flex-wrap gap-2 mt-5 mx-5">
+        <div className="flex flex-wrap gap-2 mt-5 overflow-x-hidden">
           {/* Filter by file name */}
-          <div className="flex-shrink-0 sm:w-[15%] bg-blue-50">
+          <div className="flex-shrink-0 sm:w-[15%] bg-blue-50  rounded-xl">
             <Select
               id="name"
               className="w-full"
@@ -275,7 +275,7 @@ const CaseDashboard = () => {
           </div>
 
           {/* filter by assign or not assign arbitratotr */}
-          <div className="flex-shrink-0 sm:w-[15%] bg-blue-50">
+          <div className="flex-shrink-0 sm:w-[15%] bg-blue-50 rounded-xl">
             <Select
               id="name"
               className="w-full"
@@ -308,7 +308,7 @@ const CaseDashboard = () => {
               className="flex-grow outline-none bg-transparent text-sm"
               onChange={(e) => setSearchByData(e.target.value)}
             />
-            <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
+            <button className="text-gray-500 hover:text-gray-700 hidden xl:block">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -326,22 +326,24 @@ const CaseDashboard = () => {
             </button>
           </div>
 
-          {/* select arbitrator for multiple client */}
-          <div className="flex gap-2 items-center ml-5">
-            <Checkbox
-              onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
+          <div className="flex gap-2 items-center ml-5 text-white">
+            <Checkbox className="bg-white"
+              onClick={() => {
+                setIsClickedForMultiple(!isClickedForMultiple)
+                setSelectAllClientStatus(false)
+                setCaseId([]);
+              }}
             />
-            <p>Select Multiple</p>
+            <p className="text-sm font-semibold">Select Multiple</p>
           </div>
-
           {isClickedForMultiple ? (
-            <div className="flex gap-2 items-center ml-1">
-              <Checkbox
+            <div className="flex gap-2 items-center ml-1 text-white">
+              <Checkbox className="bg-white"
                 value="allclient"
                 checked={selectAllClientStatus}
                 onClick={handleAllClientForArbitrator}
               />
-              <p>Select All</p>
+              <p className="text-sm font-semibold">Select All</p>
             </div>
           ) : null}
 
@@ -354,7 +356,7 @@ const CaseDashboard = () => {
                   cursor: "pointer",
                 }}
               />
-              <p>Select Arbitrator</p>
+              <p className="text-sm font-semibold text-white">Select Arbitrator</p>
             </div>
           ) : null}
         </div>
@@ -362,7 +364,8 @@ const CaseDashboard = () => {
 
       {/* Case Dashboard Data */}
       {caseData.length > 0 ? (
-        <table cellSpacing="0">
+        <div>
+        {/* <table cellSpacing="0">
           <thead>
             <tr>
               <th>{isClickedForMultiple ? "Select" : null}</th>
@@ -375,7 +378,19 @@ const CaseDashboard = () => {
               <th>Attachment</th>
               <th>Arbitrator</th>
             </tr>
-          </thead>
+          </thead> */}
+          <div className="flex flex-col gap-2 mt-1 mb-2">
+              <div className={`grid mt-5 font-semibold lg:px-3 rounded-md ${isClickedForMultiple ? "grid-cols-[40px,1fr,70px,50px]" : "grid-cols-[1fr,70px,60px]"} ${isClickedForMultiple ? "md:grid-cols-[40px,1fr,1fr,80px,60px]" : "md:grid-cols-[1fr,1fr,80px,80px]"}  ${isClickedForMultiple ? "lg:grid-cols-[40px,1fr,1fr,180px,50px,100px,60px,60px]" : "lg:grid-cols-[1fr,1fr,180px,50px,100px,60px,60px]"} ${isClickedForMultiple ? "xl:grid-cols-[40px,1fr,1fr,1fr,1fr,1fr,1fr,1fr]" : "xl:grid-cols-[1fr,1fr,1fr,1fr,1fr,1fr,1fr]"} text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}>
+                <p className={`truncate ${isClickedForMultiple ? "block" : "hidden"}`}>Select</p>
+                <p className="truncate">Claimant Name</p>
+                <p className="truncate hidden lg:block">Claimant No.</p>
+                <p className="truncate hidden md:block">Res. Name</p>
+                <p className="truncate hidden lg:block">Type</p>
+                <p className="truncate hidden lg:block">File</p>
+                <p className="truncate">Attachment</p>
+                <p className="truncate">Arbitrator</p>
+              </div>
+            </div>
           {caseData
             .filter((file) => {
               if (!searchByFileName || searchByFileName === "all") return true;
@@ -420,6 +435,7 @@ const CaseDashboard = () => {
                     />
                   ) : null
                 }
+                isClickedForMultiple={isClickedForMultiple}
                 cl_name={cases.clientName}
                 cl_number={cases.clientMobile}
                 res_name={cases.respondentName}
@@ -458,7 +474,8 @@ const CaseDashboard = () => {
                 }
               />
             ))}
-        </table>
+        {/* </table> */}
+        </div>
       ) : (
         <NoDataFound />
       )}
