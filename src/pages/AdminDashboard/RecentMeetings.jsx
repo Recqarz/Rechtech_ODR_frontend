@@ -42,33 +42,44 @@ const RecentMeetings = () => {
   }
 
   return (
-    <div className="w-[100%] lg:w-[80%] mt-6 pr-2 bg-blue-50 py-2 mr-4 rounded-md">
-      <h2 className="text-xl font-bold ml-3 ">Recent Meetings</h2>
-      {meetings.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th className="text-xs font-semibold">ID</th>
-              <th className="text-xs font-semibold">Cl. Name</th>
-              <th className="text-xs font-semibold">Res. Name</th>
-              <th className="text-xs font-semibold">D&T</th>
-              <th className="text-xs font-semibold">Arbitrator</th>
-            </tr>
-          </thead>
-          {meetings.map((recent, ind) => (
-            <RecentMeetProps
-              key={ind}
-              arb_name={recent.arbitratorName.split(" ")[0]}
-              time={formatDateTime(recent.startTime)}
-              res_name={recent.respondentName}
-              com_name={recent.clientName}
-              case_name={recent.caseId}
-            />
-          ))}
-        </table>
-      ) : (
-        <h2 className="text-lg font-bold text-center mt-10 mb-10 text-gray-500">No recent meetings found.</h2>
-      )}
+    <div className="w-[100%] lg:w-[80%] shadow-sm bg-[#0f2d6b]  mt-6 pr-2 py-2 mr-4 rounded-md">
+      <h2 className="text-xl font-bold ml-3 text-white">Recent Meetings</h2>
+      <div className="max-w-[1070px] mx-auto min-h-[100%] pb-3 ">
+        {meetings.length > 0 ? (
+          <div className="flex flex-col gap-2 mt-0 px-4 lg:px-3">
+            <div className="grid mt-5  lg:px-3 rounded-md font-semibold grid-cols-[60px,1fr,1fr] md:grid-cols-[60px,1fr,1fr,80px]  lg:grid-cols-[60px,1fr,1fr,1fr,70px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#012061]">
+              <p className="truncate min-w-[60px]">Id</p>
+              <p className="truncate">Cl. Name</p>
+              <p className="truncate hidden lg:block">Res. Name</p>
+              <p className="truncate hidden md:block">D&T</p>
+              <p>Arbitrator</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center mt-24 text-white text-2xl font-semibold">
+            No Meetings Available
+          </div>
+        )}
+
+        <div className="flex flex-col gap-2 mt-4 px-4 lg:px-3">
+          {meetings.map((ele) => {
+            return (
+              <div
+                key={ele._id}
+                className="grid rounded-md  grid-cols-[60px,1fr,1fr] md:grid-cols-[60px,1fr,1fr,80px]  lg:grid-cols-[60px,1fr,1fr,1fr,70px] text-sm text-white gap-4 px-2 py-2 shadow-lg bg-[#012061]"
+              >
+                <p className="truncate min-w-[60px]">{ele.caseId}</p>
+                <p className="truncate hidden md:block">{ele.clientName}</p>
+                <p className="truncate">{ele.respondentName}</p>
+                <p className="truncate hidden lg:block">
+                  {formatDateTime(ele.startTime)}
+                </p>
+                <p>{ele.arbitratorName.split(" ")[0]}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
