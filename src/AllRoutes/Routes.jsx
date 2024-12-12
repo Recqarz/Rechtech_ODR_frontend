@@ -23,14 +23,14 @@ import ClientTicket from "@/pages/Tickets/AllTicketSection/ClientTicket";
 import ArbitratorTicket from "@/pages/Tickets/AllTicketSection/ArbitratorTicket";
 import AdminTicket from "@/pages/Tickets/AllTicketSection/AdminTicket";
 import AdminMeetings from "@/pages/meetings/adminMeetings";
-import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
-import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
-import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSec";
 import RespondentDocumentSec from "@/pages/Documents/AllDocsSection/RespondentDocumentSec";
+import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSec";
+import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
+import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
 
 const Allroutes = () => {
   return (
-    <div className="flex w-full bg-gray-50">
+    <div className="flex w-full bg-[#012061]">
       <div className="fixed top-0 left-0 bottom-0 h-[100vh] z-30">
         <Sidebar />
       </div>

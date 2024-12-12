@@ -141,7 +141,7 @@ const ArbitratorDocumentSec = () => {
 
           {allDocsForArbitrator.length > 0 ? (
             <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
-              <div className="grid mt-5  lg:px-3 rounded-md grid-cols-[60px,1fr,50px] md:grid-cols-[80px,1fr,1fr,50px]  lg:grid-cols-[100px,1fr,1fr,1fr,50px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
+              <div className="grid mt-5  lg:px-3 rounded-md grid-cols-[110px,1fr,50px] md:grid-cols-[120px,180px,1fr,50px]  lg:grid-cols-[150px,1fr,1fr,1fr,50px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
                 <p className="truncate min-w-[60px]">Cl. Name</p>
                 <p className="truncate hidden lg:block">Res. Name</p>
                 <p className="truncate ml-0 md:ml-3 lg:ml-0">Arbitrator</p>
@@ -175,7 +175,7 @@ const ArbitratorDocumentSec = () => {
                 return (
                   <div
                     key={ele._id}
-                    className="grid rounded-md grid-cols-[60px,1fr,60px] md:grid-cols-[80px,1fr,1fr,60px]  lg:grid-cols-[100px,1fr,1fr,1fr,60px] text-sm text-white gap-4 px-2 py-2 shadow-lg bg-[#0f2d6b]"
+                    className="grid rounded-md grid-cols-[110px,1fr,50px] md:grid-cols-[120px,180px,1fr,50px]  lg:grid-cols-[150px,1fr,1fr,1fr,50px] text-sm text-white gap-4 px-2 py-2 shadow-lg bg-[#0f2d6b]"
                   >
                     <p className="truncate min-w-[60px]">{ele.clientName}</p>
                     <p className="truncate ml-3 hidden lg:block">
@@ -197,7 +197,7 @@ const ArbitratorDocumentSec = () => {
 
                     <p
                       onClick={() => handleDetailsFunc(ele)}
-                      className="cursor-pointer px-2 bg-green-500 py-1 rounded-md"
+                      className="cursor-pointer px-1 bg-green-500 py-1 rounded-md"
                     >
                       Details
                     </p>

@@ -15,7 +15,6 @@ import { IoEye, IoSearch } from "react-icons/io5";
 
 const DocumentsModal = ({
   isOpen,
-  
   setIsOpen,
   documentDetail,
   handleInputChange,
@@ -141,7 +140,7 @@ const DocumentsModal = ({
             </Label>
             {documentDetail.attach.length > 0 ? (
               <IoMdDownload
-                className="cursor-pointer text-[20px]"
+                className="cursor-pointer text-[20px] text-green-500"
                 onClick={() => handleDownloadAll(documentDetail.attach)}
               />
             ) : (
@@ -156,7 +155,7 @@ const DocumentsModal = ({
             </Label>
             {documentDetail.orderSheet.length > 0 ? (
               <IoMdDownload
-                className="cursor-pointer text-[20px]"
+                className="cursor-pointer text-[20px] text-green-500"
                 onClick={() =>
                   handleDownloadAllorder(documentDetail.orderSheet)
                 }
@@ -176,7 +175,7 @@ const DocumentsModal = ({
                 className="flex items-center text-[25px]"
                 onClick={() => handleDownloadAward(documentDetail.award[0])}
               >
-                <IoMdCloudDownload />{" "}
+                <IoMdCloudDownload className="text-green-500"/>{" "}
               </div>
             ) : (
               <p className="text-sm">No Award</p>
@@ -199,7 +198,7 @@ const DocumentsModal = ({
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={closeDetailsFunc}>
+          <Button className="h-8 bg-green-500" type="submit" onClick={closeDetailsFunc}>
             Done
           </Button>
         </DialogFooter>

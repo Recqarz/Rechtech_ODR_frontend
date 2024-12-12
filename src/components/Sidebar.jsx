@@ -79,7 +79,9 @@ const Sidebar = () => {
   };
 
   const closeMenu = () => {
-    navigate("/admin/admindashboard/meetings")
+    if (role === "admin") {
+      navigate("/admin/admindashboard/meetings");
+    }
     setIsSidebarOpen(false);
     setIsUsersOpen(false);
   };
@@ -188,7 +190,9 @@ const Sidebar = () => {
                     onClick={AllArbitratorfunc}
                   >
                     <div className="flex items-center">
-                      <span className="mr-3"><FaUsers className="text-[20px]" /></span>
+                      <span className="mr-3">
+                        <FaUsers className="text-[20px]" />
+                      </span>
                       All Arbitrator
                     </div>
                   </li>

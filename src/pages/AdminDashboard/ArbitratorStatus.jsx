@@ -32,11 +32,11 @@ const ArbitratorStatus = () => {
   const colors = {
     inUse: "#57c3fc",
     free: "#0084ff",
-    arbitrationCompleted: "#1a1e4d",
+    arbitrationCompleted: "yellow",
   };
 
   return (
-    <div className="mt-8 ">
+    <div className="mt-8 text-white">
       <h3 className="ml-2 font-semibold">Arbitrator Status</h3>
       <Container className="border-2 border-slate-400  mt-2 rounded-lg h-[230px]">
         <ChartContainer style={{ marginTop: "60px" }}>

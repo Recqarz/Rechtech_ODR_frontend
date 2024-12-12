@@ -23,7 +23,7 @@ const AdminMeetings = () => {
     fetchData();
   }, []);
 
-  function handleMeet(link){
+  function handleMeet(link) {
     window.open(link, "_blank");
   }
 
@@ -96,9 +96,17 @@ const AdminMeetings = () => {
                   <p className="truncate hidden md:block">
                     {ele.meetings.end.split("T")[0]}
                   </p>
-                  <p
-                  onClick={()=>handleMeet(ele.meetings.webLink)}
-                   className="cursor-pointer px-4 bg-green-500 py-1 rounded-md">Start</p>
+                  {
+                    new Date(ele.meetings.end)>new Date() ? <p
+                    onClick={() => handleMeet(ele.meetings.webLink)}
+                    className="cursor-pointer px-4 bg-green-500 py-[2px] rounded-md"
+                  >
+                    Start
+                  </p> : 
+                  <p className="px-4 bg-red-500 py-[2px] rounded-md">
+                    Over
+                  </p>
+                  }
                 </div>
               );
             })}
