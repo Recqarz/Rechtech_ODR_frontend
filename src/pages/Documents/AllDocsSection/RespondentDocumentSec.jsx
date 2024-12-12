@@ -1,16 +1,16 @@
-import { Input } from "@/components/ui/input";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { IoMdDownload } from "react-icons/io";
 import toast from "react-hot-toast";
-import { FcStart } from "react-icons/fc";
-import { IoSearch } from "react-icons/io5";
-import RespondentCasesModal from "./RespondentCasesModal";
+import { recordingData } from "@/global/action";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import DocumentsModal from "../DocumentsModal";
+import SearchByDataProps from "../SearchByDataProps";
 
-const RespondentCase = () => {
-  const [data, setData] = useState([]);
-  const [searchData, setSearchData] = useState("");
+const RespondentDocumentSec = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [caseDetails, setCaseDetails] = useState({
+  const [documentDetail, setDocumentDetail] = useState({
     id: "",
     cl_name: "",
     cl_email: "",
@@ -24,8 +24,12 @@ const RespondentCase = () => {
     orderSheet: "",
     award: "",
     recording: "",
-    meetings: "",
   });
+
+  let dispatch = useDispatch();
+  let navigate = useNavigate();
+  const [allDocsForRespondent, setAllDocsForRespondent] = useState([]);
+  const [searchData, setSearchData] = useState("");
 
   function fetchData() {
     let token = JSON.parse(sessionStorage.getItem("rechtechtoken"));
@@ -41,8 +45,7 @@ const RespondentCase = () => {
         },
       })
       .then((response) => {
-        setData(response.data.data);
-        console.log(response.data.data);
+        setAllDocsForRespondent(response.data.data);
       })
       .catch((error) => {
         toast.error("Something went wrong");
@@ -52,6 +55,7 @@ const RespondentCase = () => {
     fetchData();
   }, []);
 
+  //Download Attachments
   const handleDownloadAllAttachment = (links) => {
     links.forEach((link) => {
       const anchor = document.createElement("a");
@@ -64,25 +68,7 @@ const RespondentCase = () => {
     });
   };
 
-  function convertToDateNow(isoTimestamp) {
-    const date = new Date(isoTimestamp);
-    return date.getTime();
-  }
-
-  function handleMeeting(meet) {
-    window.open(meet.webLink, "_blank");
-  }
-
-  function handleDownloadAward(link) {
-    const anchor = document.createElement("a");
-    anchor.href = link;
-    anchor.target = "_blank";
-    anchor.download = "";
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-  }
-
+  //Download OrderSheet
   const handleDownloadAllorder = (links) => {
     links.forEach((link) => {
       const anchor = document.createElement("a");
@@ -95,17 +81,31 @@ const RespondentCase = () => {
     });
   };
 
-  if (!data || data.length === 0) {
-    return (
-      <div className="w-full p-4 text-center text-gray-500">
-        No Case Data Available
-      </div>
-    );
+  // Download Awards
+  function handleDownloadAward(link) {
+    const anchor = document.createElement("a");
+    anchor.href = link;
+    anchor.target = "_blank";
+    anchor.download = "";
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   }
 
-  //click on details(Modal)
+  // To see the recording
+  function handleRecordings(cases) {
+    dispatch(recordingData(cases.recordings));
+    navigate("/arbitrator/cases/recordings");
+  }
+
+  //searchData
+  const handleSearchData = (e) => {
+    setSearchData(e.target.value);
+  };
+
+  //click on details button
   const handleDetailsFunc = (el) => {
-    setCaseDetails({
+    setDocumentDetail({
       id: el?.caseId,
       cl_name: el?.clientName,
       cl_email: el?.clientEmail,
@@ -118,7 +118,6 @@ const RespondentCase = () => {
       orderSheet: el?.orderSheet,
       award: el?.awards,
       recording: el?.recordings,
-      meetings: el?.meetings,
     });
     setIsOpen(true);
   };
@@ -139,25 +138,18 @@ const RespondentCase = () => {
     <>
       <div className="w-full bg-[#012061] min-h-[100vh]">
         <div className="max-w-[1070px] mx-auto bg-[#012061] min-h-[100%] py-3">
-          <div className="flex justify-end px-3">
-            <div className="relative w-[230px] md:w-[280px] h-[32px] mt-[5px] md:mt-0">
-              <Input
-                className="w-full h-full  rounded-md placeholder:font-semibold"
-                placeholder="Search here"
-                value={searchData}
-                onChange={(e) => setSearchData(e.target.value)}
-              />
-              <IoSearch className="absolute top-[25%] right-4 text-lg text-blue-700" />
-            </div>
-          </div>
+          <SearchByDataProps
+            searchData={searchData}
+            handleSearchData={handleSearchData}
+          />
 
-          {data.length > 0 ? (
+          {allDocsForRespondent.length > 0 ? (
             <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
               <div className="grid mt-5  lg:px-3 rounded-md grid-cols-[60px,1fr,50px] md:grid-cols-[80px,1fr,1fr,50px]  lg:grid-cols-[100px,1fr,1fr,1fr,50px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
                 <p className="truncate min-w-[60px]">Cl. Name</p>
                 <p className="truncate hidden lg:block">Res. Name</p>
                 <p className="truncate ml-0 md:ml-3 lg:ml-0">Arbitrator</p>
-                <p className="truncate hidden md:block">Meetings</p>
+                <p className="truncate hidden md:block">Attachment</p>
                 <p className="truncate">Action</p>
               </div>
             </div>
@@ -168,7 +160,7 @@ const RespondentCase = () => {
           )}
 
           <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
-            {data
+            {allDocsForRespondent
               .filter((item) => {
                 if (!searchData) return true;
                 return (
@@ -193,29 +185,19 @@ const RespondentCase = () => {
                     <p className="truncate ml-3 hidden lg:block">
                       {ele.respondentName}
                     </p>
-                    <p className="truncate">{ele.arbitratorName}</p>
+                    <p className="truncate">
+                      {ele.arbitratorName ? ele.arbitratorName : "Not Assigned"}
+                    </p>
                     <p className="truncate hidden md:block">
-                      {ele.meetings.length > 0 &&
-                      convertToDateNow(
-                        ele.meetings[ele?.meetings.length - 1].end
-                      ) > Date.now() ? (
-                        <div
+                      {ele.attachments.length > 0 ? (
+                        <IoMdDownload
+                          className="cursor-pointer text-sm"
                           onClick={() =>
-                            handleMeeting(
-                              ele.meetings[ele?.meetings.length - 1]
-                            )
+                            handleDownloadAllAttachment(ele.attachments)
                           }
-                          className="flex cursor-pointer"
-                        >
-                          <FcStart className="text-3xl" />
-                          <span className="font-sm font-semibold mt-1">
-                            Start
-                          </span>
-                        </div>
-                      ) : ele.meetings.length > 0 ? (
-                        "Completed"
+                        />
                       ) : (
-                        "Not Scheduled"
+                        "No attach"
                       )}
                     </p>
 
@@ -231,23 +213,20 @@ const RespondentCase = () => {
           </div>
         </div>
       </div>
-
-      {/* modal for details for cases */}
-
-      <RespondentCasesModal
+      {/* modal for details for docs */}
+      <DocumentsModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        caseDetails={caseDetails}
+        documentDetail={documentDetail}
         handleInputChange={handleInputChange}
-        handleMeeting={handleMeeting}
-        handleDownloadAward={handleDownloadAward}
+        handleDownloadAll={handleDownloadAllAttachment}
         handleDownloadAllorder={handleDownloadAllorder}
-        handleDownloadAllAttachment={handleDownloadAllAttachment}
+        handleDownloadAward={handleDownloadAward}
+        handleRecordings={handleRecordings}
         closeDetailsFunc={closeDetailsFunc}
-        convertToDateNow={convertToDateNow}
       />
     </>
   );
 };
 
-export default RespondentCase;
+export default RespondentDocumentSec;

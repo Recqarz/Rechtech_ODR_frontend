@@ -60,7 +60,7 @@ const RespondentTicket = () => {
   };
 
   return (
-    <div className="px-2 mt-20 md:mt-0">
+    <div className="px-2 h-[100vh]">
       <RaiseTicketProps
         ticketId={formData.ticketId}
         name={formData.name}

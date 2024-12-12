@@ -80,10 +80,10 @@ const AdminMeetings = () => {
                 ele.disputeType.toLowerCase().includes(searchTerm.toLowerCase())
               );
             })
-            .map((ele) => {
+            .map((ele, index) => {
               return (
                 <div
-                  key={ele._id}
+                  key={index}
                   className="grid rounded-md grid-cols-[60px,1fr,50px,60px] md:grid-cols-[60px,1fr,1fr,50px,100px,60px]  lg:grid-cols-[60px,1fr,1fr,1fr,50px,100px,60px] text-sm text-white gap-4 px-2 py-2 shadow-lg bg-[#0f2d6b]"
                 >
                   <p className="truncate min-w-[60px]">{ele.caseId}</p>

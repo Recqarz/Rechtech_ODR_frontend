@@ -18,16 +18,15 @@ import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
 import RespondentDashboard from "@/pages/Respondent/respondentDashboard";
 import RespondentCase from "@/pages/Respondent/respondentCases";
 import Recordings from "@/pages/arbitratorMainPage/recordings";
-import AdminDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/AdminDocumentSec";
-import ArbitratorDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/ArbitratorDocumentSec";
-import ClientDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/ClientDocumentSec";
-import RespondentDocumentSec from "@/pages/AdminDashboard/Documents/AllDocsSection/RespondentDocumentSec";
 import RespondentTicket from "@/pages/Tickets/AllTicketSection/RespondentTicket";
 import ClientTicket from "@/pages/Tickets/AllTicketSection/ClientTicket";
 import ArbitratorTicket from "@/pages/Tickets/AllTicketSection/ArbitratorTicket";
 import AdminTicket from "@/pages/Tickets/AllTicketSection/AdminTicket";
 import AdminMeetings from "@/pages/meetings/adminMeetings";
-
+import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
+import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
+import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSec";
+import RespondentDocumentSec from "@/pages/Documents/AllDocsSection/RespondentDocumentSec";
 
 const Allroutes = () => {
   return (
@@ -92,7 +91,7 @@ const Allroutes = () => {
             path="/respondent/respondentdashboard/tickets"
             element={<RespondentTicket />}
           />
-           <Route
+          <Route
             path="/admin/admindashboard/meetings"
             element={<AdminMeetings />}
           />

@@ -11,7 +11,7 @@ const RaiseTicketProps = ({
   handleAddNewTicket,
 }) => {
   return (
-    <div className="bg-white max-w-5xl mx-auto rounded-xl shadow-sm px-4 py-6 mt-2 mb-2">
+    <div className="max-w-5xl mx-auto rounded-xl shadow-sm px-4 py-6 mb-2">
       <form onSubmit={handleAddNewTicket} className="space-y-6">
         <div className="flex justify-center">
           <div className="relative group w-1/3">
