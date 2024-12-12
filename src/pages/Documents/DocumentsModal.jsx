@@ -15,6 +15,7 @@ import { IoEye, IoSearch } from "react-icons/io5";
 
 const DocumentsModal = ({
   isOpen,
+  
   setIsOpen,
   documentDetail,
   handleInputChange,
