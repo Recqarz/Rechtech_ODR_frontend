@@ -28,7 +28,6 @@ import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSe
 import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
 import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
 
-
 const Allroutes = () => {
   return (
     <div className="flex w-full bg-[#012061]">
@@ -92,7 +91,7 @@ const Allroutes = () => {
             path="/respondent/respondentdashboard/tickets"
             element={<RespondentTicket />}
           />
-           <Route
+          <Route
             path="/admin/admindashboard/meetings"
             element={<AdminMeetings />}
           />

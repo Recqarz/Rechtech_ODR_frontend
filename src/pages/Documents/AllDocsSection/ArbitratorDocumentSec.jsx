@@ -41,7 +41,6 @@ const ArbitratorDocumentSec = () => {
       })
       .then((res) => {
         setAllDocsForArbitrator(res.data.caseData);
-        console.log(res.data.caseData);
       })
       .catch((err) => {
         toast.error("Something went wrong");
