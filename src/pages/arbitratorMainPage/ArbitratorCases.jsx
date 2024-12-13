@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from "react";
-import styles from "../AdminDashboard/ArbitratorDashboard/ArbitratorDashboard.module.css";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { FcStart, FcVideoCall } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineDone } from "react-icons/md";
 import { SiGoogleforms } from "react-icons/si";
-import { IoMdCloudDownload } from "react-icons/io";
-import { IoEye } from "react-icons/io5";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import "react-datepicker/dist/react-datepicker.css";
-import NoDataFound from "@/components/NoDataFound";
-import { IoMdDownload } from "react-icons/io";
-import { Checkbox } from "@/components/ui/checkbox";
+import { IoEye, IoSearch } from "react-icons/io5";
 import { FaAward } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { recordingData } from "@/global/action";
@@ -28,6 +13,9 @@ import OrderSheet from "./OrderSheet";
 import GenerateAward from "./GenerateAward";
 import DoneWithMeet from "./DoneWithMeet";
 import ScheduleMeeting from "./ScheduleMeeting";
+import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
+import ArbitratorDetailsModal from "./ArbitratorDetailsModal";
+import FilterAllData from "./FilterAllData";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
@@ -61,6 +49,26 @@ const ArbitratorCases = () => {
   // Generate Order Sheet
   const [idForOrderSheet, setIdForOrderSheet] = useState("");
   const [fileForOrderSheet, setFileForOrderSheet] = useState("");
+
+  // details data
+  const [isOpen5, setIsOpen5] = useState(false);
+  const [caseDetails, setCaseDetails] = useState({
+    id: "",
+    cl_name: "",
+    cl_email: "",
+    cl_num: "",
+    res_name: "",
+    arb_name: "",
+    arb_email: "",
+    arb_num: "",
+    disputeType: "",
+    attach: "",
+    orderSheet: "",
+    award: "",
+    recording: "",
+    meetings: "",
+    fileName: "",
+  });
 
   let token = JSON.parse(localStorage.getItem("rechtechtoken"));
 
@@ -120,7 +128,6 @@ const ArbitratorCases = () => {
     const startDate = getFormattedDateTime(selectStartDate);
     const minutes = parseInt(timeDuration, 10);
     if (isNaN(minutes)) {
-      // console.error("Invalid time duration");
       toast.error("Invalid time duration");
       return;
     }
@@ -210,7 +217,7 @@ const ArbitratorCases = () => {
   }
 
   //download files
-  const handleDownloadAll = (links) => {
+  const handleDownloadAllAttachment = (links) => {
     links.forEach((link) => {
       const anchor = document.createElement("a");
       anchor.href = link.url;
@@ -407,125 +414,108 @@ const ArbitratorCases = () => {
       });
   };
 
+  // navigate the recordings
   function handleRecordings(cases) {
     dispatch(recordingData(cases.recordings));
     navigate("/arbitrator/cases/recordings");
   }
+
+  //Details modal
+  const handleDetailsFunc = (el) => {
+    setCaseDetails({
+      id: el?.caseId,
+      cl_name: el?.clientName,
+      cl_email: el?.clientEmail,
+      cl_num: el?.clientMobile,
+      res_name: el?.respondentName,
+      arb_name: el.arbitratorName ? el.arbitratorName : "Not Assigned",
+      arb_email: el.arbitratorEmail ? el.arbitratorEmail : "NA",
+      disputeType: el?.disputeType,
+      attach: el?.attachments,
+      orderSheet: el?.orderSheet,
+      award: el?.awards,
+      recording: el?.recordings,
+      meetings: el?.meetings,
+      fileName: el?.fileName,
+    });
+    setIsOpen5(true);
+  };
+
+  const closeDetailsFunc = () => {
+    setIsOpen5(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDocumentDetail((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div>
-      <div className="w-[100%] mx-auto mt-10 px-2">
-        <div className="flex gap-4">
-          <div className="mx-10 flex items-center w-[25%] lg:w-[20%] border rounded-xl p-2 bg-blue-50 border-gray-300">
-            <input
-              type="text"
-              placeholder="Search"
-              className="flex-grow outline-none bg-transparent text-sm"
-              onChange={(e) => setSearchByData(e.target.value)}
-            />
-            <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Filter by file name */}
-          <div className="sm:w-[15%] bg-blue-50">
-            <Select
-              id="name"
-              className="w-full"
-              onValueChange={(e) => setSearchByFileName(e)}
-            >
-              <SelectTrigger className="w-full bg-blue-50">
-                <SelectValue placeholder="File Name" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem key="all" value="all">
-                    All
-                  </SelectItem>
-                  <SelectItem key="Single Case" value="singlecase">
-                    Single Case
-                  </SelectItem>
-                  {uniqueFileName?.map((item) => {
-                    if (item.isFileUpload) {
-                      return (
-                        <SelectItem key={item._id} value={item.fileName}>
-                          {item.fileName}
-                        </SelectItem>
-                      );
-                    }
-                  })}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="bg-[#012061] min-h-[100vh]">
+        <div className="max-w-[1070px] mx-auto bg-[#012061] min-h-[100%] py-3">
+          <FilterAllData
+            setSearchByFileName={setSearchByFileName}
+            uniqueFileName={uniqueFileName}
+            searchByData={searchByData}
+            setSearchByData={setSearchByData}
+            arbitratorCaseData={arbitratorCaseData}
+            setCaseId={setCaseId}
+            setCaseIdForMeeting={setCaseIdForMeeting}
+            selectAllClientStatus={selectAllClientStatus}
+            setSelectAllClientStatus={setSelectAllClientStatus}
+            isClickedForMultiple={isClickedForMultiple}
+            setIsClickedForMultiple={setIsClickedForMultiple}
+            handleAllClientForMeeting={handleAllClientForMeeting}
+            handleUploadFunctionbulk={handleUploadFunctionbulk}
+            caseIdForMeeting={caseIdForMeeting}
+          />
 
           {arbitratorCaseData.length > 0 ? (
-            <div className="flex gap-2 items-center ml-3">
-              <Checkbox
-                onClick={() => setIsClickedForMultiple(!isClickedForMultiple)}
-                checked={isClickedForMultiple}
-              />
-              <p>Select Multiple</p>
+            <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
+              <div
+                className={`grid mt-5 font-semibold lg:px-3 rounded-md ${
+                  isClickedForMultiple
+                    ? "grid-cols-[40px,1fr,70px,50px]"
+                    : "grid-cols-[1fr,70px,60px]"
+                } ${
+                  isClickedForMultiple
+                    ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
+                    : "md:grid-cols-[1fr,1fr,80px,60px]"
+                }  ${
+                  isClickedForMultiple
+                    ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,50px]"
+                    : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,50px]"
+                } text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}
+              >
+                <p
+                  className={`truncate ${
+                    isClickedForMultiple ? "block" : "hidden"
+                  }`}
+                >
+                  Select
+                </p>
+                <p className="truncate min-w-[60px]">Cl. Name</p>
+                <p className="truncate hidden lg:block">Res. Name</p>
+                <p className="truncate hidden lg:block">Attachment</p>
+                <p className="truncate ml-0 md:ml-3 lg:ml-0 hidden md:block">
+                  File
+                </p>
+                <p className="truncate hidden lg:block">Recording</p>
+                <p className="truncate">Action</p>
+                <p className="truncate">Details</p>
+              </div>
             </div>
           ) : (
-            ""
+            <div className="flex justify-center items-center mt-24 text-white text-2xl font-semibold">
+              No Docs Available
+            </div>
           )}
 
-          {isClickedForMultiple ? (
-            <div className="flex gap-2 items-center ml-1">
-              <Checkbox
-                value="allclient"
-                checked={selectAllClientStatus}
-                onClick={handleAllClientForMeeting}
-              />
-              <p>Select All</p>
-            </div>
-          ) : null}
-
-          {caseIdForMeeting.length > 0 && isClickedForMultiple ? (
-            <div className="flex gap-1 items-center">
-              <FcVideoCall
-                onClick={handleUploadFunctionbulk}
-                style={{
-                  fontSize: "30px",
-                  cursor: "pointer",
-                }}
-              />
-              <p>Schedule Meeting</p>
-            </div>
-          ) : null}
-        </div>
-
-        {arbitratorCaseData.length > 0 ? (
-          <table cellSpacing="0">
-            <thead>
-              <tr>
-                <th>{isClickedForMultiple ? "Status" : null}</th>
-                <th>Client Name</th>
-                <th>Client No.</th>
-                <th>Res. Name</th>
-                <th>Res. No.</th>
-                <th>Type</th>
-                <th>File</th>
-                <th>Attachment</th>
-                <th>Recordings</th>
-                <th>Order</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
             {arbitratorCaseData
               .filter((el) => {
                 if (!searchByData) return true;
@@ -548,154 +538,161 @@ const ArbitratorCases = () => {
                   ?.toLowerCase()
                   .includes(searchByFileName.toLowerCase());
               })
-              .map((cases) => (
-                <tbody key={cases._id}>
-                  <tr className={styles.trbody}>
-                    <td data-label="checkbox">
+              .map((ele) => {
+                return (
+                  <div
+                    key={ele._id}
+                    className={`grid mt-1 rounded-md ${
+                      isClickedForMultiple
+                        ? "grid-cols-[40px,1fr,70px,60px]"
+                        : "grid-cols-[1fr,70px,60px]"
+                    } ${
+                      isClickedForMultiple
+                        ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
+                        : "md:grid-cols-[1fr,1fr,80px,60px]"
+                    }  text-sm text-white gap-4 px-2 py-2  ${
+                      isClickedForMultiple
+                        ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,55px]"
+                        : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,55px]"
+                    } shadow-lg bg-[#0f2d6b]`}
+                  >
+                    <p
+                      className={`truncate ${
+                        isClickedForMultiple ? "block" : "hidden"
+                      }`}
+                    >
+                      {" "}
                       {isClickedForMultiple ? (
                         <input
                           type="checkbox"
-                          value={cases._id}
+                          value={ele._id}
                           disabled={
-                            cases.isMeetCompleted ||
-                            (!cases.isMeetCompleted &&
-                              cases.meetings.length > 0 &&
+                            ele.isMeetCompleted ||
+                            (!ele.isMeetCompleted &&
+                              ele.meetings.length > 0 &&
                               convertToDateNow(
-                                cases.meetings[cases.meetings.length - 1].end
+                                ele.meetings[ele.meetings.length - 1].end
                               ) > Date.now())
                           }
                           onChange={() =>
-                            handleSelectMultipleClientForArbitrator(cases._id)
+                            handleSelectMultipleClientForArbitrator(ele._id)
                           }
-                          checked={caseIdForMeeting.includes(cases._id)}
+                          checked={caseIdForMeeting.includes(ele._id)}
                           className="checkbox-small w-[12px] h-[12px]"
                         />
                       ) : null}
-                    </td>
-                    <td data-label="client name">{cases.clientName}</td>
-                    <td data-label="client number">{cases.clientMobile}</td>
-                    <td data-label="respondant name">{cases.respondentName}</td>
-                    <td data-label="respondence number">
-                      {cases.respondentMobile}
-                    </td>
-                    <td data-label="dispute type">{cases.disputeType}</td>
-                    <td data-label="case type">
-                      {cases.isFileUpload ? cases.fileName : "Single Case"}
-                    </td>
+                    </p>
+                    <p className="truncate min-w-[60px]">{ele.clientName}</p>
+                    <p className="truncate ml-3 hidden lg:block">
+                      {ele.respondentName}
+                    </p>
 
-                    <td data-label="attachment">
-                      <div className="flex items-center">
-                        {cases.attachments.length > 0 ? (
-                          <IoMdDownload
-                            className="cursor-pointer text-sm ml-6"
-                            onClick={() => handleDownloadAll(cases.attachments)}
-                          />
-                        ) : (
-                          "No attach"
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      {cases.recordings.length > 0 ? (
-                        <IoEye
-                          onClick={() => handleRecordings(cases)}
-                          className="ml-4 text-xl cursor-pointer"
-                        />
-                      ) : (
-                        <p className="font-semibold ml-2">No Meet.</p>
-                      )}
-                    </td>
-                    <td>
-                      {cases.orderSheet.length > 0 ? (
+                    <p className="truncate ml-3 hidden lg:block">
+                      {ele.attachments.length > 0 ? (
                         <IoMdDownload
-                          className="cursor-pointer text-sm ml-6"
+                          className="cursor-pointer text-sm ml-6 text-green-600"
                           onClick={() =>
-                            handleDownloadAllorder(cases.orderSheet)
+                            handleDownloadAllAttachment(cases.attachments)
                           }
                         />
                       ) : (
-                        <p className="font-semibold ml-2">No Order.</p>
+                        "No Attach."
                       )}
-                    </td>
-                    <td
-                      data-label="Meeting Schedule"
-                      style={{
-                        color: "blue",
-                        fontSize: "24px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {!cases.isMeetCompleted ? (
-                        cases.meetings.length < 1 ? (
+                    </p>
+
+                    <p className="truncate hidden md:block">
+                      {ele.isFileUpload ? ele.fileName : "Single Case"}
+                    </p>
+
+                    <p className="truncate hidden lg:block">
+                      {ele.recordings.length > 0 ? (
+                        <IoEye
+                          onClick={() => handleRecordings(ele)}
+                          className="ml-4 text-xl cursor-pointer text-green-500"
+                        />
+                      ) : (
+                        <span className="font-semibold ml-2">No Meet.</span>
+                      )}
+                    </p>
+
+                    <p className="truncate text-[25px] cursor-pointer">
+                      {!ele.isMeetCompleted ? (
+                        ele.meetings.length < 1 ? (
                           <FcVideoCall
+                           className="text-green-500"
                             onClick={() =>
                               isClickedForMultiple
                                 ? null
-                                : handleMeetingModal(cases._id)
+                                : handleMeetingModal(ele._id)
                             }
                           />
                         ) : convertToDateNow(
-                            cases.meetings[cases?.meetings.length - 1].end
+                            ele.meetings[ele?.meetings.length - 1].end
                           ) > Date.now() ? (
-                          <div className="flex gap-1">
+                          <span className="flex gap-1">
                             <FcStart
+                             className="text-green-500"
                               onClick={() =>
                                 handleMeeting(
-                                  cases.meetings[cases?.meetings.length - 1]
+                                  ele.meetings[ele?.meetings.length - 1]
                                 )
                               }
                             />
                             <MdOutlineDone
+                            className="text-green-500"
                               onClick={() => {
-                                handleAllMeetingCompleted(cases._id);
-                                // handleMeetComplete(cases._id)
+                                handleAllMeetingCompleted(ele._id);
                               }}
                             />
-                          </div>
+                          </span>
                         ) : (
-                          <div className="flex gap-1 items-center">
+                          <span className="flex gap-1 items-center">
                             <FcVideoCall
+                            className="text-green-500"
                               onClick={() =>
                                 isClickedForMultiple
                                   ? null
-                                  : handleMeetingModal(cases._id)
+                                  : handleMeetingModal(ele._id)
                               }
                             />
                             <SiGoogleforms
-                              className="text-[16px]"
-                              onClick={() => generateOrderSheet(cases._id)}
+                              className="text-[16px] text-green-500"
+                              onClick={() => generateOrderSheet(ele._id)}
                             />
                             <MdOutlineDone
-                              onClick={
-                                () => handleAllMeetingCompleted(cases._id)
-                                // handleMeetComplete(cases._id)
-                              }
+                            className="text-green-500"
+                              onClick={() => handleAllMeetingCompleted(ele._id)}
                             />
-                          </div>
+                          </span>
                         )
                       ) : null}
-                      {cases.isMeetCompleted && !cases.isAwardCompleted ? (
-                        <FaAward onClick={() => generateAwardFunc(cases._id)} />
+                      {ele.isMeetCompleted && !ele.isAwardCompleted ? (
+                        <FaAward className="text-green-500" onClick={() => generateAwardFunc(ele._id)} />
                       ) : null}
-                      {cases.isAwardCompleted ? (
-                        <p
-                          className="flex items-center text-[18px]"
-                          onClick={() => handleDownloadAward(cases.awards[0])}
+                      {ele.isAwardCompleted ? (
+                        <span
+                          className="flex items-center text-[18px] gap-1"
+                          onClick={() => handleDownloadAward(ele.awards[0])}
                         >
-                          <IoMdCloudDownload />{" "}
+                          <IoMdCloudDownload className="text-green-500"/>{" "}
                           <span className="text-[12px] font-semibold">
                             Awards
                           </span>
-                        </p>
+                        </span>
                       ) : null}
-                    </td>
-                  </tr>
-                </tbody>
-              ))}
-          </table>
-        ) : (
-          <NoDataFound />
-        )}
+                    </p>
+
+                    <p
+                      onClick={() => handleDetailsFunc(ele)}
+                      className="cursor-pointer px-2 bg-green-500 py-1 rounded-md text-xs font-semibold"
+                    >
+                      Details
+                    </p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
       </div>
 
       {/* Schedule Meeting */}
@@ -736,7 +733,23 @@ const ArbitratorCases = () => {
         setFileForOrderSheet={setFileForOrderSheet}
         handleOrderSheet={handleOrderSheet}
       />
-    </div>
+
+      {/* Modal for Details  */}
+
+      <ArbitratorDetailsModal
+        isOpen5={isOpen5}
+        setIsOpen5={setIsOpen5}
+        caseDetails={caseDetails}
+        handleInputChange={handleInputChange}
+        handleDownloadAllAttachment={handleDownloadAllAttachment}
+        handleDownloadAllorder={handleDownloadAllorder}
+        handleDownloadAward={handleDownloadAward}
+        handleMeeting={handleMeeting}
+        handleRecordings={handleRecordings}
+        closeDetailsFunc={closeDetailsFunc}
+        convertToDateNow={convertToDateNow}
+      />
+      </div>
   );
 };
 

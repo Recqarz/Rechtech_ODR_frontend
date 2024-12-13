@@ -4,13 +4,27 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoSearch } from "react-icons/io5";
 
-const AdminMeetings = () => {
+const ArbitratorMeetings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
 
   function fetchData() {
+    let token = localStorage.getItem("rechtechtoken");
+    if (!token) {
+      toast.error("Please login again");
+      localStorage.removeItem("rechtechtoken");
+      localStorage.removeItem("rechtechrole");
+      navigate("/");
+      return;
+    }
+    let tokens = JSON.parse(localStorage.getItem("rechtechtoken"));
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/webex/all-meetings`)
+      .get(
+        `${import.meta.env.VITE_API_BASEURL}/webex/all-meetings/arbitrator`,
+        {
+          headers: { token: tokens },
+        }
+      )
       .then((res) => {
         setData(res.data.data);
       })
@@ -96,17 +110,16 @@ const AdminMeetings = () => {
                   <p className="truncate hidden md:block">
                     {ele.meetings.end.split("T")[0]}
                   </p>
-                  {
-                    new Date(ele.meetings.end)>new Date() ? <p
-                    onClick={() => handleMeet(ele.meetings.webLink)}
-                    className="cursor-pointer px-4 bg-green-500 py-[2px] rounded-md"
-                  >
-                    Start
-                  </p> : 
-                  <p className="px-4 bg-red-500 py-[2px] rounded-md">
-                    Over
-                  </p>
-                  }
+                  {new Date(ele.meetings.end) > new Date() ? (
+                    <p
+                      onClick={() => handleMeet(ele.meetings.webLink)}
+                      className="cursor-pointer px-4 bg-green-500 py-[2px] rounded-md"
+                    >
+                      Start
+                    </p>
+                  ) : (
+                    <p className="px-4 bg-red-500 py-[2px] rounded-md">Over</p>
+                  )}
                 </div>
               );
             })}
@@ -116,4 +129,4 @@ const AdminMeetings = () => {
   );
 };
 
-export default AdminMeetings;
+export default ArbitratorMeetings;

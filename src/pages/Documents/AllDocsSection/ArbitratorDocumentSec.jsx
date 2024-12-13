@@ -41,7 +41,6 @@ const ArbitratorDocumentSec = () => {
       })
       .then((res) => {
         setAllDocsForArbitrator(res.data.caseData);
-        console.log(res.data.caseData);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -186,7 +185,7 @@ const ArbitratorDocumentSec = () => {
                     <p className="truncate hidden md:block">
                       {ele.attachments.length > 0 ? (
                         <IoMdDownload
-                          className="cursor-pointer text-sm"
+                          className="cursor-pointer text-sm text-green-500"
                           onClick={() =>
                             handleDownloadAllAttachment(ele.attachments)
                           }
@@ -198,7 +197,7 @@ const ArbitratorDocumentSec = () => {
 
                     <p
                       onClick={() => handleDetailsFunc(ele)}
-                      className="cursor-pointer px-1 bg-green-500 py-1 rounded-md"
+                      className="cursor-pointer px-[6px] bg-green-500 py-1 rounded-md text-xs font-semibold"
                     >
                       Details
                     </p>

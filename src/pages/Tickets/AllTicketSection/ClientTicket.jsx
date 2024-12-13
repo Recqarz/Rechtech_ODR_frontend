@@ -60,7 +60,7 @@ const ClientTicket = () => {
   };
 
   return (
-    <div className="px-2 mt-20 md:mt-0">
+    <div className="px-2 mt-5 mx-auto max-w-[1070px]">
       <RaiseTicketProps
         ticketId={formData.ticketId}
         name={formData.name}

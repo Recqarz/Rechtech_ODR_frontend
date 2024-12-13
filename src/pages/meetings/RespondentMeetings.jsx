@@ -4,31 +4,31 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoSearch } from "react-icons/io5";
 
-const AdminMeetings = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState([]);
-
-  function fetchData() {
-    axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/webex/all-meetings`)
-      .then((res) => {
-        setData(res.data.data);
-      })
-      .catch((err) => {
-        toast.error("Error fetching meetings");
-      });
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  function handleMeet(link) {
-    window.open(link, "_blank");
-  }
+const RespondentMeetings = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [data, setData] = useState([]);
+  
+    function fetchData() {
+      axios
+        .get(`${import.meta.env.VITE_API_BASEURL}/webex/all-meetings`)
+        .then((res) => {
+          setData(res.data.data);
+        })
+        .catch((err) => {
+          toast.error("Error fetching meetings");
+        });
+    }
+  
+    useEffect(() => {
+      fetchData();
+    }, []);
+  
+    function handleMeet(link) {
+      window.open(link, "_blank");
+    }
 
   return (
-    <div className="w-full bg-[#012061] min-h-[100vh]">
+      <div className="w-full bg-[#012061] min-h-[100vh]">
       <div className="max-w-[1070px] mx-auto bg-[#012061] min-h-[100%] py-3">
         <div className="flex justify-end px-3">
           <div className="relative w-[230px] md:w-[280px] h-[32px] mt-[5px] md:mt-0">
@@ -113,7 +113,7 @@ const AdminMeetings = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminMeetings;
+export default RespondentMeetings

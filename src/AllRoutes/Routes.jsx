@@ -27,7 +27,9 @@ import RespondentDocumentSec from "@/pages/Documents/AllDocsSection/RespondentDo
 import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSec";
 import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
 import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
-
+import ArbitratorMeetings from "@/pages/meetings/ArbitratorMeetings";
+import ClientMeetings from "@/pages/meetings/ClientMeetings";
+import RespondentMeetings from "@/pages/meetings/RespondentMeetings";
 
 const Allroutes = () => {
   return (
@@ -92,9 +94,23 @@ const Allroutes = () => {
             path="/respondent/respondentdashboard/tickets"
             element={<RespondentTicket />}
           />
-           <Route
+          <Route
             path="/admin/admindashboard/meetings"
             element={<AdminMeetings />}
+          />
+
+          <Route
+            path="/arbitrator/arbitratordashboard/meetings"
+            element={<ArbitratorMeetings/>}
+          />
+          <Route
+            path="/client/clientdashboard/meetings"
+            element={<ClientMeetings/>}
+          />
+          
+          <Route
+            path="/respondent/respondentdashboard/meetings"
+            element={<RespondentMeetings/>}
           />
         </Routes>
       </div>

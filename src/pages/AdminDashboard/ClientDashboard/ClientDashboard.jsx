@@ -32,6 +32,7 @@ import toast from "react-hot-toast";
 import TableProps from "@/components/ArbitratorUserTable/TableProps";
 import UpdateClientDetailsProps from "./UpdateClientDetailsProps";
 import { FaAngleRight } from "react-icons/fa";
+import { IoSearch } from "react-icons/io5";
 
 const ClientDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,29 +110,14 @@ const ClientDashboard = () => {
           ""
         ) : (
           <div className="mt-6 sm:mt-10 flex gap-4 sm:items-center">
-            <div className="w-[30%] md:w-[20%] flex items-center border rounded-md p-1 bg-blue-50 border-black">
-              <input
-                type="text"
+            <div className="relative w-[200px] md:w-[220px] h-[32px]">
+              <Input
+                className="w-full h-full  rounded-md placeholder:font-semibold"
                 placeholder="Search here"
-                className="flex-grow outline-none bg-transparent px-2 py-0.5 text-sm"
+                value={searchdata}
                 onChange={(e) => setSearchdata(e.target.value)}
               />
-              <button className="text-gray-500 hover:text-gray-700 hidden md:hidden lg:block">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35M17.5 10.5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
+              <IoSearch className="absolute top-[25%] right-4 text-lg text-blue-700" />
             </div>
 
             <div className="relative w-[15%] md:w-[21%] sm:w-auto">
@@ -209,11 +195,10 @@ const ClientDashboard = () => {
                 if (item === "All") {
                   return item;
                 } else if (
-                  item.name.toLowerCase().includes(searchdata.toLowerCase()) ||
-                  item.contactNo
-                    .toLowerCase()
-                    .includes(searchdata.toLowerCase()) ||
-                  item.emailId.toLowerCase().includes(searchdata.toLowerCase())
+                  item?.name?.toLowerCase().includes(searchdata?.toLowerCase()) ||
+                  item?.contactNo?.toLowerCase()
+                    .includes(searchdata?.toLowerCase()) ||
+                  item?.emailId?.toLowerCase().includes(searchdata?.toLowerCase())
                 ) {
                   return item;
                 }

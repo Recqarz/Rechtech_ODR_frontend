@@ -14,24 +14,24 @@ const OrderSheet = ({isOpen4, setIsOpen4, fileForOrderSheet,setFileForOrderSheet
 
   return (
     <Dialog open={isOpen4} onOpenChange={setIsOpen4}>
-    <DialogContent className="sm:max-w-[480px] p-6 rounded-lg shadow-lg">
+    <DialogContent className="max-w-[280px] md:max-w-[480px] p-6 rounded-lg shadow-lg h-[90vh] lg:h-[70vh] overflow-y-auto scrollbar-hide">
       <DialogHeader className="mb-4">
-        <DialogTitle className="text-lg font-semibold text-gray-800">
+        <DialogTitle className="w-[100%] md:w-auto mr-20 md:mr-0 text-lg font-semibold text-gray-800">
           Generate Order sheet.
         </DialogTitle>
         <div className="space-y-4">
-          <DialogDescription className="text-sm text-red-500 font-semibold">
+          <DialogDescription className="w-[100%] md:w-auto mr-20 md:mr-0 text-sm text-red-500 font-semibold">
             Only PDF file is Allowed!
           </DialogDescription>
         </div>
 
         <div className="flex flex-col">
-          <Label className="block text-sm font-medium text-gray-700 mb-1">
+          <Label className="block text-sm font-medium text-gray-700 mb-1 mt-5">
             PDF File <span className="text-red-500">*</span>
           </Label>
           <label
             htmlFor="uploadOrdersheetFile1"
-            className="w-[200px] md:w-[300px] ml-[100px] md:ml-[120px] lg:ml-[120px] mt-[-15px] bg-white text-gray-500 font-semibold text-base rounded h-40 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed font-[sans-serif]"
+            className="w-[200px] md:w-[300px] ml-[20px] md:ml-[120px] lg:ml-[120px] mt-0 md:mt-[-15px] bg-white text-gray-500 font-semibold text-base rounded h-40 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed font-[sans-serif]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ const OrderSheet = ({isOpen4, setIsOpen4, fileForOrderSheet,setFileForOrderSheet
       <DialogFooter className="mt-6 flex justify-end">
         <Button
           type="submit"
-          className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+          className="w-[80%] md:w-auto ml-7 md:ml-0 px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
           onClick={handleOrderSheet}
         >
           Generate Order Sheet
