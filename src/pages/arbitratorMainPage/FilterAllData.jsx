@@ -19,16 +19,17 @@ const FilterAllData = ({
   setSearchByData,
   arbitratorCaseData,
   setCaseId,
+  setCaseIdForMeeting,
   selectAllClientStatus,
   setSelectAllClientStatus,
   isClickedForMultiple,
   setIsClickedForMultiple,
   handleAllClientForMeeting,
   handleUploadFunctionbulk,
-  caseIdForMeeting
+  caseIdForMeeting,
 }) => {
   return (
-    <div className="grid grid-cols-[140px,140px] md:grid-cols-[160px,280px,200px] lg:grid-cols-4 xl:grid-cols-5 gap-5 px-3 mt-12 md:mt-0">
+    <div className="grid grid-cols-[1fr,1fr] md:grid-cols-[1fr,1fr,1fr] lg:grid-cols-[140px,140px,120px,100px,1fr] gap-3 px-3 mt-12 md:mt-0">
       {/* Filter by file name */}
       <div className="mt-1">
         <Select
@@ -72,36 +73,37 @@ const FilterAllData = ({
       </div>
 
       {arbitratorCaseData.length > 0 ? (
-        <div className="flex gap-2 items-center ml-2 lg:ml-2 text-white mt-0 md:mt-1">
+        <div className="flex gap-2 items-center text-white mt-0 md:mt-1">
           <Checkbox
             className="bg-white"
             onClick={() => {
               setIsClickedForMultiple(!isClickedForMultiple);
               setSelectAllClientStatus(false);
-              setCaseId([]);
+              setCaseId("");
+              setCaseIdForMeeting([]);
             }}
             checked={isClickedForMultiple}
           />
-          <p>Select Multiple</p>
+          <p className="text-sm font-semibold">Select Multiple</p>
         </div>
       ) : (
         ""
       )}
 
       {isClickedForMultiple ? (
-        <div className="flex gap-2 items-center ml-1 lg:-ml-9 mt-0 lg:mt-1 text-white">
+        <div className="flex gap-2 items-center mt-0 lg:mt-1 text-white">
           <Checkbox
             className="bg-white"
             value="allclient"
             checked={selectAllClientStatus}
             onClick={handleAllClientForMeeting}
           />
-          <p>Select All</p>
+          <p className="text-sm font-semibold">Select All</p>
         </div>
       ) : null}
 
       {caseIdForMeeting.length > 0 && isClickedForMultiple ? (
-        <div className="flex gap-1 items-center text-white ml-1 xl:-ml-32 mt-0 lg:mt-2">
+        <div className="flex gap-1 items-center text-white mt-0 lg:mt-2">
           <FcVideoCall
             onClick={handleUploadFunctionbulk}
             style={{
@@ -109,7 +111,7 @@ const FilterAllData = ({
               cursor: "pointer",
             }}
           />
-          <p className="text-xs md:text-base">Schedule Meeting</p>
+          <p className="text-sm font-semibold">Schedule Meeting</p>
         </div>
       ) : null}
     </div>

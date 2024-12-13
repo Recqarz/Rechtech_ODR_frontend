@@ -454,8 +454,8 @@ const ArbitratorCases = () => {
   };
 
   return (
-    <>
-      <div className="w-full mx-auto bg-[#012061] min-h-[100vh]">
+    <div>
+      <div className="bg-[#012061] min-h-[100vh]">
         <div className="max-w-[1070px] mx-auto bg-[#012061] min-h-[100%] py-3">
           <FilterAllData
             setSearchByFileName={setSearchByFileName}
@@ -464,6 +464,7 @@ const ArbitratorCases = () => {
             setSearchByData={setSearchByData}
             arbitratorCaseData={arbitratorCaseData}
             setCaseId={setCaseId}
+            setCaseIdForMeeting={setCaseIdForMeeting}
             selectAllClientStatus={selectAllClientStatus}
             setSelectAllClientStatus={setSelectAllClientStatus}
             isClickedForMultiple={isClickedForMultiple}
@@ -483,15 +484,11 @@ const ArbitratorCases = () => {
                 } ${
                   isClickedForMultiple
                     ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
-                    : "md:grid-cols-[1fr,1fr,80px,80px]"
+                    : "md:grid-cols-[1fr,1fr,80px,60px]"
                 }  ${
                   isClickedForMultiple
-                    ? "lg:grid-cols-[40px,1fr,1fr,180px,50px,100px,60px,60px]"
-                    : "lg:grid-cols-[1fr,1fr,180px,50px,100px,60px,60px]"
-                } ${
-                  isClickedForMultiple
-                    ? "xl:grid-cols-[40px,1fr,1fr,1fr,1fr,1fr,1fr,0.5fr]"
-                    : "xl:grid-cols-[1fr,1fr,1fr,1fr,1fr,1fr,0.5fr]"
+                    ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,50px]"
+                    : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,50px]"
                 } text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}
               >
                 <p
@@ -553,14 +550,10 @@ const ArbitratorCases = () => {
                       isClickedForMultiple
                         ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
                         : "md:grid-cols-[1fr,1fr,80px,60px]"
-                    }  text-sm text-white gap-4 px-2 py-2 ${
+                    }  text-sm text-white gap-4 px-2 py-2  ${
                       isClickedForMultiple
-                        ? "lg:grid-cols-[40px,1fr,1fr,180px,50px,100px,60px,60px]"
-                        : "lg:grid-cols-[1fr,1fr,180px,50px,100px,60px,60px]"
-                    } ${
-                      isClickedForMultiple
-                        ? "xl:grid-cols-[40px,1fr,1fr,1fr,1fr,1fr,1fr,0.5fr]"
-                        : "xl:grid-cols-[1fr,1fr,1fr,1fr,1fr,1fr,0.5fr]"
+                        ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,55px]"
+                        : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,55px]"
                     } shadow-lg bg-[#0f2d6b]`}
                   >
                     <p
@@ -597,7 +590,7 @@ const ArbitratorCases = () => {
                     <p className="truncate ml-3 hidden lg:block">
                       {ele.attachments.length > 0 ? (
                         <IoMdDownload
-                          className="cursor-pointer text-sm ml-6"
+                          className="cursor-pointer text-sm ml-6 text-green-600"
                           onClick={() =>
                             handleDownloadAllAttachment(cases.attachments)
                           }
@@ -615,7 +608,7 @@ const ArbitratorCases = () => {
                       {ele.recordings.length > 0 ? (
                         <IoEye
                           onClick={() => handleRecordings(ele)}
-                          className="ml-4 text-xl cursor-pointer"
+                          className="ml-4 text-xl cursor-pointer text-green-500"
                         />
                       ) : (
                         <span className="font-semibold ml-2">No Meet.</span>
@@ -626,6 +619,7 @@ const ArbitratorCases = () => {
                       {!ele.isMeetCompleted ? (
                         ele.meetings.length < 1 ? (
                           <FcVideoCall
+                           className="text-green-500"
                             onClick={() =>
                               isClickedForMultiple
                                 ? null
@@ -637,6 +631,7 @@ const ArbitratorCases = () => {
                           ) > Date.now() ? (
                           <span className="flex gap-1">
                             <FcStart
+                             className="text-green-500"
                               onClick={() =>
                                 handleMeeting(
                                   ele.meetings[ele?.meetings.length - 1]
@@ -644,6 +639,7 @@ const ArbitratorCases = () => {
                               }
                             />
                             <MdOutlineDone
+                            className="text-green-500"
                               onClick={() => {
                                 handleAllMeetingCompleted(ele._id);
                               }}
@@ -652,6 +648,7 @@ const ArbitratorCases = () => {
                         ) : (
                           <span className="flex gap-1 items-center">
                             <FcVideoCall
+                            className="text-green-500"
                               onClick={() =>
                                 isClickedForMultiple
                                   ? null
@@ -659,24 +656,25 @@ const ArbitratorCases = () => {
                               }
                             />
                             <SiGoogleforms
-                              className="text-[16px]"
+                              className="text-[16px] text-green-500"
                               onClick={() => generateOrderSheet(ele._id)}
                             />
                             <MdOutlineDone
+                            className="text-green-500"
                               onClick={() => handleAllMeetingCompleted(ele._id)}
                             />
                           </span>
                         )
                       ) : null}
                       {ele.isMeetCompleted && !ele.isAwardCompleted ? (
-                        <FaAward onClick={() => generateAwardFunc(ele._id)} />
+                        <FaAward className="text-green-500" onClick={() => generateAwardFunc(ele._id)} />
                       ) : null}
                       {ele.isAwardCompleted ? (
                         <span
-                          className="flex items-center text-[18px]"
+                          className="flex items-center text-[18px] gap-1"
                           onClick={() => handleDownloadAward(ele.awards[0])}
                         >
-                          <IoMdCloudDownload />{" "}
+                          <IoMdCloudDownload className="text-green-500"/>{" "}
                           <span className="text-[12px] font-semibold">
                             Awards
                           </span>
@@ -686,7 +684,7 @@ const ArbitratorCases = () => {
 
                     <p
                       onClick={() => handleDetailsFunc(ele)}
-                      className="cursor-pointer px-2 bg-green-500 py-1 rounded-md"
+                      className="cursor-pointer px-2 bg-green-500 py-1 rounded-md text-xs font-semibold"
                     >
                       Details
                     </p>
@@ -751,7 +749,7 @@ const ArbitratorCases = () => {
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />
-    </>
+      </div>
   );
 };
 
