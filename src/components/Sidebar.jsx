@@ -78,10 +78,22 @@ const Sidebar = () => {
     }
   };
 
-  const closeMenu = () => {
+  const handleMeetingsFunc=()=>{
     if (role === "admin") {
       navigate("/admin/admindashboard/meetings");
+    }else if(role === "arbitrator"){
+      navigate("/arbitrator/arbitratordashboard/meetings")
+    }else if(role==="client"){
+      navigate("/client/clientdashboard/meetings");
+    }else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/meetings");
     }
+
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+  }
+
+  const closeMenu = () => {
     setIsSidebarOpen(false);
     setIsUsersOpen(false);
   };
@@ -239,9 +251,9 @@ const Sidebar = () => {
                   </li>
                 </Link>
 
-                {role !== "respondent" ? (
                   <li
-                    onClick={closeMenu}
+                    // onClick={closeMenu}
+                    onClick={handleMeetingsFunc}
                     className="flex cursor-pointer items-center px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
                   >
                     <span className="mr-4">
@@ -249,7 +261,6 @@ const Sidebar = () => {
                     </span>
                     Meetings
                   </li>
-                ) : null}
 
                 <li
                   onClick={handleDocumentFunc}
