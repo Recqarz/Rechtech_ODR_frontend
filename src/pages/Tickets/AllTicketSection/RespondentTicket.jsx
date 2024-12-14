@@ -60,7 +60,7 @@ const RespondentTicket = () => {
   };
 
   return (
-    <div className="px-2 h-[100vh]">
+    <div className="px-2 mt-5 mx-auto max-w-[1070px]">
       <RaiseTicketProps
         ticketId={formData.ticketId}
         name={formData.name}
