@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const RecentMeetingsArbitrator = () => {
+const RecentMeetingsClient = () => {
   const [meetings, setMeetings] = useState([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const RecentMeetingsArbitrator = () => {
       .get(
         `${
           import.meta.env.VITE_API_BASEURL
-        }/webex/recent-fullMeetingDataWithCaseDetails/arbitrator`,
+        }/webex/recent-fullMeetingDataWithCaseDetails/client`,
         {
           headers: { token: tokens },
         }
@@ -95,4 +95,4 @@ const RecentMeetingsArbitrator = () => {
   );
 };
 
-export default RecentMeetingsArbitrator;
+export default RecentMeetingsClient;

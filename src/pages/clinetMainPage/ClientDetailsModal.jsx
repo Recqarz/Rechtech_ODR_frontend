@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
+import { FcStart } from "react-icons/fc";
+import { IoEye } from "react-icons/io5";
 
 const ClientDetailsModal = (
   {isOpen,

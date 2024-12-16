@@ -592,7 +592,7 @@ const ArbitratorCases = () => {
                         <IoMdDownload
                           className="cursor-pointer text-sm ml-6 text-green-600"
                           onClick={() =>
-                            handleDownloadAllAttachment(cases.attachments)
+                            handleDownloadAllAttachment(ele.attachments)
                           }
                         />
                       ) : (
