@@ -9,8 +9,18 @@ const RespondentMeetings = () => {
     const [data, setData] = useState([]);
   
     function fetchData() {
+      let token = JSON.parse(sessionStorage.getItem("rechtechtoken"));
+      if (!token) {
+        toast.error("You are not logged in");
+        return;
+      }
       axios
-        .get(`${import.meta.env.VITE_API_BASEURL}/webex/all-meetings`)
+        .get(`${import.meta.env.VITE_API_BASEURL}/webex/all-meetings/respondent`, {
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
+        })
         .then((res) => {
           setData(res.data.data);
         })
