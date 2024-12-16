@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const RecentMeetingsArbitrator = () => {
+const RecentMeetingRespondent = () => {
   const [meetings, setMeetings] = useState([]);
 
   useEffect(() => {
@@ -10,22 +10,23 @@ const RecentMeetingsArbitrator = () => {
   }, []);
 
   const getRecentMeetingData = async () => {
-    let token = localStorage.getItem("rechtechtoken");
+    let token = JSON.parse(sessionStorage.getItem("rechtechtoken"));
     if (!token) {
       toast.error("Please login again");
-      localStorage.removeItem("rechtechtoken");
-      localStorage.removeItem("rechtechrole");
       navigate("/");
       return;
     }
-    let tokens = JSON.parse(localStorage.getItem("rechtechtoken"));
+
     axios
       .get(
         `${
           import.meta.env.VITE_API_BASEURL
-        }/webex/recent-fullMeetingDataWithCaseDetails/arbitrator`,
+        }/webex/recent-fullMeetingDataWithCaseDetails/respondent`,
         {
-          headers: { token: tokens },
+          headers: {
+            "Content-Type": "application/json",
+            token: `${token}`,
+          },
         }
       )
       .then((res) => {
@@ -95,4 +96,4 @@ const RecentMeetingsArbitrator = () => {
   );
 };
 
-export default RecentMeetingsArbitrator;
+export default RecentMeetingRespondent;

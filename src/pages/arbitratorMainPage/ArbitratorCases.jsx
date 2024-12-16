@@ -582,9 +582,9 @@ const ArbitratorCases = () => {
                         />
                       ) : null}
                     </p>
-                    <p className="truncate min-w-[60px]">{ele.clientName}</p>
+                    <p className="truncate min-w-[60px]">{ele?.clientName}</p>
                     <p className="truncate ml-3 hidden lg:block">
-                      {ele.respondentName}
+                      {ele?.respondentName}
                     </p>
 
                     <p className="truncate ml-3 hidden lg:block">
@@ -592,7 +592,7 @@ const ArbitratorCases = () => {
                         <IoMdDownload
                           className="cursor-pointer text-sm ml-6 text-green-600"
                           onClick={() =>
-                            handleDownloadAllAttachment(cases.attachments)
+                            handleDownloadAllAttachment(ele.attachments)
                           }
                         />
                       ) : (
@@ -745,7 +745,7 @@ const ArbitratorCases = () => {
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
         handleMeeting={handleMeeting}
-        handleRecordings={handleRecordings}
+        handleRecordings={()=>handleRecordings(ele)}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />

@@ -82,7 +82,7 @@ const UpcomingMeetingCalendarDayArbitrator = () => {
       <h1 className="text-lg font-bold mb-4 text-white">Upcoming Meetings</h1>
       <div className="grid grid-cols-5 gap-4 max-w-xl  ">
         {filteredTimeSlots.length > 0
-          ? filteredTimeSlots.map((slot) => (
+          ? filteredTimeSlots.map((slot, index) => (
               <div
                 key={slot.label}
                 className="relative border-l h-[280px] border-gray-300"

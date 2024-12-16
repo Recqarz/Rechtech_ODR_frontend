@@ -11,25 +11,24 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
-import { IoEye } from "react-icons/io5";
 import { FcStart } from "react-icons/fc";
+import { IoEye } from "react-icons/io5";
 
-
-const ArbitratorDetailsModal = ({
-  isOpen5,
-  setIsOpen5,
+const ClientDetailsModal = (
+  {isOpen,
+  setIsOpen,
   handleInputChange,
   handleDownloadAllAttachment,
   handleDownloadAllorder,
   handleDownloadAward,
-  handleMeeting,
   caseDetails,
   handleRecordings,
   closeDetailsFunc,
   convertToDateNow
-}) => {
+}
+) => {
   return (
-    <Dialog open={isOpen5} onOpenChange={setIsOpen5}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-[300px] md:max-w-[380px] h-[90vh] overflow-y-auto scrollbar-hide px-4 rounded-md text-white bg-[#0f2d6b] border-none">
         <DialogHeader>
           <DialogTitle>Details</DialogTitle>
@@ -48,50 +47,6 @@ const ArbitratorDetailsModal = ({
               name="id"
               className="col-span h-[30px] text-black"
               onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Claimant Name */}
-          <div className="grid grid-cols-1 items-center gap-1">
-            <Label htmlFor="name" className="text-sm font-normal">
-              Claimant Name
-            </Label>
-            <Input
-              disabled={true}
-              id="client name"
-              value={caseDetails.cl_name}
-              onChange={handleInputChange}
-              className="col-span h-[30px] text-black"
-            />
-          </div>
-
-          {/* Claimane Email */}
-          <div className="grid grid-cols-1 items-center gap-1">
-            <Label htmlFor="closername" className="text-sm font-normal">
-              Claimant Email
-            </Label>
-            <Input
-              id="cl_email"
-              disabled={true}
-              onChange={handleInputChange}
-              name="cl_email"
-              value={caseDetails.cl_email}
-              className="col-span h-[30px] text-black"
-            />
-          </div>
-
-          {/* Claimanet Number */}
-          <div className="grid grid-cols-1 items-center gap-1">
-            <Label htmlFor="closername" className="text-sm font-normal">
-              Claimant Number
-            </Label>
-            <Input
-              id="cl_email"
-              disabled={true}
-              onChange={handleInputChange}
-              name="cl_num"
-              value={caseDetails.cl_num}
-              className="col-span h-[30px] text-black"
             />
           </div>
 
@@ -241,7 +196,7 @@ const ArbitratorDetailsModal = ({
 
               {caseDetails.recording.length > 0 ? (
                 <IoEye
-                  onClick={handleRecordings}
+                  onClick={() => handleRecordings(ele)}
                   className="ml-4 text-sm cursor-pointer"
                 />
               ) : (
@@ -260,4 +215,4 @@ const ArbitratorDetailsModal = ({
   );
 };
 
-export default ArbitratorDetailsModal;
+export default ClientDetailsModal;

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import {
   BarChart,
   Bar,
@@ -11,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const LineChartComponentArbitrator = () => {
+const ClientLineChart = () => {
   const [chartData, setChartData] = useState([]);
   const [keys, setKeys] = useState([]);
 
@@ -28,7 +27,7 @@ const LineChartComponentArbitrator = () => {
       let tokens = JSON.parse(localStorage.getItem("rechtechtoken"));
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASEURL}/cases/chartdata/arbitrator`,
+          `${import.meta.env.VITE_API_BASEURL}/cases/chartdata/client`,
           {
             headers: { token: tokens },
           }
@@ -45,8 +44,7 @@ const LineChartComponentArbitrator = () => {
         );
         setKeys(dynamicKeys);
       } catch (error) {
-        // console.error("Error fetching chart data:", error);
-        toast.error("Error fetching chart data");
+        console.error("Error fetching chart data:", error);
       }
     };
 
@@ -120,4 +118,4 @@ const LineChartComponentArbitrator = () => {
   );
 };
 
-export default LineChartComponentArbitrator;
+export default ClientLineChart;
