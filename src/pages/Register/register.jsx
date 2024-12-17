@@ -27,7 +27,6 @@ const Register = () => {
     let password = e.target[5].value;
     // console.log(name, email, contactNo, address, about);
     // console.log("pass", password);
-    return;
     if (!name || !email || !contactNo || !email || !address || !about || !password) {
       toast.error("All fields are required");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -44,13 +43,12 @@ const Register = () => {
           password
         })
         .then((res) => {
-          // toast.success("Registration successful");
-          // navigate("/logins");
-          toast.success("OTP sent to your mobile number and mail!");
-          navigate("/register/verifyOTP");
+          toast.success("Registration successful");
+          navigate("/logins");
+          // toast.success("OTP sent to your mobile number and mail!");
+          // navigate("/register/verifyOTP");
         })
         .catch((err) => {
-          // toast.error("Registration failed");
           toast.error("something went wrong!");
           console.error(err);
         });
@@ -79,7 +77,7 @@ const Register = () => {
           {/* -----------------------forms-------------------- */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-2 w-[280px] md:w-[300px] lg:w-[380px]"
+            className="flex flex-col gap-1 w-[280px] md:w-[300px] lg:w-[380px]"
           >
             <>
               <div className="flex flex-col gap-1">
