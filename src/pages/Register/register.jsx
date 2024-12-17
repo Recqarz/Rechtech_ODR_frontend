@@ -24,7 +24,11 @@ const Register = () => {
     let contactNo = e.target[2].value;
     let address = e.target[3].value;
     let about = e.target[4].value;
-    if (!name || !email || !contactNo || !email || !address || !about) {
+    let password = e.target[5].value;
+    // console.log(name, email, contactNo, address, about);
+    // console.log("pass", password);
+    return;
+    if (!name || !email || !contactNo || !email || !address || !about || !password) {
       toast.error("All fields are required");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error("Invalid email format");
@@ -37,13 +41,17 @@ const Register = () => {
           contactNo,
           address,
           about,
+          password
         })
         .then((res) => {
-          toast.success("Registration successful");
-          navigate("/logins");
+          // toast.success("Registration successful");
+          // navigate("/logins");
+          toast.success("OTP sent to your mobile number and mail!");
+          navigate("/register/verifyOTP");
         })
         .catch((err) => {
-          toast.error("Registration failed");
+          // toast.error("Registration failed");
+          toast.error("something went wrong!");
           console.error(err);
         });
     }
@@ -121,6 +129,7 @@ const Register = () => {
                   placeholder="Enter address"
                 />
               </div>
+
               <div className="flex flex-col gap-1">
                 <label htmlFor="about" className="text-[14px] font-semibold">
                   About
@@ -130,6 +139,18 @@ const Register = () => {
                   type="text"
                   id="about"
                   placeholder="Enter About"
+                />
+              </div>
+              {/* password */}
+              <div className="flex flex-col gap-1">
+                <label htmlFor="password" className="text-[14px] font-semibold">
+                  Password
+                </label>
+                <input
+                  className="px-2 py-1 rounded-md placeholder:text-sm"
+                  type="text"
+                  id="password"
+                  placeholder="Enter Password"
                 />
               </div>
             </>
