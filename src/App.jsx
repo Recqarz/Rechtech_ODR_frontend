@@ -14,6 +14,7 @@ import { ResetOTPS } from "./pages/ResetPassword/ResetOtps";
 import { SetPasswords } from "./pages/ResetPassword/SetPasswords";
 import VerifyOTP from "./pages/Respondent/respondentotp";
 import Register from "./pages/Register/register";
+import VerrifyOTPRegister from "./pages/Register/VerrifyOTPRegister";
 
 function App() {
   let dispatch = useDispatch();
@@ -60,6 +61,8 @@ function App() {
       <Route path="/webexauth" element={<Webex />} />
       <Route path="/logins" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/register/verifyOTP" element={<VerrifyOTPRegister />} />
+
       <Route path="/resetdashboards" element={<ResetDashboards />} />
       <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
     </Routes>

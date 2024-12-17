@@ -1,11 +1,10 @@
 import React from 'react'
+import ArbitratorStatus from '../AdminDashboard/ArbitratorStatus'
 
 const RespondentStatus = () => {
   return (
-    <div className='text-white'>
-      Respondnet Status
-    </div>
+   <ArbitratorStatus/>
   )
 }
 
-export default RespondentStatus
+export default RespondentStatus;
