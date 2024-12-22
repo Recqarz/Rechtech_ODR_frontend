@@ -456,7 +456,7 @@ const CaseDashboard = () => {
                   cases.isArbitratorAssigned ? (
                     cases.arbitratorName.split(" ")[0]
                   ) : (
-                    <div>
+                    <>
                       <FcBusinessman
                         style={{
                           color: "blue",
@@ -469,7 +469,7 @@ const CaseDashboard = () => {
                             : handleUploadFunction(cases._id)
                         }
                       />
-                    </div>
+                    </>
                   )
                 }
               />

@@ -196,7 +196,7 @@ const ClientDetailsModal = (
 
               {caseDetails.recording.length > 0 ? (
                 <IoEye
-                  onClick={() => handleRecordings(ele)}
+                  onClick={handleRecordings}
                   className="ml-4 text-sm cursor-pointer"
                 />
               ) : (

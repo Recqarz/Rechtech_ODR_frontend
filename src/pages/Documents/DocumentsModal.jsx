@@ -189,7 +189,7 @@ const DocumentsModal = ({
             </Label>
             {documentDetail.recording.length > 0 ? (
               <IoEye
-                onClick={() => handleRecordings(recent)}
+                onClick={handleRecordings}
                 className="ml-0 text-xl cursor-pointer text-[24px]"
               />
             ) : (
