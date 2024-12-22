@@ -43,10 +43,12 @@ const Register = () => {
           password
         })
         .then((res) => {
-          toast.success("Registration successful");
-          navigate("/logins");
-          // toast.success("OTP sent to your mobile number and mail!");
-          // navigate("/register/verifyOTP");
+
+          toast.success("OTP sent to your mobile number and mail!");
+          // console.log("email", email)
+          localStorage.setItem("email", JSON.stringify(email))
+          navigate("/register/verifyOTP");
+
         })
         .catch((err) => {
           toast.error("something went wrong!");

@@ -7,70 +7,93 @@ import { useNavigate } from "react-router-dom";
 
 export const ResetOTPS = () => {
   const navigate = useNavigate();
+  // otp for email
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
-  let emailId = useSelector((state) => state?.forgotEmail);
+  // otp for sms
+  const [otpValueSMS, setOtpValueSMS] = useState(["", "", "", ""]);
+  const inputRefsSMS = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
-  const handleChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return;
+  const emailId = useSelector((state) => state?.forgotEmail);
 
-    const newOtpValues = [...otpValues];
-    newOtpValues[index] = value;
-    setOtpValues(newOtpValues);
+  const handleChange = (index, value, otpType) => {
+    if (!/^\d*$/.test(value)) return; // Only allow numeric input
 
-    if (value !== "" && index < 3) {
-      inputRefs[index + 1].current.focus();
+    if (otpType === "email") {
+      const newOtpValues = [...otpValues];
+      newOtpValues[index] = value;
+      setOtpValues(newOtpValues);
+
+      if (value !== "" && index < 3) {
+        inputRefs[index + 1].current.focus(); // Focus next input
+      }
+    } else {
+      const newOtpValuesSMS = [...otpValueSMS];
+      newOtpValuesSMS[index] = value;
+      setOtpValueSMS(newOtpValuesSMS);
+
+      if (value !== "" && index < 3) {
+        inputRefsSMS[index + 1].current.focus(); // Focus next input
+      }
     }
   };
 
-  const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && index > 0 && otpValues[index] === "") {
-      inputRefs[index - 1].current.focus();
+  const handleKeyDown = (index, e, otpType) => {
+    if (e.key === "Backspace") {
+      if (otpType === "email" && index > 0 && otpValues[index] === "") {
+        inputRefs[index - 1].current.focus(); // Focus previous input for email OTP
+      } else if (otpType === "sms" && index > 0 && otpValueSMS[index] === "") {
+        inputRefsSMS[index - 1].current.focus(); // Focus previous input for SMS OTP
+      }
     }
   };
 
-  const handlePaste = (e) => {
+  const handlePaste = (e, otpType) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 4).split("");
-    const newOtpValues = [...otpValues];
 
-    pastedData.forEach((value, index) => {
-      if (index < 4 && /^\d$/.test(value)) {
-        newOtpValues[index] = value;
-      }
-    });
-
-    setOtpValues(newOtpValues);
-
-    const nextEmptyIndex = newOtpValues.findIndex((value) => value === "");
-    if (nextEmptyIndex !== -1) {
-      inputRefs[nextEmptyIndex].current.focus();
-    } else if (newOtpValues[3]) {
-      inputRefs[3].current.focus();
+    if (otpType === "email") {
+      const newOtpValues = [...otpValues];
+      pastedData.forEach((value, index) => {
+        if (index < 4 && /^\d$/.test(value)) {
+          newOtpValues[index] = value;
+        }
+      });
+      setOtpValues(newOtpValues);
+    } else {
+      const newOtpValuesSMS = [...otpValueSMS];
+      pastedData.forEach((value, index) => {
+        if (index < 4 && /^\d$/.test(value)) {
+          newOtpValuesSMS[index] = value;
+        }
+      });
+      setOtpValueSMS(newOtpValuesSMS);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const otp = otpValues.join("");
-    axios
-      .post(`${import.meta.env.VITE_API_BASEURL}/resetpassword/verifyotp`, {
-        otp,
-        emailId,
-      })
-      .then((res) => {
-        toast.success("OTP verified successfully");
-        navigate("/resetdashboard/setpassword");
-      })
-      .catch(() => {
-        toast.error("Something went wrong");
-      });
+    const otpSMS = otpValueSMS.join("");
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASEURL}/resetpassword/verifyotp`,
+        { otp, otpSMS, emailId }
+      );
+      toast.success("OTP verified successfully");
+      navigate("/resetdashboard/setpassword");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
+      toast.error(errorMessage);
+    }
   };
 
   return (
-    <div className="h-[100vh] w-[100wh] bg-[#012061] flex justify-center items-center">
+    <div className="h-[120vh] md:h-[100vh] w-[100wh] bg-[#012061] flex justify-center items-center">
       <div className="max-w-[700px] lg:max-w-[900px] m-auto grid grid-cols-1 md:grid-cols-2 rounded-md">
-        <div className="hidden md:block rounded-md ">
+        <div className="hidden md:block rounded-md">
           <img
             className="object-contain h-[450px] rounded-l-md"
             src="/assets/LoginDesign.png"
@@ -84,13 +107,13 @@ export const ResetOTPS = () => {
           />
         </div>
         <div className="h-[400px] md:h-[450px] relative shadow-lg flex flex-col items-center px-12 py-4 rounded-l-md md:rounded-l-none rounded-r-md bg-[#f5f6fa]">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-1 md:gap-4 w-full">
             <h2 className="text-2xl font-bold mb-16 mt-5 text-center">
               Reset password
             </h2>
             <div className="flex flex-col gap-2">
               <label htmlFor="otp" className="font-semibold">
-                Enter OTP
+                Enter OTP (Email)
               </label>
               <div className="flex gap-2 justify-center">
                 {otpValues.map((value, index) => (
@@ -100,9 +123,32 @@ export const ResetOTPS = () => {
                     type="text"
                     maxLength={1}
                     value={value}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)}
-                    onPaste={handlePaste}
+                    onChange={(e) =>
+                      handleChange(index, e.target.value, "email")
+                    }
+                    onKeyDown={(e) => handleKeyDown(index, e, "email")}
+                    onPaste={(e) => handlePaste(e, "email")}
+                    className="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="otpSMS" className="font-semibold">
+                Enter OTP (SMS)
+              </label>
+              <div className="flex gap-2 justify-center">
+                {otpValueSMS.map((value, index) => (
+                  <input
+                    key={index}
+                    ref={inputRefsSMS[index]}
+                    type="text"
+                    maxLength={1}
+                    value={value}
+                    onChange={(e) => handleChange(index, e.target.value, "sms")}
+                    onKeyDown={(e) => handleKeyDown(index, e, "sms")}
+                    onPaste={(e) => handlePaste(e, "sms")}
                     className="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 ))}

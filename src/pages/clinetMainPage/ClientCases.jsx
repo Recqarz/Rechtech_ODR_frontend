@@ -314,7 +314,7 @@ const ClientCases = () => {
         handleDownloadAllAttachment={handleDownloadAllAttachment}
         handleDownloadAllorder={handleDownloadAllorderSheet}
         handleDownloadAward={handleDownloadAward}
-        handleRecordings={handleRecordings}
+        handleRecordings={()=>handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />
