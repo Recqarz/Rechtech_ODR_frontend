@@ -9,7 +9,7 @@ import UpcomingMeetingsClient from "./UpcomingMeetingsClient";
 const ClientMain = () => {
   return (
     <div className="min-h-screen">
-      <div className="max-w-6xl px-6 py-2 m-auto overflow-x-hidden">
+      <div className="max-w-6xl px-6 py-2 m-auto overflow-hidden">
         <div className="ml-10 md:ml-0 flex justify-between items-center shadow-2xl bg-[#0f2d6b] rounded-md py-2 px-4 mt-1 md:mt-0">
           <h2 className="font-semibold text-white cursor-pointer">Dashboard</h2>
           <div>
