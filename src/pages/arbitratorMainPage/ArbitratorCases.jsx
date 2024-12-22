@@ -745,7 +745,7 @@ const ArbitratorCases = () => {
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
         handleMeeting={handleMeeting}
-        handleRecordings={()=>handleRecordings(ele)}
+        handleRecordings={()=>handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />

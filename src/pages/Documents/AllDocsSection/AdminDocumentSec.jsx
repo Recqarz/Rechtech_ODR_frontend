@@ -207,7 +207,7 @@ const AdminDocumentSec = () => {
         handleDownloadAll={handleDownloadAll}
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
-        handleRecordings={handleRecordings}
+        handleRecordings={()=>handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
       />
     </>
