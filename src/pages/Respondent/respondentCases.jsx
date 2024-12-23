@@ -192,7 +192,7 @@ const RespondentCase = () => {
                     <p className="truncate ml-3 hidden lg:block">
                       {ele.respondentName}
                     </p>
-                    <p className="truncate">{ele.arbitratorName}</p>
+                    <p className="truncate">{ele.arbitratorName?ele.arbitratorName:"Not Assigned"}</p>
                     <p className="truncate hidden md:block">
                       {ele.meetings.length > 0 &&
                       convertToDateNow(
@@ -239,7 +239,7 @@ const RespondentCase = () => {
         caseDetails={caseDetails}
         handleInputChange={handleInputChange}
         handleMeeting={handleMeeting}
-        handleDownloadAward={handleDownloadAward}
+        handleDownloadAward={()=>handleDownloadAward(caseDetails.award)}
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAllAttachment={handleDownloadAllAttachment}
         closeDetailsFunc={closeDetailsFunc}

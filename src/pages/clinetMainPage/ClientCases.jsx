@@ -317,6 +317,7 @@ const ClientCases = () => {
         handleRecordings={()=>handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
+        handleMeeting={handleMeeting}
       />
     </div>
   );

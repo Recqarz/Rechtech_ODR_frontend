@@ -24,6 +24,7 @@ const ClientDetailsModal = (
   caseDetails,
   handleRecordings,
   closeDetailsFunc,
+  handleMeeting,
   convertToDateNow
 }
 ) => {
