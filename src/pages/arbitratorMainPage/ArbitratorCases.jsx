@@ -16,6 +16,7 @@ import ScheduleMeeting from "./ScheduleMeeting";
 import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
 import ArbitratorDetailsModal from "./ArbitratorDetailsModal";
 import FilterAllData from "./FilterAllData";
+import { exportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,10 @@ const ArbitratorCases = () => {
   const [timeDuration, setTimeDuration] = useState("");
   const [searchByFileName, setSearchByFileName] = useState("");
   const [caseId, setCaseId] = useState("");
+
+  //export file
+  const [exportFileStatus, setExportFileStatus] = useState(false);
+  const [allcaseId, setAllcaseId] = useState([]);
 
   // meeting schedule for multiple client
   const [isClickedForMultiple, setIsClickedForMultiple] = useState(false);
@@ -135,8 +140,6 @@ const ArbitratorCases = () => {
     endDate.setMinutes(endDate.getMinutes() + minutes);
     setSelectEndDate(endDate);
     const formattedEndDate = getFormattedDateTime(endDate);
-
-   
 
     if (!isClickedForMultiple) {
       let obj = {
@@ -456,6 +459,107 @@ const ArbitratorCases = () => {
     }));
   };
 
+  // download all the cases before confirm
+  const DownloadAllDataOfCase = () => {
+    setIsClickedForMultiple(false);
+    setExportFileStatus(true);
+    const allCaseDataDownload = arbitratorCaseData.map((el) => el._id);
+    setAllcaseId(allCaseDataDownload);
+  };
+
+  // handle to download cases by checkbox
+  const handleSelectMultipleClientForCases = (id) => {
+    setAllcaseId((prevIds) =>
+      prevIds.includes(id)
+        ? prevIds.filter((existingId) => existingId !== id)
+        : [...prevIds, id]
+    );
+  };
+
+  const ConfirmDownloadAllDataOfCase = () => {
+    // Define a function to dynamically filter the data
+        const applyFilters = (data, filters) => {
+          return data.filter((el) => {
+            // Dynamically apply all filters
+            return filters.every((filter) => filter(el));
+          });
+        };
+    
+        // Define the filters (example: add/remove filters as needed)
+        const filters = [
+          (el) =>
+            !searchByFileName ||
+            searchByFileName === "all" ||
+            (searchByFileName === "singlecase" && el.fileName === "") ||
+            el.fileName?.toLowerCase().includes(searchByFileName.toLowerCase()),
+
+          (el) =>
+            !searchByData ||
+            el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.respondentName.toLowerCase().includes(searchByData.toLowerCase()) ||
+            el.respondentMobile
+              .toLowerCase()
+              .includes(searchByData.toLowerCase()) ||
+            el.disputeType.toLowerCase().includes(searchByData.toLowerCase()),
+        ];
+    
+        const filterdatatoexport = allcaseId
+          .map((id) => {
+            const filteredData = applyFilters(arbitratorCaseData, filters);
+            const matchedCase = filteredData.find((el) => el._id === id);
+    
+            if (matchedCase) {
+              return {
+                clientName: matchedCase.clientName,
+                clientEmail: matchedCase.clientEmail,
+                clientMobile: matchedCase.clientMobile,
+                clientAddress: matchedCase.clientAddress,
+                respondentName: matchedCase.respondentName,
+                respondentEmail: matchedCase.respondentEmail,
+                respondentMobile: matchedCase.respondentMobile,
+                respondentAddress: matchedCase.respondentAddress,
+                attachments: matchedCase.attachments || "NA",
+                arbitratorName: matchedCase.arbitratorName || "NA",
+                arbitratorEmail: matchedCase.arbitratorEmail || "NA",
+                accountNumber: matchedCase.accountNumber || "NA",
+                cardNo: matchedCase.cardNo || "NA",
+                amount: matchedCase.amount || "NA",
+                awards:
+                  matchedCase.awards[0] !== "No URL"
+                    ? {
+                        t: "s", // String type
+                        v: matchedCase.awards[0]?matchedCase.awards[0]:"NA", // Value for the hyperlink
+                        l: {
+                          Target: matchedCase.awards[0], // Target URL
+                          Tooltip: "Click to open", // Tooltip for the hyperlink
+                        },
+                      }
+                    : "NA",
+                orderSheet:
+                  matchedCase.orderSheet[0] !== "No URL"
+                    ? {
+                        t: "s", // String type
+                        v: matchedCase.orderSheet[0]?matchedCase.orderSheet[0]:"NA", // Value for the hyperlink
+                        l: {
+                          Target: matchedCase.orderSheet[0], // Target URL
+                          Tooltip: "Click to open", // Tooltip for the hyperlink
+                        },
+                      }
+                    : "NA",
+              };
+            }
+            return null;
+          })
+          .filter(Boolean); // Remove null values
+    
+        // Update state and trigger export
+        exportToExcel(filterdatatoexport, "Arbitrator_CaseData");
+        setAllcaseId("");
+        setExportFileStatus(false);
+
+  };
+
   return (
     <div>
       <div className="bg-[#012061] min-h-[100vh]">
@@ -477,26 +581,88 @@ const ArbitratorCases = () => {
             caseIdForMeeting={caseIdForMeeting}
           />
 
+          <div className="flex flex-col md:flex-row mt-2 justify-end mr-0 md:mr-2 ml-4 md:ml-0">
+            {/* Download all cases in excel */}
+            <div>
+              <button
+                type="button"
+                className="text-white bg-[#22c55e] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2"
+                onClick={DownloadAllDataOfCase}
+              >
+                <svg
+                  className="h-5 w-8 text-white"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  {" "}
+                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                  <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />{" "}
+                  <polyline points="7 11 12 16 17 11" />{" "}
+                  <line x1="12" y1="4" x2="12" y2="16" />
+                </svg>
+                Export
+              </button>
+            </div>
+
+            {/*Confirm to download all cases in excel */}
+            {exportFileStatus ? (
+              <div>
+                <button
+                  type="button"
+                  className="text-white bg-[#16a34a] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2 w-28 md:w-40"
+                  onClick={ConfirmDownloadAllDataOfCase}
+                >
+                  <svg
+                    className="h-5 text-white"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {" "}
+                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />{" "}
+                    <polyline points="7 11 12 16 17 11" />{" "}
+                    <line x1="12" y1="4" x2="12" y2="16" />
+                  </svg>
+                  Confrm Export
+                </button>
+              </div>
+            ) : null}
+          </div>
+
           {arbitratorCaseData.length > 0 ? (
             <div className="flex flex-col gap-2 mt-5 px-4 lg:px-3">
               <div
                 className={`grid mt-5 font-semibold lg:px-3 rounded-md ${
-                  isClickedForMultiple
+                  isClickedForMultiple || exportFileStatus
                     ? "grid-cols-[40px,1fr,70px,50px]"
                     : "grid-cols-[1fr,70px,60px]"
                 } ${
-                  isClickedForMultiple
+                  isClickedForMultiple || exportFileStatus
                     ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
                     : "md:grid-cols-[1fr,1fr,80px,60px]"
                 }  ${
-                  isClickedForMultiple
+                  isClickedForMultiple || exportFileStatus
                     ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,50px]"
                     : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,50px]"
                 } text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}
               >
                 <p
                   className={`truncate ${
-                    isClickedForMultiple ? "block" : "hidden"
+                    isClickedForMultiple || exportFileStatus
+                      ? "block"
+                      : "hidden"
                   }`}
                 >
                   Select
@@ -546,41 +712,51 @@ const ArbitratorCases = () => {
                   <div
                     key={ele._id}
                     className={`grid mt-1 rounded-md ${
-                      isClickedForMultiple
+                      isClickedForMultiple || exportFileStatus
                         ? "grid-cols-[40px,1fr,70px,60px]"
                         : "grid-cols-[1fr,70px,60px]"
                     } ${
-                      isClickedForMultiple
+                      isClickedForMultiple || exportFileStatus
                         ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
                         : "md:grid-cols-[1fr,1fr,80px,60px]"
                     }  text-sm text-white gap-4 px-2 py-2  ${
-                      isClickedForMultiple
+                      isClickedForMultiple || exportFileStatus
                         ? "lg:grid-cols-[40px,160px,140px,110px,1fr,1fr,1fr,55px]"
                         : "lg:grid-cols-[160px,140px,110px,1fr,1fr,1fr,55px]"
                     } shadow-lg bg-[#0f2d6b]`}
                   >
                     <p
                       className={`truncate ${
-                        isClickedForMultiple ? "block" : "hidden"
+                        isClickedForMultiple || exportFileStatus
+                          ? "block"
+                          : "hidden"
                       }`}
                     >
                       {" "}
-                      {isClickedForMultiple ? (
+                      {isClickedForMultiple || exportFileStatus ? (
                         <input
                           type="checkbox"
                           value={ele._id}
                           disabled={
-                            ele.isMeetCompleted ||
-                            (!ele.isMeetCompleted &&
-                              ele.meetings.length > 0 &&
-                              convertToDateNow(
-                                ele.meetings[ele.meetings.length - 1].end
-                              ) > Date.now())
+                            exportFileStatus
+                              ? false
+                              : ele.isMeetCompleted ||
+                                (!ele.isMeetCompleted &&
+                                  ele.meetings.length > 0 &&
+                                  convertToDateNow(
+                                    ele.meetings[ele.meetings.length - 1].end
+                                  ) > Date.now())
                           }
                           onChange={() =>
-                            handleSelectMultipleClientForArbitrator(ele._id)
+                            exportFileStatus
+                              ? handleSelectMultipleClientForCases(ele._id)
+                              : handleSelectMultipleClientForArbitrator(ele._id)
                           }
-                          checked={caseIdForMeeting.includes(ele._id)}
+                          checked={
+                            exportFileStatus
+                              ? allcaseId.includes(ele._id || "")
+                              : caseId.includes(ele._id)
+                          }
                           className="checkbox-small w-[12px] h-[12px]"
                         />
                       ) : null}
@@ -622,7 +798,7 @@ const ArbitratorCases = () => {
                       {!ele.isMeetCompleted ? (
                         ele.meetings.length < 1 ? (
                           <FcVideoCall
-                           className="text-green-500"
+                            className="text-green-500"
                             onClick={() =>
                               isClickedForMultiple
                                 ? null
@@ -634,7 +810,7 @@ const ArbitratorCases = () => {
                           ) > Date.now() ? (
                           <span className="flex gap-1">
                             <FcStart
-                             className="text-green-500"
+                              className="text-green-500"
                               onClick={() =>
                                 handleMeeting(
                                   ele.meetings[ele?.meetings.length - 1]
@@ -642,7 +818,7 @@ const ArbitratorCases = () => {
                               }
                             />
                             <MdOutlineDone
-                            className="text-green-500"
+                              className="text-green-500"
                               onClick={() => {
                                 handleAllMeetingCompleted(ele._id);
                               }}
@@ -651,7 +827,7 @@ const ArbitratorCases = () => {
                         ) : (
                           <span className="flex gap-1 items-center">
                             <FcVideoCall
-                            className="text-green-500"
+                              className="text-green-500"
                               onClick={() =>
                                 isClickedForMultiple
                                   ? null
@@ -663,21 +839,24 @@ const ArbitratorCases = () => {
                               onClick={() => generateOrderSheet(ele._id)}
                             />
                             <MdOutlineDone
-                            className="text-green-500"
+                              className="text-green-500"
                               onClick={() => handleAllMeetingCompleted(ele._id)}
                             />
                           </span>
                         )
                       ) : null}
                       {ele.isMeetCompleted && !ele.isAwardCompleted ? (
-                        <FaAward className="text-green-500" onClick={() => generateAwardFunc(ele._id)} />
+                        <FaAward
+                          className="text-green-500"
+                          onClick={() => generateAwardFunc(ele._id)}
+                        />
                       ) : null}
                       {ele.isAwardCompleted ? (
                         <span
                           className="flex items-center text-[18px] gap-1"
                           onClick={() => handleDownloadAward(ele.awards[0])}
                         >
-                          <IoMdCloudDownload className="text-green-500"/>{" "}
+                          <IoMdCloudDownload className="text-green-500" />{" "}
                           <span className="text-[12px] font-semibold">
                             Awards
                           </span>
@@ -748,11 +927,11 @@ const ArbitratorCases = () => {
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
         handleMeeting={handleMeeting}
-        handleRecordings={()=>handleRecordings(documentDetail.recording)}
+        handleRecordings={() => handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />
-      </div>
+    </div>
   );
 };
 

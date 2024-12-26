@@ -385,125 +385,62 @@ const CaseDashboard = () => {
         el.disputeType.toLowerCase().includes(searchByData.toLowerCase()),
     ];
 
-    // Apply the filters and map the data
-  //   const filterdatatoexport = allcaseId
-  //     .map((id) => {
-  //       // Find the matched case by ID after applying filters
-  //       const filteredData = applyFilters(caseData, filters);
-  //       const matchedCase = filteredData.find((el) => el._id === id);
+    const filterdatatoexport = allcaseId
+      .map((id) => {
+        const filteredData = applyFilters(caseData, filters);
+        const matchedCase = filteredData.find((el) => el._id === id);
 
-  //       if (matchedCase) {
-  //         // Return structured data
-  //         return {
-  //           clientName: matchedCase.clientName,
-  //           clientEmail: matchedCase.clientEmail,
-  //           clientMobile: matchedCase.clientMobile,
-  //           clientAddress: matchedCase.clientAddress,
-  //           respondentName: matchedCase.respondentName,
-  //           respondentEmail: matchedCase.respondentEmail,
-  //           respondentMobile: matchedCase.respondentMobile,
-  //           respondentAddress: matchedCase.respondentAddress,
-  //           attachments: matchedCase.attachments || "NA",
-  //           arbitratorName: matchedCase.arbitratorName || "NA",
-  //           arbitratorEmail: matchedCase.arbitratorEmail || "NA",
-  //           accountNumber: matchedCase.accountNumber || "NA",
-  //           cardNo: matchedCase.cardNo || "NA",
-  //           amount: matchedCase.amount || "NA",
-  //           // awards:
-  //           //   matchedCase.awards[0] !== "No URL"
-  //           //     ? {
-  //           //         t: "s",
-  //           //         v: matchedCase.awards[0],
-  //           //         l: {
-  //           //           Target: matchedCase.awards[0],
-  //           //           Tooltip: "Click to open",
-  //           //         },
-  //           //       }
-  //           //     : "NA",
-  //           awards:
-  //         matchedCase.awards[0] !== "No URL"
-  //           ? {
-  //               t: "s",
-  //               v: matchedCase.awards[0],
-  //               l: {
-  //                 Target: matchedCase.awards[0],
-  //                 Tooltip: "Click to open",
-  //               },
-  //               s: {
-  //                 font: {
-  //                   color: { rgb: "0000FF" }, // Blue color for the link
-  //                   underline: true, // Underline to indicate it's a link
-  //                 },
-  //               },
-  //             }
-  //           : "NA",
-  //           orderSheet: matchedCase.orderSheet[0] || "NA",
-  //         };
-  //       }
-  //       return null; // If no match, return null
-  //     })
-  //     .filter(Boolean); // Remove null values
+        if (matchedCase) {
+          return {
+            clientName: matchedCase.clientName,
+            clientEmail: matchedCase.clientEmail,
+            clientMobile: matchedCase.clientMobile,
+            clientAddress: matchedCase.clientAddress,
+            respondentName: matchedCase.respondentName,
+            respondentEmail: matchedCase.respondentEmail,
+            respondentMobile: matchedCase.respondentMobile,
+            respondentAddress: matchedCase.respondentAddress,
+            attachments: matchedCase.attachments || "NA",
+            arbitratorName: matchedCase.arbitratorName || "NA",
+            arbitratorEmail: matchedCase.arbitratorEmail || "NA",
+            accountNumber: matchedCase.accountNumber || "NA",
+            cardNo: matchedCase.cardNo || "NA",
+            amount: matchedCase.amount || "NA",
+            awards:
+              matchedCase.awards[0] !== "No URL"
+                ? {
+                    t: "s", // String type
+                    v: matchedCase.awards[0] ? matchedCase.awards[0] : "NA", // Value for the hyperlink
+                    l: {
+                      Target: matchedCase.awards[0], // Target URL
+                      Tooltip: "Click to open", // Tooltip for the hyperlink
+                    },
+                  }
+                : "NA",
+            orderSheet:
+              matchedCase.orderSheet[0] !== "No URL"
+                ? {
+                    t: "s", // String type
+                    v: matchedCase.orderSheet[0]
+                      ? matchedCase.orderSheet[0]
+                      : "NA", // Value for the hyperlink
+                    l: {
+                      Target: matchedCase.orderSheet[0], // Target URL
+                      Tooltip: "Click to open", // Tooltip for the hyperlink
+                    },
+                  }
+                : "NA",
+          };
+        }
+        return null;
+      })
+      .filter(Boolean); // Remove null values
 
-  //   // Update state and trigger export
-  //   exportToExcel(filterdatatoexport, "Cases_Data");
-  //   setAllcaseId("");
-  //   setPendingCaseStatus(false);
-  //   setExportFileStatus(false);
-  // };
-
-  const filterdatatoexport = allcaseId
-  .map((id) => {
-    const filteredData = applyFilters(caseData, filters);
-    const matchedCase = filteredData.find((el) => el._id === id);
-
-    if (matchedCase) {
-      return {
-        clientName: matchedCase.clientName,
-        clientEmail: matchedCase.clientEmail,
-        clientMobile: matchedCase.clientMobile,
-        clientAddress: matchedCase.clientAddress,
-        respondentName: matchedCase.respondentName,
-        respondentEmail: matchedCase.respondentEmail,
-        respondentMobile: matchedCase.respondentMobile,
-        respondentAddress: matchedCase.respondentAddress,
-        attachments: matchedCase.attachments || "NA",
-        arbitratorName: matchedCase.arbitratorName || "NA",
-        arbitratorEmail: matchedCase.arbitratorEmail || "NA",
-        accountNumber: matchedCase.accountNumber || "NA",
-        cardNo: matchedCase.cardNo || "NA",
-        amount: matchedCase.amount || "NA",
-        awards:
-          matchedCase.awards[0] !== "No URL"
-            ? {
-                t: "s", // String type
-                v: matchedCase.awards[0], // Value for the hyperlink
-                l: {
-                  Target: matchedCase.awards[0], // Target URL
-                  Tooltip: "Click to open", // Tooltip for the hyperlink
-                },
-              }
-            : "NA",
-        orderSheet: matchedCase.orderSheet[0] !== "No URL"
-        ? {
-            t: "s", // String type
-            v: matchedCase.orderSheet[0], // Value for the hyperlink
-            l: {
-              Target: matchedCase.orderSheet[0], // Target URL
-              Tooltip: "Click to open", // Tooltip for the hyperlink
-            }
-          }
-        : "NA",
-      };
-    }
-    return null;
-  })
-  .filter(Boolean); // Remove null values
-
-// Update state and trigger export
-exportToExcel(filterdatatoexport, "Cases_Data");
-setAllcaseId("");
-setPendingCaseStatus(false);
-setExportFileStatus(false);
+    // Update state and trigger export
+    exportToExcel(filterdatatoexport, "Cases_Data");
+    setAllcaseId("");
+    setPendingCaseStatus(false);
+    setExportFileStatus(false);
   };
 
   return (
@@ -607,7 +544,7 @@ setExportFileStatus(false);
             />
             <p className="text-sm font-semibold">Select Multiple</p>
           </div>
-          {isClickedForMultiple  ? (
+          {isClickedForMultiple ? (
             <div className="flex gap-2 items-center ml-1 text-white">
               <Checkbox
                 className="bg-white"
@@ -622,7 +559,7 @@ setExportFileStatus(false);
           {caseId.length > 0 ? (
             <div className="flex gap-1 items-center">
               <FcBusinessman
-                onClick={!pendingCaseStatus?handleUploadFunctionbulk:null}
+                onClick={!pendingCaseStatus ? handleUploadFunctionbulk : null}
                 style={{
                   fontSize: "24px",
                   cursor: "pointer",
