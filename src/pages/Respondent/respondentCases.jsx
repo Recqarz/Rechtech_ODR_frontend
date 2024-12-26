@@ -239,8 +239,6 @@ const RespondentCase = () => {
         caseDetails={caseDetails}
         handleInputChange={handleInputChange}
         handleMeeting={handleMeeting}
-        handleDownloadAward={()=>handleDownloadAward(caseDetails.award)}
-        handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAllAttachment={handleDownloadAllAttachment}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}

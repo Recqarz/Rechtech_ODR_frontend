@@ -19,6 +19,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import CasesTableProps from "@/components/AdminCases/CasesTableProps";
 import AssignArbitratorProps from "./AssignArbitratorProps";
+import React from "react";
+import AssignArbitratorRandomly from "./AssignArbitratorRandomly";
+import { exportToExcel } from "./exportToExcel";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -40,6 +43,13 @@ const CaseDashboard = () => {
   // State for case selection
   const [caseId, setCaseId] = useState([]);
   const [selectAllClientStatus, setSelectAllClientStatus] = useState(false);
+
+  // assign arbitrator for all pending cases
+  const [pendingCaseStatus, setPendingCaseStatus] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  //export file
+  const [exportFileStatus, setExportFileStatus] = useState(false);
+  const [allcaseId, setAllcaseId] = useState([]);
 
   // Get the list of all arbitrators
   const getData = () => {
@@ -173,6 +183,7 @@ const CaseDashboard = () => {
   //function to handle select all functionality
   const handleAllClientForArbitrator = () => {
     // Toggle the select all status
+    setExportFileStatus(false);
     const newSelectAllStatus = !selectAllClientStatus;
     setSelectAllClientStatus(newSelectAllStatus);
 
@@ -234,6 +245,202 @@ const CaseDashboard = () => {
       anchor.click();
       document.body.removeChild(anchor);
     });
+  };
+
+  // Assign arbitrator for pending cases
+
+  const handleAssignArbitratorForPendingCases = () => {
+    setPendingCaseStatus(true);
+    setIsClickedForMultiple(false);
+    setExportFileStatus(false);
+
+    const unassignedCaseIds = caseData
+      .filter((file) => {
+        // File name filter
+        if (!searchByFileName || searchByFileName === "all") return true;
+        else if (searchByFileName === "singlecase") return file.fileName === "";
+        return file.fileName
+          ?.toLowerCase()
+          .includes(searchByFileName.toLowerCase());
+      })
+      .filter((el) => {
+        if (!assignNotAssignArbitrator || assignNotAssignArbitrator === "all")
+          return el;
+        else if (assignNotAssignArbitrator == "notassigned") {
+          return !el.isArbitratorAssigned;
+        } else if (assignNotAssignArbitrator == "assigned") {
+          return el.isArbitratorAssigned;
+        }
+      })
+      .filter((el) => {
+        // Search data filter
+        if (!searchByData) return true;
+        return (
+          el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
+          el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+          el.respondentName
+            .toLowerCase()
+            .includes(searchByData.toLowerCase()) ||
+          el.respondentMobile
+            .toLowerCase()
+            .includes(searchByData.toLowerCase()) ||
+          el.disputeType.toLowerCase().includes(searchByData.toLowerCase())
+        );
+      })
+      .filter((el) => el.arbitratorName === "")
+      .map((el) => el._id);
+    setCaseId(unassignedCaseIds);
+  };
+  const handleAssignArbitratorRandomly = () => {
+    setIsOpen2(true);
+  };
+  const handleArbitratorNotAssignForPendingCases = () => {
+    setIsOpen2(false);
+    setCaseId("");
+    setPendingCaseStatus(false);
+    isClickedForMultiple(false);
+  };
+
+  // onclicking yes, all pending cases will assign random arbitrator
+  const handleArbitratorAssignForPendingCases = () => {
+    let obj = {
+      data: caseId,
+    };
+
+    axios
+      .post(
+        `${
+          import.meta.env.VITE_API_BASEURL
+        }/arbitratorappointandnotifyall/bulk/pendingcases`,
+        obj
+      )
+      .then((res) => {
+        toast.success(
+          "Arbitrators appointed successfully and cases distributed equally!"
+        );
+        setLoading(false);
+        setIsOpen(false);
+        dispatch(refreshers(!refresher));
+      })
+      .catch((err) => {
+        toast.error("Something went wrong");
+        setLoading(false);
+      });
+    setIsOpen2(false);
+    setCaseId("");
+    setPendingCaseStatus(false);
+  };
+
+  // download all the cases before confirm
+  const DownloadAllDataOfCase = () => {
+    setPendingCaseStatus(false);
+    setIsClickedForMultiple(false);
+    setExportFileStatus(true);
+    const allCaseDataDownload = caseData.map((el) => el._id);
+    setAllcaseId(allCaseDataDownload);
+  };
+
+  // handle to download cases by checkbox
+  const handleSelectMultipleClientForCases = (id) => {
+    setAllcaseId((prevIds) =>
+      prevIds.includes(id)
+        ? prevIds.filter((existingId) => existingId !== id)
+        : [...prevIds, id]
+    );
+  };
+
+  // confirm to download all the cases
+  const ConfirmDownloadAllDataOfCase = () => {
+    // Define a function to dynamically filter the data
+    const applyFilters = (data, filters) => {
+      return data.filter((el) => {
+        // Dynamically apply all filters
+        return filters.every((filter) => filter(el));
+      });
+    };
+
+    // Define the filters (example: add/remove filters as needed)
+    const filters = [
+      (el) =>
+        !searchByFileName ||
+        searchByFileName === "all" ||
+        (searchByFileName === "singlecase" && el.fileName === "") ||
+        el.fileName?.toLowerCase().includes(searchByFileName.toLowerCase()),
+
+      (el) =>
+        !assignNotAssignArbitrator ||
+        assignNotAssignArbitrator === "all" ||
+        (assignNotAssignArbitrator === "notassigned" &&
+          !el.isArbitratorAssigned) ||
+        (assignNotAssignArbitrator === "assigned" && el.isArbitratorAssigned),
+
+      (el) =>
+        !searchByData ||
+        el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
+        el.clientMobile.toLowerCase().includes(searchByData.toLowerCase()) ||
+        el.respondentName.toLowerCase().includes(searchByData.toLowerCase()) ||
+        el.respondentMobile
+          .toLowerCase()
+          .includes(searchByData.toLowerCase()) ||
+        el.disputeType.toLowerCase().includes(searchByData.toLowerCase()),
+    ];
+
+    const filterdatatoexport = allcaseId
+      .map((id) => {
+        const filteredData = applyFilters(caseData, filters);
+        const matchedCase = filteredData.find((el) => el._id === id);
+
+        if (matchedCase) {
+          return {
+            clientName: matchedCase.clientName,
+            clientEmail: matchedCase.clientEmail,
+            clientMobile: matchedCase.clientMobile,
+            clientAddress: matchedCase.clientAddress,
+            respondentName: matchedCase.respondentName,
+            respondentEmail: matchedCase.respondentEmail,
+            respondentMobile: matchedCase.respondentMobile,
+            respondentAddress: matchedCase.respondentAddress,
+            attachments: matchedCase.attachments || "NA",
+            arbitratorName: matchedCase.arbitratorName || "NA",
+            arbitratorEmail: matchedCase.arbitratorEmail || "NA",
+            accountNumber: matchedCase.accountNumber || "NA",
+            cardNo: matchedCase.cardNo || "NA",
+            amount: matchedCase.amount || "NA",
+            awards:
+              matchedCase.awards[0] !== "No URL"
+                ? {
+                    t: "s", // String type
+                    v: matchedCase.awards[0] ? matchedCase.awards[0] : "NA", // Value for the hyperlink
+                    l: {
+                      Target: matchedCase.awards[0], // Target URL
+                      Tooltip: "Click to open", // Tooltip for the hyperlink
+                    },
+                  }
+                : "NA",
+            orderSheet:
+              matchedCase.orderSheet[0] !== "No URL"
+                ? {
+                    t: "s", // String type
+                    v: matchedCase.orderSheet[0]
+                      ? matchedCase.orderSheet[0]
+                      : "NA", // Value for the hyperlink
+                    l: {
+                      Target: matchedCase.orderSheet[0], // Target URL
+                      Tooltip: "Click to open", // Tooltip for the hyperlink
+                    },
+                  }
+                : "NA",
+          };
+        }
+        return null;
+      })
+      .filter(Boolean); // Remove null values
+
+    // Update state and trigger export
+    exportToExcel(filterdatatoexport, "Cases_Data");
+    setAllcaseId("");
+    setPendingCaseStatus(false);
+    setExportFileStatus(false);
   };
 
   return (
@@ -327,10 +534,11 @@ const CaseDashboard = () => {
           </div>
 
           <div className="flex gap-2 items-center ml-5 text-white">
-            <Checkbox className="bg-white"
+            <Checkbox
+              className="bg-white"
               onClick={() => {
-                setIsClickedForMultiple(!isClickedForMultiple)
-                setSelectAllClientStatus(false)
+                setIsClickedForMultiple(!isClickedForMultiple);
+                setSelectAllClientStatus(false);
                 setCaseId([]);
               }}
             />
@@ -338,7 +546,8 @@ const CaseDashboard = () => {
           </div>
           {isClickedForMultiple ? (
             <div className="flex gap-2 items-center ml-1 text-white">
-              <Checkbox className="bg-white"
+              <Checkbox
+                className="bg-white"
                 value="allclient"
                 checked={selectAllClientStatus}
                 onClick={handleAllClientForArbitrator}
@@ -350,47 +559,175 @@ const CaseDashboard = () => {
           {caseId.length > 0 ? (
             <div className="flex gap-1 items-center">
               <FcBusinessman
-                onClick={handleUploadFunctionbulk}
+                onClick={!pendingCaseStatus ? handleUploadFunctionbulk : null}
                 style={{
                   fontSize: "24px",
                   cursor: "pointer",
                 }}
               />
-              <p className="text-sm font-semibold text-white">Select Arbitrator</p>
+              <p className="text-sm font-semibold text-white">
+                Select Arbitrator
+              </p>
             </div>
           ) : null}
         </div>
       )}
 
+      <div className="flex flex-col md:flex-row mt-2 justify-end">
+        {/* Download all cases in excel */}
+        <div>
+          <button
+            type="button"
+            className="text-white bg-[#22c55e] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2"
+            onClick={DownloadAllDataOfCase}
+          >
+            <svg
+              className="h-5 w-8 text-white"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {" "}
+              <path stroke="none" d="M0 0h24v24H0z" />{" "}
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />{" "}
+              <polyline points="7 11 12 16 17 11" />{" "}
+              <line x1="12" y1="4" x2="12" y2="16" />
+            </svg>
+            Export
+          </button>
+        </div>
+
+        {/*Confirm to download all cases in excel */}
+        {exportFileStatus ? (
+          <div>
+            <button
+              type="button"
+              className="text-white bg-[#16a34a] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2 w-28 md:w-40"
+              onClick={ConfirmDownloadAllDataOfCase}
+            >
+              <svg
+                className="h-5 text-white"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {" "}
+                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />{" "}
+                <polyline points="7 11 12 16 17 11" />{" "}
+                <line x1="12" y1="4" x2="12" y2="16" />
+              </svg>
+              Confrm Export
+            </button>
+          </div>
+        ) : null}
+        {/* Check for pending cases */}
+        <button
+          type="button"
+          className="text-white bg-[#22c55e] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2 w-28 md:w-40"
+          onClick={handleAssignArbitratorForPendingCases}
+        >
+          <svg
+            className="h-5 text-white"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {" "}
+            <path stroke="none" d="M0 0h24v24H0z" />{" "}
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />{" "}
+            <polyline points="7 11 12 16 17 11" />{" "}
+            <line x1="12" y1="4" x2="12" y2="16" />
+          </svg>
+          Pending Cases
+        </button>
+        {/* Assign Arbitrator for all pending cases randomly */}
+        {pendingCaseStatus ? (
+          <div>
+            <button
+              type="button"
+              className="text-white bg-[#16a34a] font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2"
+              onClick={handleAssignArbitratorRandomly}
+            >
+              <svg
+                className="h-4 text-white"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {" "}
+                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                <circle cx="9" cy="7" r="4" />{" "}
+                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />{" "}
+                <path d="M16 11h6m-3 -3v6" />
+              </svg>
+              Arbitrator for Pending Cases
+            </button>
+          </div>
+        ) : null}
+      </div>
+
       {/* Case Dashboard Data */}
       {caseData.length > 0 ? (
         <div>
-        {/* <table cellSpacing="0">
-          <thead>
-            <tr>
-              <th>{isClickedForMultiple ? "Select" : null}</th>
-              <th>Claimant Name</th>
-              <th>Claimant No.</th>
-              <th>Res. Name</th>
-              <th>Res. No.</th>
-              <th>Type</th>
-              <th>File</th>
-              <th>Attachment</th>
-              <th>Arbitrator</th>
-            </tr>
-          </thead> */}
           <div className="flex flex-col gap-2 mt-1 mb-2">
-              <div className={`grid mt-5 font-semibold lg:px-3 rounded-md ${isClickedForMultiple ? "grid-cols-[40px,1fr,70px,50px]" : "grid-cols-[1fr,70px,60px]"} ${isClickedForMultiple ? "md:grid-cols-[40px,1fr,1fr,80px,60px]" : "md:grid-cols-[1fr,1fr,80px,80px]"}  ${isClickedForMultiple ? "lg:grid-cols-[40px,1fr,1fr,180px,50px,100px,60px,60px]" : "lg:grid-cols-[1fr,1fr,180px,50px,100px,60px,60px]"} ${isClickedForMultiple ? "xl:grid-cols-[40px,1fr,1fr,1fr,1fr,1fr,1fr,1fr]" : "xl:grid-cols-[1fr,1fr,1fr,1fr,1fr,1fr,1fr]"} text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}>
-                <p className={`truncate ${isClickedForMultiple ? "block" : "hidden"}`}>Select</p>
-                <p className="truncate">Claimant Name</p>
-                <p className="truncate hidden lg:block">Claimant No.</p>
-                <p className="truncate hidden md:block">Res. Name</p>
-                <p className="truncate hidden lg:block">Type</p>
-                <p className="truncate hidden lg:block">File</p>
-                <p className="truncate">Attachment</p>
-                <p className="truncate">Arbitrator</p>
-              </div>
+            <div
+              className={`grid mt-5 font-semibold lg:px-3 rounded-md ${
+                isClickedForMultiple || pendingCaseStatus || exportFileStatus
+                  ? "grid-cols-[40px,1fr,70px,50px]"
+                  : "grid-cols-[1fr,70px,60px]"
+              } ${
+                isClickedForMultiple || pendingCaseStatus || exportFileStatus
+                  ? "md:grid-cols-[40px,1fr,1fr,80px,60px]"
+                  : "md:grid-cols-[1fr,1fr,80px,80px]"
+              }  ${
+                isClickedForMultiple || pendingCaseStatus || exportFileStatus
+                  ? "lg:grid-cols-[40px,1fr,1fr,180px,50px,100px,60px,60px]"
+                  : "lg:grid-cols-[1fr,1fr,180px,50px,100px,60px,60px]"
+              } ${
+                isClickedForMultiple || pendingCaseStatus || exportFileStatus
+                  ? "xl:grid-cols-[40px,1fr,1fr,1fr,1fr,1fr,1fr,1fr]"
+                  : "xl:grid-cols-[1fr,1fr,1fr,1fr,1fr,1fr,1fr]"
+              } text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]`}
+            >
+              <p
+                className={`truncate ${
+                  isClickedForMultiple || pendingCaseStatus || exportFileStatus
+                    ? "block"
+                    : "hidden"
+                }`}
+              >
+                Select
+              </p>
+              <p className="truncate">Claimant Name</p>
+              <p className="truncate hidden lg:block">Claimant No.</p>
+              <p className="truncate hidden md:block">Res. Name</p>
+              <p className="truncate hidden lg:block">Type</p>
+              <p className="truncate hidden lg:block">File</p>
+              <p className="truncate">Attachment</p>
+              <p className="truncate">Arbitrator</p>
             </div>
+          </div>
           {caseData
             .filter((file) => {
               if (!searchByFileName || searchByFileName === "all") return true;
@@ -422,20 +759,36 @@ const CaseDashboard = () => {
               <CasesTableProps
                 key={cases._id}
                 checkbox={
-                  isClickedForMultiple ? (
+                  isClickedForMultiple ||
+                  pendingCaseStatus ||
+                  exportFileStatus ? (
                     <input
                       type="checkbox"
                       value={cases._id}
-                      disabled={cases.isArbitratorAssigned ? true : false}
-                      onChange={() =>
-                        handleSelectMultipleClientForArbitrator(cases._id)
+                      disabled={
+                        exportFileStatus
+                          ? false
+                          : cases.isArbitratorAssigned
+                          ? true
+                          : false
                       }
-                      checked={caseId.includes(cases._id)}
+                      onChange={() =>
+                        exportFileStatus
+                          ? handleSelectMultipleClientForCases(cases._id)
+                          : handleSelectMultipleClientForArbitrator(cases._id)
+                      }
+                      checked={
+                        exportFileStatus
+                          ? allcaseId.includes(cases._id || "")
+                          : caseId.includes(cases._id)
+                      }
                       className="checkbox-small w-[12px] h-[12px]"
                     />
                   ) : null
                 }
                 isClickedForMultiple={isClickedForMultiple}
+                exportFileStatus={exportFileStatus}
+                pendingCaseStatus={pendingCaseStatus}
                 cl_name={cases.clientName}
                 cl_number={cases.clientMobile}
                 res_name={cases.respondentName}
@@ -464,7 +817,7 @@ const CaseDashboard = () => {
                           cursor: "pointer",
                         }}
                         onClick={() =>
-                          isClickedForMultiple
+                          isClickedForMultiple || pendingCaseStatus
                             ? null
                             : handleUploadFunction(cases._id)
                         }
@@ -474,14 +827,12 @@ const CaseDashboard = () => {
                 }
               />
             ))}
-        {/* </table> */}
         </div>
       ) : (
         <NoDataFound />
       )}
 
       {/* Assign Arbitrator */}
-
       <AssignArbitratorProps
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -492,6 +843,18 @@ const CaseDashboard = () => {
         options={options}
         loading={loading}
         handleSelectArbitrator={handleSelectArbitrator}
+      />
+
+      {/* Assign Arbitrator Randomly for pending cases */}
+      <AssignArbitratorRandomly
+        isOpen2={isOpen2}
+        setIsOpen2={setIsOpen2}
+        handleArbitratorNotAssignForPendingCases={
+          handleArbitratorNotAssignForPendingCases
+        }
+        handleArbitratorAssignForPendingCases={
+          handleArbitratorAssignForPendingCases
+        }
       />
     </div>
   );
