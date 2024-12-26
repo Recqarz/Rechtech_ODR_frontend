@@ -1,8 +1,7 @@
-import DashboardHeader from "@/components/dashboardHeader";
+
 import React from "react";
 import { LuUser } from "react-icons/lu";
 import RespondentStatus from "./RespondentStatus";
-// import RecentMeetingRespondent from "./RcentMeetingRespondent";
 import UpcomingMeetingRespondent from "./UpcomingMeetingRespondent";
 import RespondentLineChart from "./RespondentLineChart";
 import RecentMeetingRespondent from "./RecentMeetingRespondent";
@@ -20,7 +19,7 @@ const RespondentDashboard = () => {
           </div>
         </div>
 
-        <DashboardHeader/>
+      
         <div className="px-2 mt-8 lg:flex justify-between ">
           <RespondentLineChart/>
           <UpcomingMeetingRespondent/>

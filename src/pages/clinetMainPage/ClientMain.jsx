@@ -5,6 +5,7 @@ import RecentMeetingsClient from "./RecentMeetingsClient";
 import ClientLineChart from "./ClientLineChart";
 import ClientStatus from "./ClientStatus";
 import UpcomingMeetingsClient from "./UpcomingMeetingsClient";
+import DashboardHeaderClient from "./DashboardHeaderClient";
 
 const ClientMain = () => {
   return (
@@ -19,7 +20,7 @@ const ClientMain = () => {
           </div>
         </div>
 
-        <DashboardHeader/>
+        <DashboardHeaderClient/>
         <div className="px-2 mt-8 lg:flex justify-between ">
           <ClientLineChart/>
           <UpcomingMeetingsClient />

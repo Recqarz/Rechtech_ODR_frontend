@@ -32,7 +32,7 @@ const ArbitratorStatus = () => {
   const colors = {
     inUse: "#57c3fc",
     free: "#0084ff",
-    arbitrationCompleted: "yellow",
+    arbitrationCompleted: "green",
   };
 
   return (

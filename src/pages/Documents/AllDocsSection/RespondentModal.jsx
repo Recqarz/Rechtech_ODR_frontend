@@ -1,6 +1,5 @@
 import React from "react";
-
-import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -11,18 +10,16 @@ import {
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FcStart } from "react-icons/fc";
+import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
+import { IoEye, IoSearch } from "react-icons/io5";
 
-const RespondentCasesModal = ({
+const RespondentModal = ({
   isOpen,
   setIsOpen,
-  caseDetails,
+  documentDetail,
   handleInputChange,
-  handleMeeting,
-  handleDownloadAllAttachment,
+  handleDownloadAll,
   closeDetailsFunc,
-  convertToDateNow,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -38,7 +35,7 @@ const RespondentCasesModal = ({
               case ID
             </Label>
             <Input
-              value={caseDetails.id}
+              value={documentDetail.id}
               disabled={true}
               id="ticketId"
               name="id"
@@ -55,7 +52,7 @@ const RespondentCasesModal = ({
             <Input
               disabled={true}
               id="client name"
-              value={caseDetails.cl_name}
+              value={documentDetail.cl_name}
               onChange={handleInputChange}
               className="col-span h-[30px] text-black"
             />
@@ -71,7 +68,7 @@ const RespondentCasesModal = ({
               disabled={true}
               onChange={handleInputChange}
               name="cl_email"
-              value={caseDetails.cl_email}
+              value={documentDetail.cl_email}
               className="col-span h-[30px] text-black"
             />
           </div>
@@ -86,7 +83,7 @@ const RespondentCasesModal = ({
               disabled={true}
               onChange={handleInputChange}
               name="cl_num"
-              value={caseDetails.cl_num}
+              value={documentDetail.cl_num}
               className="col-span h-[30px] text-black"
             />
           </div>
@@ -99,7 +96,7 @@ const RespondentCasesModal = ({
             <Input
               disabled={true}
               id="res_name"
-              value={caseDetails.res_name}
+              value={documentDetail.res_name}
               onChange={handleInputChange}
               className="col-span h-[30px] text-black"
             />
@@ -113,7 +110,7 @@ const RespondentCasesModal = ({
             <Input
               disabled={true}
               id="arb_name"
-              value={caseDetails.arb_name}
+              value={documentDetail.arb_name}
               onChange={handleInputChange}
               className="col-span h-[30px] text-black"
             />
@@ -127,63 +124,33 @@ const RespondentCasesModal = ({
             <Input
               disabled={true}
               id="arb_email"
-              value={caseDetails.arb_email}
+              value={documentDetail.arb_email}
               onChange={handleInputChange}
               className="col-span h-[30px] text-black"
             />
           </div>
 
-          <div>
-            {/* Attachment */}
-            <div className="flex justify-between px-4 border-b-[2px] border-gray-700 border-spacing-1 mt-4 mb-2">
-              <Label htmlFor="attachment" className="text-sm font-normal">
-                Attachment
-              </Label>
-              {caseDetails.attach.length > 0 ? (
-                <IoMdDownload
-                  className="cursor-pointer text-[20px]"
-                  onClick={() =>
-                    handleDownloadAllAttachment(caseDetails.attach)
-                  }
-                />
-              ) : (
-                <p className="text-sm">No Attachment</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            {/* Meetings */}
-            <div className="flex justify-between px-4 border-b-[2px] border-gray-700 border-spacing-1 mt-4">
-              <Label htmlFor="awards" className="text-sm font-normal">
-                Meetings
-              </Label>
-
-              {caseDetails.meetings.length > 0 &&
-              convertToDateNow(
-                caseDetails.meetings[caseDetails?.meetings.length - 1].end
-              ) > Date.now() ? (
-                <div
-                  onClick={() =>
-                    handleMeeting(
-                      caseDetails.meetings[caseDetails?.meetings.length - 1]
-                    )
-                  }
-                  className="flex cursor-pointer"
-                >
-                  <FcStart className="text-3xl" />
-                  <span className="font-md font-semibold">Start</span>
-                </div>
-              ) : caseDetails.meetings.length > 0 ? (
-                <p className="text-sm">Completed</p>
-              ) : (
-                <p className="text-sm">Not Scheduled</p>
-              )}
-            </div>
+          {/* Attachment */}
+          <div className="flex justify-between px-4 border-b-[2px] border-gray-700 border-spacing-1 mt-4">
+            <Label htmlFor="attachment" className="text-sm font-normal">
+              Attachment
+            </Label>
+            {documentDetail.attach.length > 0 ? (
+              <IoMdDownload
+                className="cursor-pointer text-[20px] text-green-500"
+                onClick={() => handleDownloadAll(documentDetail.attach)}
+              />
+            ) : (
+              <p className="text-sm">No Attach</p>
+            )}
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={closeDetailsFunc}>
+          <Button
+            className="h-8 bg-green-500"
+            type="submit"
+            onClick={closeDetailsFunc}
+          >
             Done
           </Button>
         </DialogFooter>
@@ -192,4 +159,4 @@ const RespondentCasesModal = ({
   );
 };
 
-export default RespondentCasesModal;
+export default RespondentModal;
