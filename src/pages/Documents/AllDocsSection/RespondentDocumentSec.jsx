@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DocumentsModal from "../DocumentsModal";
 import SearchByDataProps from "../SearchByDataProps";
+import RespondentModal from "./RespondentModal";
 
 const RespondentDocumentSec = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -213,16 +214,14 @@ const RespondentDocumentSec = () => {
           </div>
         </div>
       </div>
+      
       {/* modal for details for docs */}
-      <DocumentsModal
+      <RespondentModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         documentDetail={documentDetail}
         handleInputChange={handleInputChange}
         handleDownloadAll={handleDownloadAllAttachment}
-        handleDownloadAllorder={handleDownloadAllorder}
-        handleDownloadAward={handleDownloadAward}
-        handleRecordings={()=>handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
       />
     </>

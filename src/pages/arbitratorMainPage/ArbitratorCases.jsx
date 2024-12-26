@@ -135,6 +135,9 @@ const ArbitratorCases = () => {
     endDate.setMinutes(endDate.getMinutes() + minutes);
     setSelectEndDate(endDate);
     const formattedEndDate = getFormattedDateTime(endDate);
+
+   
+
     if (!isClickedForMultiple) {
       let obj = {
         caseId: caseId,
