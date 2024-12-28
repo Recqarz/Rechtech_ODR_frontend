@@ -21,7 +21,7 @@ import CasesTableProps from "@/components/AdminCases/CasesTableProps";
 import AssignArbitratorProps from "./AssignArbitratorProps";
 import React from "react";
 import AssignArbitratorRandomly from "./AssignArbitratorRandomly";
-import { exportToExcel } from "./exportToExcel";
+import { ExportToExcel } from "./ExportToExcel";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -437,7 +437,7 @@ const CaseDashboard = () => {
       .filter(Boolean); // Remove null values
 
     // Update state and trigger export
-    exportToExcel(filterdatatoexport, "Cases_Data");
+    ExportToExcel(filterdatatoexport, "Cases_Data");
     setAllcaseId("");
     setPendingCaseStatus(false);
     setExportFileStatus(false);

@@ -10,7 +10,7 @@ import ClientDetailsModal from "./ClientDetailsModal";
 import { recordingData } from "@/global/action";
 import { useDispatch } from "react-redux";
 import { IoEye } from "react-icons/io5";
-import { exportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
+import { ExportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
 
 const ClientCases = () => {
   const navigate = useNavigate();
@@ -259,7 +259,7 @@ const ClientCases = () => {
       .filter(Boolean); // Remove null values
 
     // Update state and trigger export
-    exportToExcel(filterdatatoexport, "Client_CaseData");
+    ExportToExcel(filterdatatoexport, "Client_CaseData");
     setAllcaseId("");
     setExportFileStatus(false);
   };

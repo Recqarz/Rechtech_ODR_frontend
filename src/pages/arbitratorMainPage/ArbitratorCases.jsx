@@ -16,7 +16,7 @@ import ScheduleMeeting from "./ScheduleMeeting";
 import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
 import ArbitratorDetailsModal from "./ArbitratorDetailsModal";
 import FilterAllData from "./FilterAllData";
-import { exportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
+import { ExportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
@@ -153,6 +153,7 @@ const ArbitratorCases = () => {
         .post(`${import.meta.env.VITE_API_BASEURL}/webex/create-meeting`, obj)
         .then((res) => {
           toast.success("Meeting Scheduled successfully");
+          console.log("res", res)
           setTitle("");
           setSelectStartDate(new Date());
           setIsOpen(false);
@@ -181,6 +182,7 @@ const ArbitratorCases = () => {
         )
         .then((res) => {
           toast.success("Meeting Scheduled successfully");
+          console.log("resbulk", res.data)
           setTitle("");
           setSelectStartDate(new Date());
           setIsOpen(false);
@@ -204,6 +206,7 @@ const ArbitratorCases = () => {
   }
 
   const handleDurationChange = (value) => {
+    console.log(value, "kd")
     setTimeDuration(value);
   };
   useEffect(() => {
@@ -554,7 +557,7 @@ const ArbitratorCases = () => {
           .filter(Boolean); // Remove null values
     
         // Update state and trigger export
-        exportToExcel(filterdatatoexport, "Arbitrator_CaseData");
+        ExportToExcel(filterdatatoexport, "Arbitrator_CaseData");
         setAllcaseId("");
         setExportFileStatus(false);
 

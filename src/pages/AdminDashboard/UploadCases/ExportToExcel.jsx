@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-export const exportToExcel = (data, fileName) => {
+export const ExportToExcel = (data, fileName) => {
   // Create a workbook
   const workbook = XLSX.utils.book_new();
 
