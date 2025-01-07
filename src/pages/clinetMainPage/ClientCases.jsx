@@ -11,6 +11,7 @@ import { recordingData } from "@/global/action";
 import { useDispatch } from "react-redux";
 import { IoEye } from "react-icons/io5";
 import { ExportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
+import Pagination from "@/components/Pagination";
 
 const ClientCases = () => {
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ const ClientCases = () => {
   const [assignNotAssignArbitrator, setAssignNotAssignArbitrator] =
     useState("");
   const [searchByData, setSearchByData] = useState("");
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Modal for details
   const [isOpen, setIsOpen] = useState(false);
@@ -50,24 +56,39 @@ const ClientCases = () => {
     return date.getTime();
   }
 
-  const getArbitratorCaseData = () => {
+  const getArbitratorCaseData = (page, limit) => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/cases/clientcases`, {
         headers: {
           token: token,
         },
+        params: { page, limit },
       })
       .then((res) => {
         setClientOwnData(res.data.caseData);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong!");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
   useEffect(() => {
-    getArbitratorCaseData();
-  }, []);
+    getArbitratorCaseData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
   // start meeting
   const handleMeeting = (link) => {
@@ -190,12 +211,12 @@ const ClientCases = () => {
         (searchByFileName === "singlecase" && el.fileName === "") ||
         el.fileName?.toLowerCase().includes(searchByFileName.toLowerCase()),
 
-        (el) =>
-          !assignNotAssignArbitrator ||
-          assignNotAssignArbitrator === "all" ||
-          (assignNotAssignArbitrator === "notassigned" &&
-            !el.isArbitratorAssigned) ||
-          (assignNotAssignArbitrator === "assigned" && el.isArbitratorAssigned),
+      (el) =>
+        !assignNotAssignArbitrator ||
+        assignNotAssignArbitrator === "all" ||
+        (assignNotAssignArbitrator === "notassigned" &&
+          !el.isArbitratorAssigned) ||
+        (assignNotAssignArbitrator === "assigned" && el.isArbitratorAssigned),
       (el) =>
         !searchByData ||
         el.clientName.toLowerCase().includes(searchByData.toLowerCase()) ||
@@ -441,7 +462,9 @@ const ClientCases = () => {
                         <input
                           type="checkbox"
                           value={ele._id}
-                          onChange={() => handleSelectMultipleClientForCases(ele._id)}
+                          onChange={() =>
+                            handleSelectMultipleClientForCases(ele._id)
+                          }
                           checked={allcaseId.includes(ele._id || "")}
                           className="checkbox-small w-[12px] h-[12px]"
                         />
@@ -521,6 +544,15 @@ const ClientCases = () => {
           </div>
         </div>
       </div>
+
+      {/* Pagination*/}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
 
       {/* Modal for Details  */}
 

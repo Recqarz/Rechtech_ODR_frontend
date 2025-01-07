@@ -17,6 +17,7 @@ import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
 import ArbitratorDetailsModal from "./ArbitratorDetailsModal";
 import FilterAllData from "./FilterAllData";
 import { ExportToExcel } from "../AdminDashboard/UploadCases/ExportToExcel";
+import Pagination from "@/components/Pagination";
 
 const ArbitratorCases = () => {
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,11 @@ const ArbitratorCases = () => {
   const [idForOrderSheet, setIdForOrderSheet] = useState("");
   const [fileForOrderSheet, setFileForOrderSheet] = useState("");
 
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   // details data
   const [isOpen5, setIsOpen5] = useState(false);
   const [caseDetails, setCaseDetails] = useState({
@@ -77,24 +83,44 @@ const ArbitratorCases = () => {
 
   let token = JSON.parse(localStorage.getItem("rechtechtoken"));
 
-  const getArbitratorCaseData = () => {
+
+  // All Arbitrator case Data
+  const getArbitratorCaseData = (page, limit) => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/cases/arbitratorcases`, {
         headers: {
           token: token,
         },
+        params: { page, limit },
       })
       .then((res) => {
         setArbitratorCaseData(res.data.caseData);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong!");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
   useEffect(() => {
-    getArbitratorCaseData();
-  }, []);
+    getArbitratorCaseData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
+
+
+
 
   function convertToDateNow(isoTimestamp) {
     const date = new Date(isoTimestamp);
@@ -880,6 +906,15 @@ const ArbitratorCases = () => {
         </div>
       </div>
 
+       {/* Pagination*/}
+       <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+
       {/* Schedule Meeting */}
       <ScheduleMeeting
         isOpen={isOpen}
@@ -930,7 +965,7 @@ const ArbitratorCases = () => {
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
         handleMeeting={handleMeeting}
-        handleRecordings={() => handleRecordings(documentDetail.recording)}
+        handleRecordings={handleRecordings}
         closeDetailsFunc={closeDetailsFunc}
         convertToDateNow={convertToDateNow}
       />

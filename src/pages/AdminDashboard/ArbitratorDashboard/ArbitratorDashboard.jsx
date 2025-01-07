@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import TableProps from "@/components/ArbitratorUserTable/TableProps";
 import UpdateArbitratorDetailsProps from "./UpdateArbitratorDetailsProps";
 import { IoSearch } from "react-icons/io5";
+import Pagination from "@/components/Pagination";
 
 const ArbitratorDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +21,11 @@ const ArbitratorDashboard = () => {
   const [filterstatus, setFilterstatus] = useState("all");
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Status");
+
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleOpen = (arbitratior) => {
     setIsOpen(true);
@@ -54,20 +60,34 @@ const ArbitratorDashboard = () => {
     setIsStatusOpen(false);
   };
 
-  const getData = () => {
+  const getData = (page, limit) => {
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
+      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`, {params: { page, limit }},)
       .then((res) => {
         setData(res.data.user);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
   useEffect(() => {
-    getData();
-  }, []);
+    getData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
   return (
     <div className="min-h-screen">
@@ -206,6 +226,18 @@ const ArbitratorDashboard = () => {
           <NoDataFound />
         )}
       </div>
+
+
+
+  {/* Pagination*/}
+  <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+
 
       {/* Modal for update status */}
       <UpdateArbitratorDetailsProps

@@ -5,38 +5,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import NoDataFound from "@/components/NoDataFound";
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import toast from "react-hot-toast";
 import TableProps from "@/components/ArbitratorUserTable/TableProps";
 import UpdateClientDetailsProps from "./UpdateClientDetailsProps";
 import { FaAngleRight } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
+import Pagination from "@/components/Pagination";
 
 const ClientDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState(null);
+
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleOpen = (client) => {
     setIsOpen(true);
@@ -76,19 +60,34 @@ const ClientDashboard = () => {
     setIsStatusOpen(false);
   };
 
-  const getData = () => {
+  const getData = (page, limit) => {
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/client/all`)
+      .get(`${import.meta.env.VITE_API_BASEURL}/client/all`, { params: { page, limit }})
       .then((res) => {
         setData(res.data.user);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong");
       });
   };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
   useEffect(() => {
-    getData();
-  }, []);
+    getData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
   return (
     <div className="min-h-screen">
@@ -165,19 +164,6 @@ const ClientDashboard = () => {
 
         {data.length > 0 ? (
           <div>
-            {/* <table cellSpacing="0">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Contact No.</th>
-                <th>Email ID</th>
-                <th>Cases Added</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead> */}
             <div className="flex flex-col gap-2 mt-1 mb-2">
               <div className="grid mt-5 font-semibold lg:px-3 rounded-md grid-cols-[60px,1fr,70px,50px] md:grid-cols-[60px,1fr,1fr,70px,50px]  lg:grid-cols-[70px,1fr,1fr,180px,50px,100px,60px,60px] xl:grid-cols-[70px,1fr,1fr,250px,50px,100px,60px,60px] text-sm text-green-500 gap-4 px-2 py-3 shadow-2xl bg-[#0f2d6b]">
                 <p className="truncate">ID</p>
@@ -232,12 +218,21 @@ const ClientDashboard = () => {
                   handleOpen={() => handleOpen(client)}
                 />
               ))}
-            {/* </table> */}
+           
           </div>
         ) : (
           <NoDataFound />
         )}
       </div>
+
+        {/* Pagination*/}
+        <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
 
       {/* Modal for update status */}
 

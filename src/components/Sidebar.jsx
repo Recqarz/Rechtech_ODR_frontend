@@ -272,7 +272,8 @@ const Sidebar = () => {
                   Documents
                 </li>
 
-                <li
+
+                {/* <li
                   onClick={handleTicketFunc}
                   className="flex items-center cursor-pointer px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
                 >
@@ -280,7 +281,9 @@ const Sidebar = () => {
                     <FaTicketSimple className="text-[18px]" />
                   </span>
                   Tickets
-                </li>
+                </li> */}
+
+
 
                 {/* {role !== "respondent" ? (
                   <li
