@@ -1,12 +1,22 @@
-// import React from "react";
 import { useState } from "react";
 import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUpdater, updateRole } from "@/global/action";
+import { IoMdHome } from "react-icons/io";
+import { AiFillHome } from "react-icons/ai";
+import { FaUsers } from "react-icons/fa";
+import { IoBriefcase } from "react-icons/io5";
+import { FaCalendar } from "react-icons/fa";
+import { HiDocument } from "react-icons/hi2";
+import { FaTicketSimple } from "react-icons/fa6";
+import { MdLiveHelp } from "react-icons/md";
+import { IoLogOut } from "react-icons/io5";
 
 const Sidebar = () => {
+  let dispatch = useDispatch();
   const [isUsersOpen, setIsUsersOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -14,6 +24,7 @@ const Sidebar = () => {
   const role = useSelector((state) => state.role);
 
   const handleArbitratorPage = () => {
+    setIsSidebarOpen(false);
     if (role === "admin") {
       navigate("/arbitratortable");
     } else {
@@ -21,140 +32,290 @@ const Sidebar = () => {
     }
   };
 
-const handleLogoutFunc=()=>{
-  console.log("logout");
-  localStorage.removeItem("rechtechrole");
-  localStorage.removeItem("rechtechtoken");
-  localStorage.removeItem("token");
-  navigate("/");
-}
+  const handleLogoutFunc = () => {
+    localStorage.removeItem("rechtechrole");
+    localStorage.removeItem("rechtechtoken");
+    sessionStorage.removeItem("rechtechrole");
+    sessionStorage.removeItem("rechtechtoken");
+    dispatch(loginUpdater(false));
+    dispatch(updateRole(""));
+    navigate("/");
+  };
 
-const AllArbitratorfunc=()=>{
-  navigate("/client/allarbitrator");
-}
+  const AllArbitratorfunc = () => {
+    setIsSidebarOpen(false);
+    navigate("/client/allarbitrator");
+  };
 
+  // Docs Navigation
+
+  const handleDocumentFunc = () => {
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+    if (role === "admin") {
+      navigate("/admin/admindashboard/documents");
+    } else if (role === "arbitrator") {
+      navigate("/arbitrator/arbitratordashboard/documents");
+    } else if (role === "client") {
+      navigate("/client/clientdashboard/documents");
+    } else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/documents");
+    }
+  };
+
+  // Ticket navigation
+  const handleTicketFunc = () => {
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+    if (role === "admin") {
+      navigate("/admin/admindashboard/tickets");
+    } else if (role === "arbitrator") {
+      navigate("/arbitrator/arbitratordashboard/tickets");
+    } else if (role === "client") {
+      navigate("/client/clientdashboard/tickets");
+    } else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/tickets");
+    }
+  };
+
+  const handleMeetingsFunc=()=>{
+    if (role === "admin") {
+      navigate("/admin/admindashboard/meetings");
+    }else if(role === "arbitrator"){
+      navigate("/arbitrator/arbitratordashboard/meetings")
+    }else if(role==="client"){
+      navigate("/client/clientdashboard/meetings");
+    }else if (role === "respondent") {
+      navigate("/respondent/respondentdashboard/meetings");
+    }
+
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+  }
+
+  const closeMenu = () => {
+    setIsSidebarOpen(false);
+    setIsUsersOpen(false);
+  };
 
   return (
     <>
-      {/* Hamburger Menu Button - Only visible on medium and small screens */}
+      {/* Hamburger Menu Button - Improved mobile responsiveness */}
       <button
-        className="z-50 fixed top-4 left-4 p-2 rounded-lg bg-blue-50 shadow-lg md:hidden"
+        className="z-50 fixed top-5 left-3 p-2 rounded-lg bg-blue-50 shadow-lg md:hidden"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        aria-label="Toggle Menu"
       >
-        {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        {isSidebarOpen ? (
+          <FaTimes className="text-xl" />
+        ) : (
+          <FaBars className="text-xl" />
+        )}
       </button>
 
-      <div className="z-10 flex flex-col min-h-screen">
-        <div className="flex flex-1 overflow-hidden">
+      {/* Overlay for mobile menu */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+
+      <div className="z-40 flex flex-col h-screen">
+        <div className="flex flex-1 overflow-y-auto">
           <aside
             className={`
-            fixed md:static w-52 bg-blue-50 shadow-lg flex flex-col justify-between h-screen
-            transition-transform duration-300 ease-in-out
-            ${
-              isSidebarOpen
-                ? "translate-x-0"
-                : "-translate-x-full md:translate-x-0"
-            }
-          `}
+              fixed md:static top-0 left-0 w-[180px] shadow-lg  bg-[#0f2d6b] flex flex-col justify-between h-full
+              transition-transform duration-300 ease-in-out z-40 custom-scroll
+              ${
+                isSidebarOpen
+                  ? "translate-x-0"
+                  : "-translate-x-full md:translate-x-0"
+              }
+            `}
           >
-            <div className="flex-1">
-              <h1 className="px-8 mt-4 ml-4 md:ml-1 lg:ml-0 font-bold text-2xl">
-                Recht Tech
-              </h1>
+            <div className="flex-1 overflow-y-auto">
+              <Link
+                to={
+                  role == "arbitrator"
+                    ? "/arbitrator"
+                    : role == "client"
+                    ? "/client"
+                    : role == "respondent"
+                    ? "/respondent"
+                    : "/admin"
+                }
+              >
+                <h1
+                  className="px-6 mt-5 ml-7 md:ml-5 mb-6 cursor-pointer text-center md:text-left"
+                  onClick={closeMenu}
+                >
+                  <img
+                    className="h-[70%] w-[70%]"
+                    src="/assets/finallogo.png"
+                    alt=""
+                  />
+                </h1>
+              </Link>
 
-              <ul className="p-4 space-y-0 mt-5">
+              <ul className="px-4 pb-4 space-y-1">
                 <Link
                   to={
                     role == "arbitrator"
                       ? "/arbitrator"
                       : role == "client"
                       ? "/client"
+                      : role == "respondent"
+                      ? "/respondent"
                       : "/admin"
                   }
                 >
-                  <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                    <span className="mr-3">📊</span>
+                  <li
+                    onClick={closeMenu}
+                    className="flex items-center px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                  >
+                    <span className="mr-3">
+                      <AiFillHome className="text-[20px]" />
+                    </span>
                     Dashboard
                   </li>
                 </Link>
 
                 {role === "admin" ? (
                   <li
-                    className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
+                    className="flex items-center justify-between px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg cursor-pointer transition-colors"
                     onClick={() => setIsUsersOpen(!isUsersOpen)}
                   >
                     <div className="flex items-center">
-                      <span className="mr-3">👥</span>
+                      <span className="mr-3">
+                        <FaUsers className="text-[20px]" />
+                      </span>
                       Users
                     </div>
                   </li>
                 ) : null}
-                {
-                  role==="client"?
+
+                {role === "client" && role !== "respondent" ? (
                   <li
-                    className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
-                   
+                    className="flex items-center justify-between px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg cursor-pointer transition-colors"
+                    onClick={AllArbitratorfunc}
                   >
-                    <div className="flex items-center" onClick={AllArbitratorfunc}>
-                      <span className="mr-3">👥</span>
+                    <div className="flex items-center">
+                      <span className="mr-3">
+                        <FaUsers className="text-[20px]" />
+                      </span>
                       All Arbitrator
                     </div>
-                  </li>:null
-                }
+                  </li>
+                ) : null}
 
                 {isUsersOpen && (
                   <div className="ml-8 space-y-1">
-                    {/* <Link to="/arbitratortable"> */}
                     <li
-                      className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors"
+                      className="flex items-center px-4 py-[6px] cursor-pointer text-sm text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
                       onClick={handleArbitratorPage}
                     >
                       Arbitrator
                     </li>
-                    {/* </Link> */}
                     <Link to="/clienttable">
-                      <li className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-blue-100 rounded-lg transition-colors">
+                      <li
+                        onClick={closeMenu}
+                        className="flex items-center px-4 py-[6px] text-sm text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                      >
                         Client
                       </li>
                     </Link>
                   </div>
                 )}
 
-                <Link to={role==="admin" ? "/admin/cases" : role==="arbitrator"? "/arbitrator/cases" : "/client/cases"}>
-                  <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                    <span className="mr-3">📁</span>
+                <Link
+                  to={
+                    role === "admin"
+                      ? "/admin/cases"
+                      : role === "arbitrator"
+                      ? "/arbitrator/cases"
+                      : role == "client"
+                      ? "/client/cases"
+                      : "/respondent/cases"
+                  }
+                >
+                  <li
+                    onClick={closeMenu}
+                    className="flex items-center px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                  >
+                    <span className="mr-4">
+                      <IoBriefcase className="text-[20px]" />
+                    </span>
                     Cases
                   </li>
                 </Link>
 
-                <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                  <span className="mr-3">📅</span>
-                  Meetings
-                </li>
-                <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                  <span className="mr-3">📄</span>
+                  <li
+                    // onClick={closeMenu}
+                    onClick={handleMeetingsFunc}
+                    className="flex cursor-pointer items-center px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                  >
+                    <span className="mr-4">
+                      <FaCalendar className="text-[18px]" />
+                    </span>
+                    Meetings
+                  </li>
+
+                <li
+                  onClick={handleDocumentFunc}
+                  className="flex items-center cursor-pointer px-4 py-2 text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                >
+                  <span className="mr-3">
+                    <HiDocument className="text-[20px]" />
+                  </span>
                   Documents
                 </li>
-                <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                  <span className="mr-3">🎫</span>
+
+
+                {/* <li
+                  onClick={handleTicketFunc}
+                  className="flex items-center cursor-pointer px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                >
+                  <span className="mr-3">
+                    <FaTicketSimple className="text-[18px]" />
+                  </span>
                   Tickets
-                </li>
-                <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
-                  <span className="mr-3">📞</span>
-                  Consultation Requests
-                </li>
+                </li> */}
+
+
+
+                {/* {role !== "respondent" ? (
+                  <li
+                    onClick={closeMenu}
+                    className="flex items-center cursor-pointer px-4 py-[6px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors"
+                  >
+                    <span className="mr-3">
+                      <MdLiveHelp className="text-[20px]" />
+                    </span>
+                    Requests
+                  </li>
+                ) : null} */}
               </ul>
             </div>
 
             {/* Bottom Section */}
-            <div className="p-4 border-t border-blue-100">
+            <div className="px-4 py-2 border-t border-blue-100">
               <ul className="space-y-2">
-                <li className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-100 rounded-lg transition-colors">
+                {/* <li
+                  className="flex items-center px-4 py-[6px] text-gray-700 hover:bg-[#0d45b6] rounded-lg transition-colors cursor-pointer"
+                  onClick={closeMenu}
+                >
                   <span className="mr-3">⚙️</span>
                   Settings
-                </li>
-                <li className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" onClick={handleLogoutFunc}>
-                  <span className="mr-3">🚪</span>
+                </li> */}
+                <li
+                  className="flex items-center px-4 py-[9px] text-white text-[14px] hover:bg-[#0d45b6] rounded-lg transition-colors cursor-pointer"
+                  onClick={handleLogoutFunc}
+                >
+                  <span className="mr-3">
+                    <IoLogOut className="text-[22px]" />
+                  </span>
                   Log out
                 </li>
               </ul>
@@ -162,6 +323,7 @@ const AllArbitratorfunc=()=>{
           </aside>
         </div>
       </div>
+
     </>
   );
 };

@@ -1,11 +1,40 @@
-import React from 'react'
+import DashboardHeader from "@/components/dashboardHeader";
+import React from "react";
+import { LuUser } from "react-icons/lu";
+import RecentMeetingsClient from "./RecentMeetingsClient";
+import ClientLineChart from "./ClientLineChart";
+import ClientStatus from "./ClientStatus";
+import UpcomingMeetingsClient from "./UpcomingMeetingsClient";
+import DashboardHeaderClient from "./DashboardHeaderClient";
 
 const ClientMain = () => {
   return (
-    <div>
-      <h2>this is Client dashboard</h2>
-    </div>
-  )
-}
+    <div className="min-h-screen">
+      <div className="max-w-6xl px-6 py-2 m-auto overflow-hidden">
+        <div className="ml-10 md:ml-0 flex justify-between items-center shadow-2xl bg-[#0f2d6b] rounded-md py-2 px-4 mt-1 md:mt-0">
+          <h2 className="font-semibold text-white cursor-pointer">Dashboard</h2>
+          <div>
+            <div className="bg-blue-50 p-2 md:p-3 rounded-full">
+              <LuUser className="text-blue-600 text-md md:text-xl" />
+            </div>
+          </div>
+        </div>
 
-export default ClientMain
+        <DashboardHeaderClient/>
+        <div className="px-2 mt-8 lg:flex justify-between ">
+          <ClientLineChart/>
+          <UpcomingMeetingsClient />
+        </div>
+
+        <div className="lg:flex justify-between mb-4">
+          <RecentMeetingsClient/>
+          <div className="hidden lg:block">
+            <ClientStatus />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ClientMain;

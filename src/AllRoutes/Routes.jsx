@@ -14,19 +14,34 @@ import ArbitratorCases from "@/pages/arbitratorMainPage/ArbitratorCases";
 import ClientCases from "@/pages/clinetMainPage/ClientCases";
 import ClientMain from "@/pages/clinetMainPage/ClientMain";
 import AllArbitrator from "@/pages/clinetMainPage/AllArbitrator";
+import AddCaseViaForm from "@/pages/AdminDashboard/UploadCases/AddCaseViaForm";
+import RespondentDashboard from "@/pages/Respondent/respondentDashboard";
+import RespondentCase from "@/pages/Respondent/respondentCases";
+import Recordings from "@/pages/arbitratorMainPage/recordings";
+import RespondentTicket from "@/pages/Tickets/AllTicketSection/RespondentTicket";
+import ClientTicket from "@/pages/Tickets/AllTicketSection/ClientTicket";
+import ArbitratorTicket from "@/pages/Tickets/AllTicketSection/ArbitratorTicket";
+import AdminTicket from "@/pages/Tickets/AllTicketSection/AdminTicket";
+import AdminMeetings from "@/pages/meetings/adminMeetings";
+import RespondentDocumentSec from "@/pages/Documents/AllDocsSection/RespondentDocumentSec";
+import ClientDocumentSec from "@/pages/Documents/AllDocsSection/ClientDocumentSec";
+import ArbitratorDocumentSec from "@/pages/Documents/AllDocsSection/ArbitratorDocumentSec";
+import AdminDocumentSec from "@/pages/Documents/AllDocsSection/AdminDocumentSec";
+import ArbitratorMeetings from "@/pages/meetings/ArbitratorMeetings";
+import ClientMeetings from "@/pages/meetings/ClientMeetings";
+import RespondentMeetings from "@/pages/meetings/RespondentMeetings";
 
 const Allroutes = () => {
   return (
-    <div className="flex w-full">
-      <div className="fixed top-0 left-0">
+    <div className="flex w-full bg-[#012061]">
+      <div className="fixed top-0 left-0 bottom-0 h-[100vh] z-30">
         <Sidebar />
       </div>
-      <div className="flex-1 md:ml-52">
+      <div className="flex-1 md:ml-[175px]">
         <Routes>
           <Route path="/client" element={<ClientMain />} />
           <Route path="/client/cases" element={<ClientCases />} />
           <Route path="/client/allarbitrator" element={<AllArbitrator />} />
-
           <Route path="/arbitrator" element={<ArbitratorMain />} />
           <Route path="/arbitrator/cases" element={<ArbitratorCases />} />
           <Route path="/admin" element={<AdminDashboard />} />
@@ -35,7 +50,68 @@ const Allroutes = () => {
           <Route path="/arbitrator/addarbitrator" element={<AddArbitrator />} />
           <Route path="/client/addclient" element={<AddClient />} />
           <Route path="/admin/cases" element={<Uploadcase />} />
+          <Route path="/admin/cases/add" element={<AddCaseViaForm />} />
           <Route path="/defaulter/:caseid" element={<DefaulterPage />} />
+          <Route path="/respondent" element={<RespondentDashboard />} />
+          <Route path="/respondent/cases" element={<RespondentCase />} />
+          <Route path="/arbitrator/cases/recordings" element={<Recordings />} />
+          <Route
+            path="/admin/admindashboard/documents"
+            element={<AdminDocumentSec />}
+          />
+
+          <Route
+            path="/arbitrator/arbitratordashboard/documents"
+            element={<ArbitratorDocumentSec />}
+          />
+
+          <Route
+            path="/client/clientdashboard/documents"
+            element={<ClientDocumentSec />}
+          />
+
+          <Route
+            path="/respondent/respondentdashboard/documents"
+            element={<RespondentDocumentSec />}
+          />
+
+          <Route
+            path="/admin/admindashboard/tickets"
+            element={<AdminTicket />}
+          />
+
+          <Route
+            path="/arbitrator/arbitratordashboard/tickets"
+            element={<ArbitratorTicket />}
+          />
+
+          <Route
+            path="/client/clientdashboard/tickets"
+            element={<ClientTicket />}
+          />
+
+          <Route
+            path="/respondent/respondentdashboard/tickets"
+            element={<RespondentTicket />}
+          />
+          <Route
+            path="/admin/admindashboard/meetings"
+            element={<AdminMeetings />}
+          />
+
+          <Route
+            path="/arbitrator/arbitratordashboard/meetings"
+            element={<ArbitratorMeetings/>}
+          />
+          <Route
+            path="/client/clientdashboard/meetings"
+            element={<ClientMeetings/>}
+          />
+          
+          <Route
+            path="/respondent/respondentdashboard/meetings"
+            element={<RespondentMeetings/>}
+          />
         </Routes>
       </div>
     </div>

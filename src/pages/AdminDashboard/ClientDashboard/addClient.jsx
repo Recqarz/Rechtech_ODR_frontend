@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { FaAngleRight } from "react-icons/fa";
 
 const AddClient = () => {
   let navigate = useNavigate();
@@ -14,11 +15,12 @@ const AddClient = () => {
     expertise: "NA",
     experience: "1",
     about: "",
+    address: "",
   });
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/autouid/client")
+      .get(`${import.meta.env.VITE_API_BASEURL}/autouid/client`)
       .then((res) => setFormData({ ...formData, uid: res.data.uid }))
       .catch((err) => toast.error("Something went wrong"));
   }, []);
@@ -42,15 +44,16 @@ const AddClient = () => {
       about: formData.about,
       role: "client",
       uid: formData.uid,
+      address: formData.address,
     };
-    console.log(obj);
     if (
       !obj.name ||
       !obj.emailId ||
       !obj.contactNo ||
       !obj.areaOfExpertise ||
       !obj.experienceInYears ||
-      !obj.about
+      !obj.about ||
+      !obj.address
     ) {
       toast.error("All fields are required");
       return;
@@ -64,7 +67,7 @@ const AddClient = () => {
       return;
     }
     axios
-      .post("http://localhost:3000/auth/register", obj)
+      .post(`${import.meta.env.VITE_API_BASEURL}/auth/register`, obj)
       .then((res) => {
         toast.success("Client added successfully");
         navigate("/clienttable");
@@ -76,6 +79,7 @@ const AddClient = () => {
           expertise: "",
           experience: "",
           about: "",
+          address: "",
         });
       })
       .catch((err) => {
@@ -84,12 +88,31 @@ const AddClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 py-3">
+    <div className="min-h-screen">
+      <div className="max-w-[1070px] mx-auto px-4 py-3">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow-sm">
+        <div className="ml-10 md:ml-0 flex justify-between items-center shadow-2xl bg-[#0f2d6b] rounded-md   py-2 px-4 mt-1 md:mt-0">
+          <h2 className="font-semibold text-white  text-sm cursor-pointer flex gap-1 items-center">
+            Users <FaAngleRight className="text-xs mt-1" />{" "}
+            <span
+              className="hover:text-blue-500"
+              onClick={() => navigate("/clienttable")}
+            >
+              Client
+            </span>
+            <FaAngleRight className="text-xs mt-1" />{" "}
+            <span className="hover:text-blue-500">Add</span>
+          </h2>
+          <div>
+            <div className="bg-blue-50 p-2 md:p-3 rounded-full">
+              <LuUser className="text-blue-600 text-md md:text-xl" />
+            </div>
+          </div>
+        </div>
+
+
+        {/* <div className="flex justify-between items-center mb-4 ml-10 md:ml-0 bg-white p-1 md:p-2 rounded-lg shadow-sm">
           <div className="flex items-center space-x-2">
-            {/* <h1 className="text-2xl font-bold text-gray-800">Add Arbitrator</h1> */}
             <div className="text-sm text-gray-500 flex items-center space-x-2">
               <span className="cursor-pointer hover:text-blue-700 font-semibold">
                 User
@@ -110,10 +133,10 @@ const AddClient = () => {
           <div className="bg-blue-50 p-3 rounded-full">
             <LuUser className="text-blue-600 text-xl" />
           </div>
-        </div>
+        </div> */}
 
         {/* Form */}
-        <div className="bg-white rounded-xl shadow-sm px-4 py-6">
+        <div className="bg-[#0f2d6b] rounded-xl shadow-sm px-4 py-6 mt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative group">
@@ -126,7 +149,7 @@ const AddClient = () => {
                   className="block w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all disabled:opacity-75 peer"
                   placeholder=" "
                 />
-                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                <label className="absolute text-sm text-gray-800 font-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]  px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4  peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                   ID
                 </label>
               </div>
@@ -137,10 +160,10 @@ const AddClient = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none  focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
                   placeholder=" "
                 />
-                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:font-bold peer-focus:bg-transparent peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                   Full Name
                 </label>
               </div>
@@ -154,7 +177,7 @@ const AddClient = () => {
                   className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
                   placeholder=" "
                 />
-                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:font-bold peer-focus:bg-transparent peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                   Contact Number
                 </label>
               </div>
@@ -168,8 +191,22 @@ const AddClient = () => {
                   className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
                   placeholder=" "
                 />
-                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:font-bold peer-focus:bg-transparent peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                   Email Address
+                </label>
+              </div>
+
+              <div className="relative group">
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all peer"
+                  placeholder="Address"
+                />
+                <label className="absolute text-md text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:font-bold peer-focus:bg-transparent peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+                  Address
                 </label>
               </div>
             </div>
@@ -183,7 +220,7 @@ const AddClient = () => {
                 className="block w-full px-4 py-3 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none peer"
                 placeholder=" "
               />
-              <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 left-1">
+              <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:font-bold peer-focus:bg-transparent peer-focus:scale-75 peer-focus:text-blue-600 left-1">
                 About (Max 500 Characters)
               </label>
             </div>
