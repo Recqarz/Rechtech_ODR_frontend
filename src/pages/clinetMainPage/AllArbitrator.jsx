@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { LuUser } from "react-icons/lu";
-import NoDataFound from "@/components/NoDataFound";
 import axios from "axios";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { FiEdit3 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import SearchData from "@/components/SearchData";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import AllArbitratorDetailsModal from "./AllArbitratorDetailsModal";
+import Pagination from "@/components/Pagination";
 
 const AllArbitrator = () => {
   const [data, setData] = useState([]);
   const [searchdata, setSearchdata] = useState("");
+
+   //pagination
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(0);
+   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   //details modal
   const [isOpen, setIsOpen] = useState(false);
@@ -36,20 +28,35 @@ const AllArbitrator = () => {
     experience: "",
   });
 
-  const getData = () => {
+  const getData = (page, limit ) => {
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`)
+      .get(`${import.meta.env.VITE_API_BASEURL}/arbitrator/all`, { params: { page, limit }})
       .then((res) => {
         setData(res.data.user);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong.");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
+
   useEffect(() => {
-    getData();
-  }, []);
+    getData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
   //Details modal
   const handleDetailsFunc = (el) => {
@@ -176,6 +183,16 @@ const AllArbitrator = () => {
             })}
         </div>
       </div>
+
+{/* Pagination*/}
+<Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+
 
       {/* Modal for All Arbitrator Details */}
       <AllArbitratorDetailsModal

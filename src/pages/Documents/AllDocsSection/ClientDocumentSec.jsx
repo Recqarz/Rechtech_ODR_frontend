@@ -1,24 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { IoMdCloudDownload, IoMdDownload } from "react-icons/io";
+import { IoMdDownload } from "react-icons/io";
 import toast from "react-hot-toast";
 import { recordingData } from "@/global/action";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { IoEye, IoSearch } from "react-icons/io5";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import DocumentsModal from "../DocumentsModal";
 import SearchByDataProps from "../SearchByDataProps";
+import Pagination from "@/components/Pagination";
 
 const ClientDocumentSec = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,26 +31,46 @@ const ClientDocumentSec = () => {
   const [allDocsForClient, setAllDocsForClient] = useState([]);
   const [searchData, setSearchData] = useState("");
 
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   let token = JSON.parse(localStorage.getItem("rechtechtoken"));
   // All Case Data for arbitrator
-  const getAllDocsData = () => {
+  const getAllDocsData = (page, limit) => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/cases/clientcases`, {
         headers: {
           token: token,
         },
+        params: { page, limit },
       })
       .then((res) => {
         setAllDocsForClient(res.data.caseData);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
         toast.error("Something went wrong");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
   useEffect(() => {
-    getAllDocsData();
-  }, []);
+    getAllDocsData(currentPage, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
   //Download Attachments
   const handleDownloadAllAttachment = (links) => {
@@ -222,6 +231,15 @@ const ClientDocumentSec = () => {
         </div>
       </div>
 
+      {/* Pagination*/}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+
       {/* modal for details for docs */}
 
       <DocumentsModal
@@ -232,7 +250,7 @@ const ClientDocumentSec = () => {
         handleDownloadAll={handleDownloadAllAttachment}
         handleDownloadAllorder={handleDownloadAllorder}
         handleDownloadAward={handleDownloadAward}
-        handleRecordings={()=>handleRecordings(documentDetail.recording)}
+        handleRecordings={() => handleRecordings(documentDetail.recording)}
         closeDetailsFunc={closeDetailsFunc}
       />
     </>

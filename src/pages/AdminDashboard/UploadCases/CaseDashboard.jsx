@@ -14,14 +14,13 @@ import NoDataFound from "@/components/NoDataFound";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshers } from "@/global/action";
-import { Link } from "react-router-dom";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import CasesTableProps from "@/components/AdminCases/CasesTableProps";
 import AssignArbitratorProps from "./AssignArbitratorProps";
 import React from "react";
 import AssignArbitratorRandomly from "./AssignArbitratorRandomly";
 import { ExportToExcel } from "./ExportToExcel";
+import Pagination from "@/components/Pagination";
 
 const CaseDashboard = () => {
   let refresher = useSelector((state) => state.refresher);
@@ -39,6 +38,11 @@ const CaseDashboard = () => {
   let dispatch = useDispatch();
   const [assignNotAssignArbitrator, setAssignNotAssignArbitrator] =
     useState("");
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // State for case selection
   const [caseId, setCaseId] = useState([]);
@@ -135,20 +139,39 @@ const CaseDashboard = () => {
   };
 
   // All Case Data
-  const allcaseData = () => {
+  const allcaseData = (page, limit) => {
     axios
-      .get(`${import.meta.env.VITE_API_BASEURL}/cases/all-cases`)
+      .get(`${import.meta.env.VITE_API_BASEURL}/cases/all-cases`, {
+        params: { page, limit },
+      })
       .then((res) => {
         setCaseData(res.data.cases);
+        setCurrentPage(res.data.currentPage);
+        setTotalPages(res.data.totalPages);
       })
       .catch((err) => {
+        console.error("Error fetching cases:", err);
         toast.error("Something went wrong");
       });
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   useEffect(() => {
-    allcaseData();
-  }, [refresher]);
+    allcaseData(currentPage, rowsPerPage);
+  }, [refresher, currentPage, rowsPerPage]);
+
+  const handleRowsPerPageChange = (e) => {
+    const newRowsPerPage = parseInt(e.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(1); // Reset to the first page when rows per page changes
+  };
+
+
 
   const handleUploadFunction = (value) => {
     setIsOpen(true);
@@ -831,6 +854,15 @@ const CaseDashboard = () => {
       ) : (
         <NoDataFound />
       )}
+
+      {/* Pagination*/}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
 
       {/* Assign Arbitrator */}
       <AssignArbitratorProps
