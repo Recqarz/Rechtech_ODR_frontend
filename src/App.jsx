@@ -16,6 +16,7 @@ import VerifyOTP from "./pages/Respondent/respondentotp";
 import Register from "./pages/Register/register";
 import VerrifyOTPRegister from "./pages/Register/VerrifyOTPRegister";
 import Footer from "./components/Footer";
+import VerifyLoginOTP from "./pages/VerifyLoginOTP";
 
 function App() {
   let dispatch = useDispatch();
@@ -64,8 +65,9 @@ function App() {
         <Route path="/logins" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register/verifyOTP" element={<VerrifyOTPRegister />} />
+        <Route path="/login/verifyOTP" element={<VerifyLoginOTP/>} />
 
-        <Route path="/resetdashboards" element={<ResetDashboards />} />
+        {/* <Route path="/resetdashboards" element={<ResetDashboards />} /> */}
         <Route path="/*" element={<PrivateRoute Component={Allroutes} />} />
       </Routes>
       <Footer />
