@@ -14,7 +14,6 @@ const DashboardHeader = () => {
   let [client, setClient] = useState("");
   let [cases, setCases] = useState("");
   let [awards, setAwards]=useState("");
-  console.log("awards", arbitrator, client, cases, awards)
 
   const role = useSelector((state) => state.role);
 
@@ -22,7 +21,6 @@ const DashboardHeader = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASEURL}/global/counts`)
       .then((response) => {
-        console.log(response.data)
         setArbitrator(response.data.arbitrators);
         setClient(response.data.clients);
         setCases(response.data.cases);
