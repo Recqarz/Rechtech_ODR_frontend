@@ -44,8 +44,8 @@ const LineChartComponent = () => {
   return (
     <div className="w-full max-w-3xl px-6 py-4 mr-5 shadow-2xl bg-[#0f2d6b] text-white rounded-3xl">
       <h2 className="text-xl font-semibold mb-6">Case Completed</h2>
-      <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={chartData} barGap={10}>
+    <ResponsiveContainer width="100%" height={280}>
+        {chartData.length>0?<BarChart data={chartData} barGap={10}>
           <XAxis
             dataKey="week"
             axisLine={false}
@@ -92,7 +92,11 @@ const LineChartComponent = () => {
               name={key.charAt(0).toUpperCase() + key.slice(1)}
             />
           ))}
-        </BarChart>
+        </BarChart>:
+        <div className="flex justify-center items-center mt-24 text-white text-2xl font-semibold">
+            No Case Completed
+          </div>
+        }
       </ResponsiveContainer>
     </div>
   );
