@@ -32,6 +32,7 @@ const DashboardHeaderClient = () => {
           headers: { token: tokens },
         })
         .then((response) => {
+          console.log(response.data)
           setArbitrator(response.data.arbitrations);
           setClient(response.data.uniqueClients);
           setCases(response.data.totalCases);
