@@ -13,6 +13,7 @@ const DashboardHeader = () => {
   let [arbitrator, setArbitrator] = useState("");
   let [client, setClient] = useState("");
   let [cases, setCases] = useState("");
+  let [awards, setAwards]=useState("");
 
   const role = useSelector((state) => state.role);
 
@@ -23,6 +24,7 @@ const DashboardHeader = () => {
         setArbitrator(response.data.arbitrators);
         setClient(response.data.clients);
         setCases(response.data.cases);
+        setAwards(response.data.awards);
       })
       .catch((error) => {
         toast.error("Failed to fetch data");
@@ -106,7 +108,7 @@ const DashboardHeader = () => {
         </div>
         <div className="ml-4 md:ml-8 text-center text-white">
           <h4 className="text-md font-semibold mb-0 ">Awards</h4>
-          <h2 className="text-lg font-bold">8+</h2>
+          <h2 className="text-lg font-bold">{awards}+</h2>
         </div>
       </div>
     </div>
